@@ -73,7 +73,7 @@ public:
 		float &nx,
 		float &ny);
 
-	void AddAnimation(int aniID);
+	static void AddAnimation(int aniID);
 
 	CGameObject();
 

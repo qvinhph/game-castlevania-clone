@@ -62,7 +62,7 @@ LPCOLLISIONEVENT CGameObject::SweptAABBEx(LPGAMEOBJECT coO)
 }
 
 /*
-	Calculate potential collisions with the lít ò colliable objects
+	Calculate potential collisions with the list of colliable objects
 
 	coObjects: the list of colliable objects
 	coEvents: list of potential collisions

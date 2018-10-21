@@ -21,6 +21,7 @@
 #define MAX_FRAME_RATE		90
 
 #define ID_TEX_SIMON		0
+#define ID_TEX_GROUND		1
 
 CGame *game;
 CSimon *simon;
@@ -44,10 +45,10 @@ void CInputHandler::OnKeyDown(int keyCode)
 	switch (keyCode)
 	{
 	case DIK_Z:
-		simon->SetState(SIMON_STATE_JUMPING);
+		simon->SetState(SIMON_STATE_JUMP);
 		break;
 	case DIK_X:
-		simon->SetState(SIMON_STATE_ATTACKING);
+		simon->SetState(SIMON_STATE_ATTACK);
 		break;
 	default:
 		break;
@@ -62,19 +63,20 @@ void CInputHandler::OnKeyUp(int keyCode)
 void CInputHandler::KeyState(BYTE *states)
 {
 	if (game->IsKeyDown(DIK_DOWN))
-		simon->SetState(SIMON_STATE_CROUCHING);
+		simon->SetState(SIMON_STATE_CROUCH);
 
 	else if (game->IsKeyDown(DIK_RIGHT))
-		simon->SetState(SIMON_STATE_WALKING_RIGHT);
+		simon->SetState(SIMON_STATE_WALK_RIGHT);
 
 	else if (game->IsKeyDown(DIK_LEFT))
-		simon->SetState(SIMON_STATE_WALKING_LEFT);
+		simon->SetState(SIMON_STATE_WALK_LEFT);
 
 	else 
 		simon->SetState(SIMON_STATE_IDLE);
 }
 
 #pragma endregion
+
 
 #pragma region Window functions
 
@@ -154,6 +156,7 @@ void LoadResources()
 	//
 	CTextures * textures = CTextures::GetInstance();
 	textures->Add(ID_TEX_SIMON, L"Textures\\simon.png", D3DCOLOR_XRGB(255, 0, 255));
+	textures->Add(ID_TEX_GROUND, L"Textures\\ground1.png", D3DCOLOR_XRGB(255, 0, 255));
 
 	//
 	// LOAD SPRITES AND ANIMATIONS
@@ -161,27 +164,70 @@ void LoadResources()
 	CSprites * sprites = CSprites::GetInstance();
 	CAnimations * animations = CAnimations::GetInstance();
 
+#pragma region Loading Simon resources
+
+	// 99xxx: Simon's sprite ID
+	// xx0xx: sprite face to right side
+	// xx1xx: sprite face to left side
+	//                left, top, right, bottom
+
 	LPDIRECT3DTEXTURE9 texSimon = textures->Get(ID_TEX_SIMON);
-	//                 left, top, right, bottom
+	
 	sprites->Add(99000, 436, 4, 468, 64, texSimon);		// idle right
 	sprites->Add(99100, 12, 202, 44, 262, texSimon);	// idle left
-				 
+
 	sprites->Add(99001, 378, 2, 402, 64, texSimon);		// walk right
 	sprites->Add(99002, 314, 4, 344, 64, texSimon);		// walk right
 	sprites->Add(99003, 260, 3, 284, 64, texSimon);		// walk right
 	sprites->Add(99101, 78, 200, 102, 262, texSimon);	// walk left
 	sprites->Add(99102, 136, 202, 166, 262, texSimon);	// walk left
 	sprites->Add(99103, 196, 201, 220, 262, texSimon);	// walk left
-				 
+
+	sprites->Add(99004, 196, 1, 229, 47, texSimon);		// crouch right
+	sprites->Add(99104, 252, 199, 284, 245, texSimon);	// crouch left
+
 	sprites->Add(99007, 120, 4, 168, 64, texSimon);		// attack right
 	sprites->Add(99008, 75, 4, 107, 64, texSimon);		// attack right
 	sprites->Add(99009, 16, 6, 59, 64, texSimon);		// attack right
 	sprites->Add(99107, 312, 202, 360, 262, texSimon);	// attack left
 	sprites->Add(99108, 373, 202, 405, 262, texSimon);	// attack left
 	sprites->Add(99109, 421, 204, 464, 262, texSimon);	// attack left
-				 
-	sprites->Add(99020, 196, 1, 229, 47, texSimon);		// crouch right
-	sprites->Add(99120, 252, 199, 284, 245, texSimon);	// crouch left
+	
+	sprites->Add(99020, 438, 72, 470, 130, texSimon);	// go in
+
+	sprites->Add(99021, 10, 270, 42, 328, texSimon);	// pushed back right
+	sprites->Add(99121, 438, 72, 470, 130, texSimon);	// pushed back left
+
+	sprites->Add(99022, 318, 68, 350, 130, texSimon);	// down stair right
+	sprites->Add(99023, 266, 68, 290, 130, texSimon);	// down stair right
+	sprites->Add(99122, 130, 266, 162, 328, texSimon);	// down stair left
+	sprites->Add(99123, 190, 266, 214, 328, texSimon);	// down stair left
+
+	sprites->Add(99024, 191, 68, 222, 130, texSimon);	// up stair right
+	sprites->Add(99025, 134, 68, 158, 130, texSimon);	// up stair right
+	sprites->Add(99124, 259, 266, 289, 328, texSimon);	// up stair left
+	sprites->Add(99125, 322, 266, 346, 328, texSimon);	// up stair left
+	
+	sprites->Add(99037, 0, 67, 48, 113, texSimon);		// crouch attack right
+	sprites->Add(99038, 437, 133, 469, 179, texSimon);	// crouch attack right
+	sprites->Add(99039, 375, 135, 420, 179, texSimon);	// crouch attack right
+	sprites->Add(99137, 432, 265, 483, 311, texSimon);	// crouch attack left
+	sprites->Add(99138, 11, 311, 43, 377, texSimon);	// crouch attack left
+	sprites->Add(99139, 61, 333, 105, 377, texSimon);	// crouch attack left
+
+	sprites->Add(99047, 302, 134, 350, 196, texSimon);	// down stair attack right
+	sprites->Add(99048, 258, 134, 290, 196, texSimon);	// down stair attack right
+	sprites->Add(99049, 198, 136, 239, 196, texSimon);	// down stair attack right
+	sprites->Add(99147, 130, 332, 178, 394, texSimon);	// down stair attack left
+	sprites->Add(99148, 190, 332, 222, 394, texSimon);	// down stair attack left
+	sprites->Add(99149, 241, 334, 282, 394, texSimon);	// down stair attack left
+
+	sprites->Add(99057, 120, 134, 161, 196, texSimon);	// up stair attack right
+	sprites->Add(99058, 69, 134, 101, 196, texSimon);	// up stair attack right
+	sprites->Add(99059, 9, 136, 53, 196, texSimon);		// up stair attack right
+	sprites->Add(99157, 319, 332, 360, 394, texSimon);	// up stair attack left
+	sprites->Add(99158, 379, 332, 411, 394, texSimon);	// up stair attack left
+	sprites->Add(99159, 427, 334, 471, 394, texSimon);	// up stair attack left
 
 	LPANIMATION ani;
 
@@ -220,24 +266,116 @@ void LoadResources()
 	animations->Add(SimonAniID::ATTACK_LEFT, ani);
 
 	ani = new CAnimation(100);
-	ani->AddFrame(99020);
+	ani->AddFrame(99004);
 	animations->Add(SimonAniID::CROUCH_RIGHT, ani);
 
 	ani = new CAnimation(100);
-	ani->AddFrame(99120);
+	ani->AddFrame(99104);
 	animations->Add(SimonAniID::CROUCH_LEFT, ani);
 
+	ani = new CAnimation(100);
+	ani->AddFrame(99020);
+	animations->Add(SimonAniID::GO_IN, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(99021);
+	animations->Add(SimonAniID::PUSHED_BACK_RIGHT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(99121);
+	animations->Add(SimonAniID::PUSHED_BACK_LEFT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(99022);
+	ani->AddFrame(99023);
+	animations->Add(SimonAniID::DOWN_STAIR_RIGHT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(99122);
+	ani->AddFrame(99123);
+	animations->Add(SimonAniID::DOWN_STAIR_LEFT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(99024);
+	ani->AddFrame(99025);
+	animations->Add(SimonAniID::UP_STAIR_RIGHT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(99124);
+	ani->AddFrame(99125);
+	animations->Add(SimonAniID::UP_STAIR_LEFT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(99037);
+	ani->AddFrame(99038);
+	ani->AddFrame(99039);
+	animations->Add(SimonAniID::CROUCH_ATTACK_RIGHT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(99137);
+	ani->AddFrame(99138);
+	ani->AddFrame(99139);
+	animations->Add(SimonAniID::CROUCH_ATTACK_LEFT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(99047);
+	ani->AddFrame(99048);
+	ani->AddFrame(99049);
+	animations->Add(SimonAniID::DOWN_STAIR_ATTACK_RIGHT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(99147);
+	ani->AddFrame(99148);
+	ani->AddFrame(99149);
+	animations->Add(SimonAniID::DOWN_STAIR_ATTACK_LEFT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(99057);
+	ani->AddFrame(99058);
+	ani->AddFrame(99059);
+	animations->Add(SimonAniID::UP_STAIR_ATTACK_RIGHT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(99157);
+	ani->AddFrame(99158);
+	ani->AddFrame(99159);
+	animations->Add(SimonAniID::UP_STAIR_ATTACK_LEFT, ani);
+
 	simon = new CSimon();
-	simon->AddAnimation(SimonAniID::IDLE_RIGHT);
-	simon->AddAnimation(SimonAniID::IDLE_LEFT);
-	simon->AddAnimation(SimonAniID::WALK_RIGHT);
-	simon->AddAnimation(SimonAniID::WALK_LEFT);
-	simon->AddAnimation(SimonAniID::CROUCH_RIGHT);
-	simon->AddAnimation(SimonAniID::CROUCH_LEFT);
-	simon->AddAnimation(SimonAniID::ATTACK_RIGHT);
-	simon->AddAnimation(SimonAniID::ATTACK_LEFT);
+	CSimon::AddAnimation(SimonAniID::IDLE_RIGHT);
+	CSimon::AddAnimation(SimonAniID::IDLE_LEFT);
+	CSimon::AddAnimation(SimonAniID::WALK_RIGHT);
+	CSimon::AddAnimation(SimonAniID::WALK_LEFT);
+	CSimon::AddAnimation(SimonAniID::CROUCH_RIGHT);
+	CSimon::AddAnimation(SimonAniID::CROUCH_LEFT);
+	CSimon::AddAnimation(SimonAniID::ATTACK_RIGHT);
+	CSimon::AddAnimation(SimonAniID::ATTACK_LEFT);
+	CSimon::AddAnimation(SimonAniID::PUSHED_BACK_RIGHT);
+	CSimon::AddAnimation(SimonAniID::PUSHED_BACK_LEFT);
+	CSimon::AddAnimation(SimonAniID::DOWN_STAIR_RIGHT);
+	CSimon::AddAnimation(SimonAniID::DOWN_STAIR_LEFT);
+	CSimon::AddAnimation(SimonAniID::UP_STAIR_RIGHT);
+	CSimon::AddAnimation(SimonAniID::UP_STAIR_LEFT);
+	CSimon::AddAnimation(SimonAniID::CROUCH_ATTACK_RIGHT);
+	CSimon::AddAnimation(SimonAniID::CROUCH_ATTACK_LEFT);
+	CSimon::AddAnimation(SimonAniID::DOWN_STAIR_ATTACK_RIGHT);
+	CSimon::AddAnimation(SimonAniID::DOWN_STAIR_ATTACK_LEFT);
+	CSimon::AddAnimation(SimonAniID::UP_STAIR_ATTACK_RIGHT);
+	CSimon::AddAnimation(SimonAniID::UP_STAIR_ATTACK_LEFT);
+	CSimon::AddAnimation(SimonAniID::GO_IN);
+
+#pragma endregion
+
+#pragma region Loading ground resources
+
+	LPDIRECT3DTEXTURE9 texGround = CTextures::GetInstance()->Get(ID_TEX_GROUND);
+	sprites->Add(11000, 0, 0, 32, 32, texGround);		// ground
+
+#pragma endregion
+
 
 	simon->SetPosition(50.0f, 50.0f);
+	
 }
 
 

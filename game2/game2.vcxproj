@@ -25,6 +25,8 @@
     <ClInclude Include="debug.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Ghost.h" />
+    <ClInclude Include="Ground.h" />
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="Simon.h" />
     <ClInclude Include="Sprite.h" />
@@ -35,9 +37,11 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationFrame.cpp" />
     <ClCompile Include="Animations.cpp" />
+    <ClCompile Include="Ghost.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Ground.cpp" />
     <ClCompile Include="KeyEventHandler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Simon.cpp" />
