@@ -7,8 +7,8 @@
 #define SIMON_CROUCHING_BBOX_HEIGHT		46
 
 #define SIMON_WALKING_SPEED				0.1f
-#define SIMON_JUMP_SPEED_Y				0.5f
-#define SIMON_GRAVITY					0.002f
+#define SIMON_JUMP_SPEED_Y				0.41f
+#define SIMON_GRAVITY					0.0012f
 
 #define SIMON_STATE_IDLE				0
 #define SIMON_STATE_WALK_RIGHT			100
@@ -54,6 +54,9 @@ enum SimonAniID
 class CSimon : public CMovableObject
 {
 	int attacking;
+	int jumping;
+	int crouching;
+	int stairing;
 	DWORD attacking_start_time;
 
 	static unordered_map<int, LPANIMATION> simonAnimations;

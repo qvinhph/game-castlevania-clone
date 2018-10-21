@@ -19,7 +19,7 @@
 #define SCREEN_WIDTH		500
 #define SCREEN_HEIGHT		400
 
-#define MAX_FRAME_RATE		90
+#define MAX_FRAME_RATE		120
 
 #define ID_TEX_SIMON		0
 #define ID_TEX_GROUND		1
@@ -46,12 +46,22 @@ void CInputHandler::OnKeyDown(int keyCode)
 	DebugOut(L"[INFO] KeyDown: %d\n", keyCode);
 	switch (keyCode)
 	{
+	case DIK_RIGHT:
+		simon->SetState(SIMON_STATE_WALK_RIGHT);
+		break;
+
+	case DIK_LEFT:
+		simon->SetState(SIMON_STATE_WALK_LEFT);
+		break;
+
 	case DIK_Z:
 		simon->SetState(SIMON_STATE_JUMP);
 		break;
+
 	case DIK_X:
 		simon->SetState(SIMON_STATE_ATTACK);
 		break;
+
 	default:
 		break;
 	}
@@ -59,7 +69,12 @@ void CInputHandler::OnKeyDown(int keyCode)
 
 void CInputHandler::OnKeyUp(int keyCode)
 {
-	DebugOut(L"[INFO] KeyUp: %d\n", keyCode);
+	DebugOut(L"[INFO] KeyDown: %d\n", keyCode);
+	switch (keyCode)
+	{
+	case DIK_DOWN:
+		simon->SetState(SIMON_STATE_IDLE);
+	}
 }
 
 void CInputHandler::KeyState(BYTE *states)
@@ -73,7 +88,7 @@ void CInputHandler::KeyState(BYTE *states)
 	else if (game->IsKeyDown(DIK_LEFT))
 		simon->SetState(SIMON_STATE_WALK_LEFT);
 
-	else 
+	else
 		simon->SetState(SIMON_STATE_IDLE);
 }
 
@@ -159,6 +174,7 @@ void LoadResources()
 	CTextures * textures = CTextures::GetInstance();
 	textures->Add(ID_TEX_SIMON, L"Textures\\simon.png", D3DCOLOR_XRGB(255, 0, 255));
 	textures->Add(ID_TEX_GROUND, L"Textures\\ground1.png", D3DCOLOR_XRGB(255, 0, 255));
+	textures->Add(ID_TEX_BBOX, L"Textures\\bbox.png", D3DCOLOR_XRGB(255, 0, 255));
 
 	//
 	// LOAD SPRITES AND ANIMATIONS
@@ -166,6 +182,7 @@ void LoadResources()
 	CSprites * sprites = CSprites::GetInstance();
 	CAnimations * animations = CAnimations::GetInstance();
 	LPANIMATION ani;
+
 
 #pragma region Loading Simon resources
 
@@ -375,17 +392,27 @@ void LoadResources()
 	LPDIRECT3DTEXTURE9 texGround = CTextures::GetInstance()->Get(ID_TEX_GROUND);
 	sprites->Add(11000, 0, 0, 32, 32, texGround);
 	
-	/*CBrick* brick = new CBrick();
+	CBrick* brick = new CBrick();
 	ani = new CAnimation(100);
+	ani->AddFrame(11000);
+	animations->Add(BrickAniID::IDLE, ani);
 	brick->AddAnimation(BrickAniID::IDLE);
 	for (int i = 0; i < 30; i++)
 	{
 		brick = new CBrick();
-		brick->SetPosition(0 + i * 16.0f, 150);
+		brick->SetPosition(0 + i * 32.0f, 300);
 		objects.push_back(brick);
-	}*/
+	}
 
-	ani = new CAnimation(100);
+	for (int i = 0; i < 3; i++)
+	{
+		brick = new CBrick();
+		brick->SetPosition(100 + i * 32.0f, 50);
+		objects.push_back(brick);
+	}
+
+
+	/*ani = new CAnimation(100);
 	ani->AddFrame(11000);
 	animations->Add(BrickAniID::IDLE, ani);
 
@@ -395,7 +422,7 @@ void LoadResources()
 		brick->AddAnimation(BrickAniID::IDLE);
 		brick->SetPosition(0 + i * 32.0f, 200);
 		objects.push_back(brick);
-	}
+	}*/
 
 
 #pragma endregion

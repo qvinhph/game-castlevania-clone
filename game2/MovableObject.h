@@ -27,6 +27,7 @@ public:
 		float &nx,
 		float &ny);
 
+	virtual void SetDirection(int nx) { this->nx = nx; }
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
 
 	CMovableObject();

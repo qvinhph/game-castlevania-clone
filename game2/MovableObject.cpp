@@ -29,7 +29,8 @@ LPCOLLISIONEVENT CMovableObject::SweptAABBEx(LPGAMEOBJECT coO)
 	coO->GetBoundingBox(sl, st, sr, sb);
 
 	// deal with moving object: m speed = original m speed - collide object speed
-	float svx = 0, svy = 0;
+	float svx = 0;
+	float svy = 0;
 	if (dynamic_cast<CMovableObject *>(coO))
 	{
 		dynamic_cast<CMovableObject *>(coO)->GetSpeed(svx, svy);

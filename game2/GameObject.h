@@ -53,9 +53,10 @@ public:
 	void RenderBoundingBox();
 	
 	virtual void SetState(int state) { this->state = state; }
-	virtual void AddAnimation(int aniID) = 0;
 	virtual void Render() = 0;
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
+
+	virtual void AddAnimation(int aniID) = 0;
 
 	CGameObject();
 };
