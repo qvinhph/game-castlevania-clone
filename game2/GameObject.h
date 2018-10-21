@@ -3,11 +3,12 @@
 #include <d3dx9.h>
 #include <unordered_map>
 
-#include "Animation.h"
+#include "Animations.h"
 
 using namespace std;
 
 #define ID_TEX_BBOX -100
+
 
 class CGameObject;
 typedef CGameObject * LPGAMEOBJECT;
@@ -20,9 +21,9 @@ struct CCollisionEvent
 	float t, nx, ny;
 	CCollisionEvent(float t, float nx, float ny, LPGAMEOBJECT obj = NULL)
 	{
-		this->t = t; 
-		this->nx = nx; 
-		this->ny = ny; 
+		this->t = t;
+		this->nx = nx;
+		this->ny = ny;
 		this->obj = obj;
 	}
 
@@ -32,6 +33,7 @@ struct CCollisionEvent
 	}
 };
 
+
 class CGameObject
 {
 protected:
@@ -39,48 +41,22 @@ protected:
 	float x;
 	float y;
 
-	float dx;
-	float dy;
-
-	float vx; 
-	float vy;
-
-	int nx;
-
 	int state;
 
 	DWORD dt;
 
-	static unordered_map<int, LPANIMATION> animations;
-
 public:
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
-	void SetSpeed(float vx, float vy) { this->vx = vx, this->vy = vy; }
 	void GetPosition(float &x, float &y) { x = this->x, y = this->y; }
-	void GetSpeed(float &vx, float &vy) { vx = this->vx, vy = this->vy; }
 
 	int GetState() { return this->state; }
-
 	void RenderBoundingBox();
-
-	LPCOLLISIONEVENT SweptAABBEx(LPGAMEOBJECT coO);
-	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
-	void FilterCollision(
-		vector<LPCOLLISIONEVENT> &coEvents,
-		vector<LPCOLLISIONEVENT> &coEventsResult,
-		float &min_tx,
-		float &min_ty,
-		float &nx,
-		float &ny);
-
-	static void AddAnimation(int aniID);
+	
+	virtual void SetState(int state) { this->state = state; }
+	virtual void AddAnimation(int aniID) = 0;
+	virtual void Render() = 0;
+	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
 
 	CGameObject();
-
-	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
-	virtual void Render() = 0;
-	virtual void SetState(int state) { this->state = state; }
-
 };
 

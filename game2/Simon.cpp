@@ -3,16 +3,18 @@
 #include "debug.h"
 #include "Simon.h"
 #include "Game.h"
+#include "Animations.h"
 
+unordered_map<int, LPANIMATION> CSimon::simonAnimations;
 
-CSimon::CSimon() : CGameObject()
+CSimon::CSimon() : CMovableObject()
 {
 	this->attacking = 0;
 }
 
 void CSimon::SetState(int state)
 {
-	CGameObject::SetState(state);
+	CMovableObject::SetState(state);
 
 	switch (state)
 	{
@@ -40,27 +42,13 @@ void CSimon::SetState(int state)
 	}
 }
 
-void CSimon::StartToAttack()
-{
-	if (attacking == 0)
-	{
-		attacking = 1;
-		attacking_start_time = GetTickCount();
-		flag = false;
-	}
-}
-
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	// Calculate dx, dy
-	CGameObject::Update(dt);
+	CMovableObject::Update(dt);
 
 	// Simple fall down
 	vy += SIMON_GRAVITY * dt;
-	if (y >= 300)
-	{
-		y = 300.0f;
-	}
 
 	//
 	// Collision
@@ -98,8 +86,6 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (ny != 0) vy = 0;
 
 		// Collision logic with Ghosts
-
-
 	}
 
 	// clean up collision events
@@ -133,22 +119,38 @@ void CSimon::Render()
 	}
 
 	DebugOut(L"\nAni: %d", ani);
-	animations[ani]->Render(x, y);
+	simonAnimations[ani]->Render(x, y);
 }
 
 void CSimon::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
 	left = x;
 	top = y;
-
-	if (state == SIMON_STATE_IDLE)
+	right = x + SIMON_IDLE_BBOX_WIDTH;
+	bottom = y + SIMON_IDLE_BBOX_HEIGHT;
+	/*if (state)
 	{
 		right = x + SIMON_IDLE_BBOX_WIDTH;
 		bottom = y + SIMON_IDLE_BBOX_HEIGHT;
-	}
-	else
+	}*/
+	/*else
 	{
 		right = x + SIMON_CROUCHING_BBOX_WIDTH;
 		bottom = y + SIMON_CROUCHING_BBOX_HEIGHT;
+	}*/
+}
+
+void CSimon::AddAnimation(int aniID)
+{
+	simonAnimations[aniID] = CAnimations::GetInstance()->Get(aniID);
+}
+
+void CSimon::StartToAttack()
+{
+	if (attacking == 0)
+	{
+		attacking = 1;
+		attacking_start_time = GetTickCount();
 	}
 }
+

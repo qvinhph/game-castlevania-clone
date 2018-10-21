@@ -1,10 +1,10 @@
 #pragma once
-#include "GameObject.h"
+#include "MovableObject.h"
 
-#define SIMON_IDLE_BBOX_WIDTH			1111
-#define SIMON_IDLE_BBOX_HEIGHT			1112
-#define SIMON_CROUCHING_BBOX_WIDTH		1123123
-#define SIMON_CROUCHING_BBOX_HEIGHT		213213123
+#define SIMON_IDLE_BBOX_WIDTH			32
+#define SIMON_IDLE_BBOX_HEIGHT			60
+#define SIMON_CROUCHING_BBOX_WIDTH		32
+#define SIMON_CROUCHING_BBOX_HEIGHT		46
 
 #define SIMON_WALKING_SPEED				0.1f
 #define SIMON_JUMP_SPEED_Y				0.5f
@@ -51,20 +51,22 @@ enum SimonAniID
 	GO_IN
 };
 
-class CSimon : public CGameObject
+class CSimon : public CMovableObject
 {
 	int attacking;
-	bool flag = true;
 	DWORD attacking_start_time;
+
+	static unordered_map<int, LPANIMATION> simonAnimations;
 
 public:
 	CSimon();
 	
-	virtual void SetState(int state);
 	void StartToAttack();
 
-	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
-	void Render();
-	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+	void SetState(int state) override;
+	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL) override;
+	void Render() override;
+	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
+	void AddAnimation(int aniID) override;
 };
 

@@ -4,19 +4,20 @@
 
 #include "debug.h"
 #include "Game.h"
-#include "GameObject.h"
 #include "Textures.h"
 #include "Sprites.h"
 #include "Animations.h"
+#include "MovableObject.h"
 
 #include "Simon.h"
+#include "Brick.h"
 
 #define WINDOW_CLASS_NAME L"Game"
 #define MAIN_WINDOW_TITLE L"Castlevania"
 
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(255, 255, 200)
-#define SCREEN_WIDTH		800
-#define SCREEN_HEIGHT		800
+#define SCREEN_WIDTH		500
+#define SCREEN_HEIGHT		400
 
 #define MAX_FRAME_RATE		90
 
@@ -24,6 +25,7 @@
 #define ID_TEX_GROUND		1
 
 CGame *game;
+
 CSimon *simon;
 
 vector<LPGAMEOBJECT> objects;
@@ -163,6 +165,7 @@ void LoadResources()
 	//
 	CSprites * sprites = CSprites::GetInstance();
 	CAnimations * animations = CAnimations::GetInstance();
+	LPANIMATION ani;
 
 #pragma region Loading Simon resources
 
@@ -228,8 +231,6 @@ void LoadResources()
 	sprites->Add(99157, 319, 332, 360, 394, texSimon);	// up stair attack left
 	sprites->Add(99158, 379, 332, 411, 394, texSimon);	// up stair attack left
 	sprites->Add(99159, 427, 334, 471, 394, texSimon);	// up stair attack left
-
-	LPANIMATION ani;
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99000);
@@ -342,40 +343,63 @@ void LoadResources()
 	animations->Add(SimonAniID::UP_STAIR_ATTACK_LEFT, ani);
 
 	simon = new CSimon();
-	CSimon::AddAnimation(SimonAniID::IDLE_RIGHT);
-	CSimon::AddAnimation(SimonAniID::IDLE_LEFT);
-	CSimon::AddAnimation(SimonAniID::WALK_RIGHT);
-	CSimon::AddAnimation(SimonAniID::WALK_LEFT);
-	CSimon::AddAnimation(SimonAniID::CROUCH_RIGHT);
-	CSimon::AddAnimation(SimonAniID::CROUCH_LEFT);
-	CSimon::AddAnimation(SimonAniID::ATTACK_RIGHT);
-	CSimon::AddAnimation(SimonAniID::ATTACK_LEFT);
-	CSimon::AddAnimation(SimonAniID::PUSHED_BACK_RIGHT);
-	CSimon::AddAnimation(SimonAniID::PUSHED_BACK_LEFT);
-	CSimon::AddAnimation(SimonAniID::DOWN_STAIR_RIGHT);
-	CSimon::AddAnimation(SimonAniID::DOWN_STAIR_LEFT);
-	CSimon::AddAnimation(SimonAniID::UP_STAIR_RIGHT);
-	CSimon::AddAnimation(SimonAniID::UP_STAIR_LEFT);
-	CSimon::AddAnimation(SimonAniID::CROUCH_ATTACK_RIGHT);
-	CSimon::AddAnimation(SimonAniID::CROUCH_ATTACK_LEFT);
-	CSimon::AddAnimation(SimonAniID::DOWN_STAIR_ATTACK_RIGHT);
-	CSimon::AddAnimation(SimonAniID::DOWN_STAIR_ATTACK_LEFT);
-	CSimon::AddAnimation(SimonAniID::UP_STAIR_ATTACK_RIGHT);
-	CSimon::AddAnimation(SimonAniID::UP_STAIR_ATTACK_LEFT);
-	CSimon::AddAnimation(SimonAniID::GO_IN);
+	simon->AddAnimation(SimonAniID::IDLE_RIGHT);
+	simon->AddAnimation(SimonAniID::IDLE_LEFT);
+	simon->AddAnimation(SimonAniID::WALK_RIGHT);
+	simon->AddAnimation(SimonAniID::WALK_LEFT);
+	simon->AddAnimation(SimonAniID::CROUCH_RIGHT);
+	simon->AddAnimation(SimonAniID::CROUCH_LEFT);
+	simon->AddAnimation(SimonAniID::ATTACK_RIGHT);
+	simon->AddAnimation(SimonAniID::ATTACK_LEFT);
+	simon->AddAnimation(SimonAniID::PUSHED_BACK_RIGHT);
+	simon->AddAnimation(SimonAniID::PUSHED_BACK_LEFT);
+	simon->AddAnimation(SimonAniID::DOWN_STAIR_RIGHT);
+	simon->AddAnimation(SimonAniID::DOWN_STAIR_LEFT);
+	simon->AddAnimation(SimonAniID::UP_STAIR_RIGHT);
+	simon->AddAnimation(SimonAniID::UP_STAIR_LEFT);
+	simon->AddAnimation(SimonAniID::CROUCH_ATTACK_RIGHT);
+	simon->AddAnimation(SimonAniID::CROUCH_ATTACK_LEFT);
+	simon->AddAnimation(SimonAniID::DOWN_STAIR_ATTACK_RIGHT);
+	simon->AddAnimation(SimonAniID::DOWN_STAIR_ATTACK_LEFT);
+	simon->AddAnimation(SimonAniID::UP_STAIR_ATTACK_RIGHT);
+	simon->AddAnimation(SimonAniID::UP_STAIR_ATTACK_LEFT);
+	simon->AddAnimation(SimonAniID::GO_IN);
+
+	simon->SetPosition(0.0f, 0.0f);
+	objects.push_back(simon);
 
 #pragma endregion
 
 #pragma region Loading ground resources
 
 	LPDIRECT3DTEXTURE9 texGround = CTextures::GetInstance()->Get(ID_TEX_GROUND);
-	sprites->Add(11000, 0, 0, 32, 32, texGround);		// ground
+	sprites->Add(11000, 0, 0, 32, 32, texGround);
+	
+	/*CBrick* brick = new CBrick();
+	ani = new CAnimation(100);
+	brick->AddAnimation(BrickAniID::IDLE);
+	for (int i = 0; i < 30; i++)
+	{
+		brick = new CBrick();
+		brick->SetPosition(0 + i * 16.0f, 150);
+		objects.push_back(brick);
+	}*/
+
+	ani = new CAnimation(100);
+	ani->AddFrame(11000);
+	animations->Add(BrickAniID::IDLE, ani);
+
+	for (int i = 0; i < 30; i++)
+	{
+		CBrick *brick = new CBrick();
+		brick->AddAnimation(BrickAniID::IDLE);
+		brick->SetPosition(0 + i * 32.0f, 200);
+		objects.push_back(brick);
+	}
+
 
 #pragma endregion
-
-
-	simon->SetPosition(50.0f, 50.0f);
-	
+		
 }
 
 
@@ -385,7 +409,20 @@ void LoadResources()
 */
 void Update(DWORD dt)
 {
-	simon->Update(dt);
+	vector<LPGAMEOBJECT> coObjects;
+	for (int i = 0; i < objects.size(); i++)
+	{
+		coObjects.push_back(objects[i]);
+	}
+
+	for (int i = 0; i < objects.size(); i++)
+	{
+		if (dynamic_cast<CMovableObject *>(objects[i]))
+		{
+			LPMOVABLEOBJECT obj = dynamic_cast<CMovableObject *>(objects[i]);
+			obj->Update(dt, &coObjects);
+		}
+	}
 }
 
 
@@ -405,7 +442,8 @@ void Render()
 
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 
-		simon->Render();
+		for (int i = 0; i < objects.size(); i++)
+			objects[i]->Render();
 
 		spriteHandler->End();
 		d3ddv->EndScene();

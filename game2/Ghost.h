@@ -1,7 +1,7 @@
 #pragma once
-#include "GameObject.h"
+#include "MovableObject.h"
 
-class CGhost : public CGameObject
+class CGhost : public CMovableObject
 {
 	/*void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
