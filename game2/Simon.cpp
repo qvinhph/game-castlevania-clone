@@ -5,18 +5,23 @@
 #include "Game.h"
 #include "Animations.h"
 
-unordered_map<int, LPANIMATION> CSimon::simonAnimations;
+CSimon * CSimon::__instance = NULL;
 
-CSimon::CSimon() : CMovableObject()
+CSimon::CSimon()
 {
-	this->attacking = 0;
-	this->jumping = 0;
-	this->crouching = 0;
+	this->attacking = false;
+	this->jumping = false;
+	this->crouching = false;
+	this->attacking_start_time = 0;
+
+	// ready to be used
+	rope = CRope::GetInstance();
 }
 
 void CSimon::SetState(int state)
 {
-	// Game logic: while attack, Simon stops moving except finishing jumping
+	// Game logic: while attacking, Simon stops moving and reject other action
+	// except finishing jumping
 	if (attacking)
 	{
 		if (!jumping)
@@ -27,8 +32,9 @@ void CSimon::SetState(int state)
 	// Game logic: while jumping, simon can only attack
 	if (jumping)
 	{
-		if (state == SIMON_STATE_ATTACK)
+		if (state == SIMON_STATE_ATTACK && !attacking)
 			StartToAttack();
+		
 		return;
 	}
 
@@ -37,10 +43,20 @@ void CSimon::SetState(int state)
 	{
 		if (state == SIMON_STATE_WALK_RIGHT)
 			nx = 1;
+
 		else if (state == SIMON_STATE_WALK_LEFT)
 			nx = -1;
-		else if (state == SIMON_STATE_ATTACK)
+
+		else if (state == SIMON_STATE_ATTACK && !attacking)
 			StartToAttack();
+
+		else if (state == SIMON_STATE_IDLE)
+		{
+			crouching = false;
+			y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
+		}
+
+		return;
 	}
 
 	CGameObject::SetState(state);
@@ -64,11 +80,11 @@ void CSimon::SetState(int state)
 
 	case SIMON_STATE_JUMP:
 		vy = -SIMON_JUMP_SPEED_Y;
-		jumping = 1;
+		jumping = true;
 		break;
 
 	case SIMON_STATE_CROUCH:
-		crouching = 1;
+		crouching = true;
 		vx = 0;
 		break;
 
@@ -76,7 +92,7 @@ void CSimon::SetState(int state)
 		vx = 0;
 		if (crouching)
 		{
-			crouching = 0;
+			crouching = false;
 			y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
 		}
 		break;
@@ -123,9 +139,11 @@ void CSimon::Render()
 		ani = (nx > 0) ? SimonAniID::IDLE_RIGHT : SimonAniID::IDLE_LEFT;
 	}
 
-	DebugOut(L"\nAni: %d", ani);
-	simonAnimations[ani]->Render(x, y);
-	RenderBoundingBox();
+	
+	//simonAnimations[ani]->Render(x, y);
+
+	RenderAnimation(ani);
+	//RenderBoundingBox();
 }
 
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -137,7 +155,17 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (jumping)
 		vy += SIMON_GRAVITY * dt;
 	else
-		vy = 1.0f;	// the original game logic
+		vy = 1.0f;	// similar to the game logic
+
+
+	// Turn off the attacking flag when it'd done
+	if (attacking)
+		if (GetTickCount() - attacking_start_time >= ATTACKING_TIME)
+		{
+			attacking = false;
+			rope->SetIsUsed(false);
+		}
+
 
 	//
 	// Collision
@@ -150,14 +178,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Turn off collision when die 
 	if (state != SIMON_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
-
-	// Turn off the attacking flag when it'd done
-	if (GetTickCount() - attacking_start_time > ATTACKING_TIME)
-	{
-		attacking = 0;
-		//this->SetState(SIMON_STATE_IDLE);
-	}
-
+	
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
@@ -178,8 +199,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (ny != 0)
 		{
 			vy = 0;
-			jumping = 0; // while your feet touch the ground, you are not jumping
-			//this->SetState(SIMON_STATE_IDLE);
+			jumping = false; // while your feet touch the ground, you are not jumping
 		}
 
 		// Collision logic with Ghosts
@@ -189,17 +209,15 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 
-void CSimon::AddAnimation(int aniID)
-{
-	simonAnimations[aniID] = CAnimations::GetInstance()->Get(aniID);
-}
-
 void CSimon::StartToAttack()
 {
-	if (attacking == 0)
+	if (!attacking)
 	{
-		attacking = 1;
+		attacking = true;
 		attacking_start_time = GetTickCount();
+		
+		rope->SetIsUsed(true);
+		rope->SetDirection(nx);
 	}
 }
 
@@ -217,5 +235,13 @@ void CSimon::GetBoundingBox(float & left, float & top, float & right, float & bo
 		right = x + SIMON_IDLE_BBOX_WIDTH;
 		bottom = y + SIMON_IDLE_BBOX_HEIGHT;
 	}
+}
+
+CSimon * CSimon::GetInstance()
+{
+	if (__instance == NULL)
+		__instance = new CSimon();
+
+	return __instance;
 }
 

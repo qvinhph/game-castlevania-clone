@@ -11,9 +11,7 @@ enum BrickAniID
 
 class CBrick : public CGameObject
 {
-	static unordered_map<int, LPANIMATION> brickAnimations;
 public:
-	void AddAnimation(int aniID) override;
 	void Render() override;
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
 };

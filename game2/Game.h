@@ -12,7 +12,6 @@
 
 class CGame
 {
-	static CGame * __instance;
 	HWND hWnd;
 
 	LPDIRECT3D9 d3d = NULL;						// Direct3D handle
@@ -28,6 +27,10 @@ class CGame
 	DIDEVICEOBJECTDATA keyEvents[KEYBOARD_BUFFER_SIZE];		// Buffered keyboard data
 
 	LPKEY_EVENT_HANDLER keyEventHandler;
+
+
+	static CGame * __instance;
+	CGame();
 
 public:
 	void InitKeyboard(LPKEY_EVENT_HANDLER handler);

@@ -22,9 +22,17 @@ void CGameObject::RenderBoundingBox()
 	CGame::GetInstance()->Draw(x, y, bbox, rect.left, rect.top, rect.right, rect.bottom, 125);
 }
 
+void CGameObject::RenderAnimation(int aniID)
+{
+	animations->Get(aniID)->Render(x, y);
+}
+
 CGameObject::CGameObject()
 {
 	x = y = 0;
+	state = 0;
+
+	animations = CAnimations::GetInstance();
 }
 
 

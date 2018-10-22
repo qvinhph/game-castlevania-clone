@@ -306,3 +306,8 @@ CGame * CGame::GetInstance()
 
 	return __instance;
 }
+
+CGame::CGame()
+{
+	// Just an empty private constructor
+}

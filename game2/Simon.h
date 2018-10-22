@@ -1,30 +1,34 @@
 #pragma once
 #include "MovableObject.h"
+#include "Rope.h"
 
 #define SIMON_IDLE_BBOX_WIDTH			32
 #define SIMON_IDLE_BBOX_HEIGHT			60
 #define SIMON_CROUCHING_BBOX_WIDTH		32
 #define SIMON_CROUCHING_BBOX_HEIGHT		46
 
+#define SIMON_ATTACKING_BBOX_WIDTH		32
+
 #define SIMON_WALKING_SPEED				0.1f
 #define SIMON_JUMP_SPEED_Y				0.41f
 #define SIMON_GRAVITY					0.0012f
 
-#define SIMON_STATE_IDLE				0
-#define SIMON_STATE_WALK_RIGHT			100
-#define SIMON_STATE_WALK_LEFT			101
-#define SIMON_STATE_CROUCH				200
-#define SIMON_STATE_JUMP				300
-#define SIMON_STATE_UPSTAIR				400
-#define SIMON_STATE_DOWNSTAIR			410
-#define SIMON_STATE_ATTACK				900
-#define SIMON_STATE_CROUCH_ATTACK		910
-#define SIMON_STATE_UPSTAIR_ATTACK		910
-#define SIMON_STATE_DOWNSTAIR_ATTACK	920
-#define SIMON_STATE_GO_IN				999
-#define SIMON_STATE_DIE					1000
+#define SIMON_STATE_IDLE				100
+#define SIMON_STATE_WALK_RIGHT			101
+#define SIMON_STATE_WALK_LEFT			102
+#define SIMON_STATE_CROUCH				103
+#define SIMON_STATE_JUMP				104
+#define SIMON_STATE_UPSTAIR				105
+#define SIMON_STATE_DOWNSTAIR			106
+#define SIMON_STATE_ATTACK				107
+#define SIMON_STATE_CROUCH_ATTACK		108
+#define SIMON_STATE_UPSTAIR_ATTACK		109
+#define SIMON_STATE_DOWNSTAIR_ATTACK	110
+#define SIMON_STATE_GO_IN				111
+#define SIMON_STATE_DIE					112
 
-#define ATTACKING_TIME					300
+//#define ATTACKING_TIME					375
+#define ATTACKING_TIME					3150
 
 enum SimonAniID
 {
@@ -53,16 +57,18 @@ enum SimonAniID
 
 class CSimon : public CMovableObject
 {
-	int attacking;
-	int jumping;
-	int crouching;
-	int stairing;
+	bool attacking;
+	bool jumping;
+	bool crouching;
+	bool stairing;
 	DWORD attacking_start_time;
 
-	static unordered_map<int, LPANIMATION> simonAnimations;
+	CRope * rope;
+
+	static CSimon * __instance;
+	CSimon();
 
 public:
-	CSimon();
 	
 	void StartToAttack();
 
@@ -70,6 +76,7 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL) override;
 	void Render() override;
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
-	void AddAnimation(int aniID) override;
+
+	static CSimon * GetInstance();
 };
 

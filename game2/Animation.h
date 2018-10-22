@@ -18,6 +18,8 @@ public:
 	CAnimation(int defaultTime);
 	void AddFrame(int spriteID, DWORD time = 0);
 	void Render(float x, float y, int alpha = 255);
+
+	int CurrentFrame() { return currentFrame; };
 };
 
 typedef CAnimation * LPANIMATION;

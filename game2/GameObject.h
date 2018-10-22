@@ -44,6 +44,7 @@ protected:
 	int state;
 
 	DWORD dt;
+	CAnimations* animations; // pointer helping getting the animations
 
 public:
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
@@ -51,13 +52,12 @@ public:
 
 	int GetState() { return this->state; }
 	void RenderBoundingBox();
-	
+
+	virtual	void RenderAnimation(int aniID);	
 	virtual void SetState(int state) { this->state = state; }
 	virtual void Render() = 0;
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
-
-	virtual void AddAnimation(int aniID) = 0;
-
+	
 	CGameObject();
 };
 
