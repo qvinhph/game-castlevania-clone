@@ -9,7 +9,7 @@
 
 #define SIMON_ATTACKING_BBOX_WIDTH		32
 
-#define SIMON_WALKING_SPEED				0.1f
+#define SIMON_WALKING_SPEED				0.12f
 #define SIMON_JUMP_SPEED_Y				0.41f
 #define SIMON_GRAVITY					0.0012f
 
@@ -27,8 +27,7 @@
 #define SIMON_STATE_GO_IN				111
 #define SIMON_STATE_DIE					112
 
-//#define ATTACKING_TIME					375
-#define ATTACKING_TIME					3150
+#define ATTACKING_TIME					350
 
 enum SimonAniID
 {

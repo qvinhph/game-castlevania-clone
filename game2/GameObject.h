@@ -42,6 +42,7 @@ protected:
 	float y;
 
 	int state;
+	int currentAniID;
 
 	DWORD dt;
 	CAnimations* animations; // pointer helping getting the animations
@@ -53,6 +54,7 @@ public:
 	int GetState() { return this->state; }
 	void RenderBoundingBox();
 
+	virtual void ResetAnimation(int aniID);
 	virtual	void RenderAnimation(int aniID);	
 	virtual void SetState(int state) { this->state = state; }
 	virtual void Render() = 0;

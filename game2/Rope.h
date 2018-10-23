@@ -33,7 +33,7 @@ class CRope: public CMovableObject
 	static CRope * __instance;
 	CRope();
 
-	bool isUsed;
+	bool visible;
 	
 public:
 	void LevelUp();
@@ -43,7 +43,7 @@ public:
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
 
 	void RenderAnimation(int aniID) override;
-	void SetIsUsed(bool isUsed) { this->isUsed = isUsed; }
+	void SetVisible(bool isUsed);
 
 	static CRope * GetInstance();
 };

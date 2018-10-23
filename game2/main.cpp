@@ -273,16 +273,16 @@ void LoadResources()
 	ani->AddFrame(99103);
 	animations->Add(SimonAniID::WALK_LEFT, ani);
 
-	ani = new CAnimation(1000);
+	ani = new CAnimation(100);
 	ani->AddFrame(99007);
 	ani->AddFrame(99008);
-	ani->AddFrame(99009);
+	ani->AddFrame(99009, 150);
 	animations->Add(SimonAniID::ATTACK_RIGHT, ani);
 
-	ani = new CAnimation(1000);
+	ani = new CAnimation(100);
 	ani->AddFrame(99107);
 	ani->AddFrame(99108);
-	ani->AddFrame(99109);
+	ani->AddFrame(99109, 150);
 	animations->Add(SimonAniID::ATTACK_LEFT, ani);
 
 	ani = new CAnimation(100);
@@ -328,37 +328,37 @@ void LoadResources()
 	ani = new CAnimation(100);
 	ani->AddFrame(99037);
 	ani->AddFrame(99038);
-	ani->AddFrame(99039);
+	ani->AddFrame(99039, 150);
 	animations->Add(SimonAniID::CROUCH_ATTACK_RIGHT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99137);
 	ani->AddFrame(99138);
-	ani->AddFrame(99139);
+	ani->AddFrame(99139, 150);
 	animations->Add(SimonAniID::CROUCH_ATTACK_LEFT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99047);
 	ani->AddFrame(99048);
-	ani->AddFrame(99049);
+	ani->AddFrame(99049, 150);
 	animations->Add(SimonAniID::DOWN_STAIR_ATTACK_RIGHT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99147);
 	ani->AddFrame(99148);
-	ani->AddFrame(99149);
+	ani->AddFrame(99149, 150);
 	animations->Add(SimonAniID::DOWN_STAIR_ATTACK_LEFT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99057);
 	ani->AddFrame(99058);
-	ani->AddFrame(99059);
+	ani->AddFrame(99059, 150);
 	animations->Add(SimonAniID::UP_STAIR_ATTACK_RIGHT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99157);
 	ani->AddFrame(99158);
-	ani->AddFrame(99159);
+	ani->AddFrame(99159, 150);
 	animations->Add(SimonAniID::UP_STAIR_ATTACK_LEFT, ani);
 
 	simon = CSimon::GetInstance();
@@ -392,40 +392,40 @@ void LoadResources()
 	sprites->Add(98132, 63, 150, 95, 188, texRope);		// rope lv3 left side
 	sprites->Add(98133, 103, 160, 191, 172, texRope);	// rope lv3 left side
 
-	ani = new CAnimation(1000);
+	ani = new CAnimation(100);
 	ani->AddFrame(98011);
 	ani->AddFrame(98012);
-	ani->AddFrame(98013);
+	ani->AddFrame(98013, 150);
 	animations->Add(RopeAniID::LEVEL_ONE_RIGHT, ani);
 
-	ani = new CAnimation(1000);
+	ani = new CAnimation(100);
 	ani->AddFrame(98111);
 	ani->AddFrame(98112);
-	ani->AddFrame(98113);
+	ani->AddFrame(98113, 150);
 	animations->Add(RopeAniID::LEVEL_ONE_LEFT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(98021);
 	ani->AddFrame(98022);
-	ani->AddFrame(98023);
+	ani->AddFrame(98023, 150);
 	animations->Add(RopeAniID::LEVEL_TWO_RIGHT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(98121);
 	ani->AddFrame(98122);
-	ani->AddFrame(98123);
+	ani->AddFrame(98123, 150);
 	animations->Add(RopeAniID::LEVEL_TWO_LEFT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(98031);
 	ani->AddFrame(98032);
-	ani->AddFrame(98033);
+	ani->AddFrame(98033, 150);
 	animations->Add(RopeAniID::LEVEL_THREE_RIGHT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(98131);
 	ani->AddFrame(98132);
-	ani->AddFrame(98133);
+	ani->AddFrame(98133, 150);
 	animations->Add(RopeAniID::LEVEL_THREE_LEFT, ani);
 
 	CRope * rope = CRope::GetInstance();

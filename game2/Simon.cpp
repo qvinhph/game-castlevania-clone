@@ -101,20 +101,18 @@ void CSimon::SetState(int state)
 
 void CSimon::Render()
 {
-	int ani;
-
 	if (attacking)
 	{
 		if (crouching)
-			ani = (nx > 0) ? SimonAniID::CROUCH_ATTACK_RIGHT : SimonAniID::CROUCH_ATTACK_LEFT;
+			currentAniID = (nx > 0) ? SimonAniID::CROUCH_ATTACK_RIGHT : SimonAniID::CROUCH_ATTACK_LEFT;
 		else
-			ani = (nx > 0) ? SimonAniID::ATTACK_RIGHT : SimonAniID::ATTACK_LEFT;
+			currentAniID = (nx > 0) ? SimonAniID::ATTACK_RIGHT : SimonAniID::ATTACK_LEFT;
 	}
 
 	// these two action use the same animation
 	else if (crouching || jumping)
 	{
-		ani = (nx > 0) ? SimonAniID::CROUCH_RIGHT : SimonAniID::CROUCH_LEFT;
+		currentAniID = (nx > 0) ? SimonAniID::CROUCH_RIGHT : SimonAniID::CROUCH_LEFT;
 
 		/*if (jumping && vy >= 0)
 		{
@@ -125,24 +123,24 @@ void CSimon::Render()
 	else if (vx > 0)
 	{
 		nx = 1;
-		ani = SimonAniID::WALK_RIGHT;
+		currentAniID = SimonAniID::WALK_RIGHT;
 	}
 
 	else if (vx < 0)
 	{
 		nx = -1;
-		ani = SimonAniID::WALK_LEFT;
+		currentAniID = SimonAniID::WALK_LEFT;
 	}
 
 	else if (vx == 0)
 	{
-		ani = (nx > 0) ? SimonAniID::IDLE_RIGHT : SimonAniID::IDLE_LEFT;
+		currentAniID = (nx > 0) ? SimonAniID::IDLE_RIGHT : SimonAniID::IDLE_LEFT;
 	}
 
 	
 	//simonAnimations[ani]->Render(x, y);
 
-	RenderAnimation(ani);
+	RenderAnimation(currentAniID);
 	//RenderBoundingBox();
 }
 
@@ -163,7 +161,10 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (GetTickCount() - attacking_start_time >= ATTACKING_TIME)
 		{
 			attacking = false;
-			rope->SetIsUsed(false);
+			rope->SetVisible(false);
+
+			// To make sure that every frame is in their order again
+			this->ResetAnimation(currentAniID);
 		}
 
 
@@ -216,7 +217,7 @@ void CSimon::StartToAttack()
 		attacking = true;
 		attacking_start_time = GetTickCount();
 		
-		rope->SetIsUsed(true);
+		rope->SetVisible(true);
 		rope->SetDirection(nx);
 	}
 }

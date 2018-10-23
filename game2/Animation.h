@@ -19,7 +19,8 @@ public:
 	void AddFrame(int spriteID, DWORD time = 0);
 	void Render(float x, float y, int alpha = 255);
 
-	int CurrentFrame() { return currentFrame; };
+	int GetCurrentFrame() { return currentFrame; };
+	void SetCurrentFrame(int index) { this->currentFrame = index; }
 };
 
 typedef CAnimation * LPANIMATION;

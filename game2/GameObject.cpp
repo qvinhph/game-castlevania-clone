@@ -22,6 +22,11 @@ void CGameObject::RenderBoundingBox()
 	CGame::GetInstance()->Draw(x, y, bbox, rect.left, rect.top, rect.right, rect.bottom, 125);
 }
 
+void CGameObject::ResetAnimation(int aniID)
+{
+	animations->Get(aniID)->SetCurrentFrame(-1);
+}
+
 void CGameObject::RenderAnimation(int aniID)
 {
 	animations->Get(aniID)->Render(x, y);
@@ -31,6 +36,7 @@ CGameObject::CGameObject()
 {
 	x = y = 0;
 	state = 0;
+	currentAniID = -1;
 
 	animations = CAnimations::GetInstance();
 }

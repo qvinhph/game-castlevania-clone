@@ -22,7 +22,7 @@ void CRope::LevelUp()
 
 void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (!isUsed)
+	if (!visible)
 		return;	
 
 	// Handling collision
@@ -31,40 +31,43 @@ void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void CRope::Render()
 {
 	// Just render when Simon uses the rope to attack
-	if (!isUsed)
+	if (!visible)
 		return;
-
-	int aniID;
-
+	
 	switch (state)
 	{
 	case ROPE_STATE_LEVEL1:
-		aniID = (nx > 0) ?
+		currentAniID = (nx > 0) ?
 				RopeAniID::LEVEL_ONE_RIGHT :
 				RopeAniID::LEVEL_ONE_LEFT;
 		break;
 
 	case ROPE_STATE_LEVEL2:
-		aniID = (nx > 0) ?
+		currentAniID = (nx > 0) ?
 			RopeAniID::LEVEL_TWO_RIGHT :
 			RopeAniID::LEVEL_TWO_LEFT;
 		break;
 
 	default:
-		aniID = (nx > 0) ?
+		currentAniID = (nx > 0) ?
 			RopeAniID::LEVEL_THREE_RIGHT :
 			RopeAniID::LEVEL_THREE_LEFT;
 		break;
 	}
 	
-	RenderAnimation(aniID);
+	RenderAnimation(currentAniID);
 	//RenderBoundingBox();
 }
 
 void CRope::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
-	left = x;
-	top = y;
+	float xS, yS;
+	CSimon::GetInstance()->GetPosition(xS, yS);
+
+	// Just get the only rope in the front of simon
+	if ( (nx > 0 && x < xS) || (nx < 0 && x > xS) )
+		return;
+
 	switch (state)
 	{
 	case ROPE_STATE_LEVEL1:
@@ -83,6 +86,9 @@ void CRope::GetBoundingBox(float & left, float & top, float & right, float & bot
 		bottom = y + FRONT_ROPE_LV3_BBOX_HEIGHT;
 		break;
 	}
+	
+	left = x;
+	top = y;
 }
 
 /*
@@ -115,7 +121,7 @@ void CRope::RenderAnimation(int aniID)
 	}
 
 	LPANIMATION ani = CAnimations::GetInstance()->Get(aniID);
-	if (ani->CurrentFrame() == 2)
+	if (ani->GetCurrentFrame() == 2)
 	{
 		x = (nx > 0) ?
 			xS + SIMON_ATTACKING_BBOX_WIDTH :
@@ -135,6 +141,23 @@ void CRope::RenderAnimation(int aniID)
 	CGameObject::RenderAnimation(aniID);
 }
 
+void CRope::SetVisible(bool visible)
+{
+	this->visible = visible;
+	
+	// hide the rope
+	if (!visible)
+	{
+		SetPosition(-100, -100);
+
+		// clean the animation to prevent
+		if (currentAniID >= 0)
+			this->ResetAnimation(currentAniID);
+	}
+		
+	
+}
+
 CRope * CRope::GetInstance()
 {
 	if (__instance == NULL)
@@ -146,6 +169,6 @@ CRope * CRope::GetInstance()
 CRope::CRope()
 {
 	state = ROPE_STATE_LEVEL1;
-	isUsed = false;
+	visible = false;
 }
 
