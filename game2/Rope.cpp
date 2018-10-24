@@ -121,13 +121,15 @@ void CRope::RenderAnimation(int aniID)
 	}
 
 	LPANIMATION ani = CAnimations::GetInstance()->Get(aniID);
-	if (ani->GetCurrentFrame() == 2)
+
+	// the third frame in CAnimation::frames(vector) is the one we want to treat differently.
+	if (ani->GetCurrentFrame() == 2) 
 	{
 		x = (nx > 0) ?
 			xS + SIMON_ATTACKING_BBOX_WIDTH :
 			xS - ropeTexWidth;
 
-		y = yS + DISTANCE_FRONT_ROPE_AND_SIMON_POS;
+		y = yS + Y_DISTANCE_FRONT_ROPE_AND_SIMON_POS;
 	}
 	else
 	{
@@ -135,7 +137,7 @@ void CRope::RenderAnimation(int aniID)
 			xS - BACK_ROPE_BBOX_WIDTH :
 			xS + SIMON_ATTACKING_BBOX_WIDTH;
 
-		y = yS + DISTANCE_BACK_ROPE_AND_SIMON_POS;
+		y = yS + Y_DISTANCE_BACK_ROPE_AND_SIMON_POS;
 	}
 
 	CGameObject::RenderAnimation(aniID);

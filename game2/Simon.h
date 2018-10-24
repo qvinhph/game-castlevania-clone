@@ -2,15 +2,15 @@
 #include "MovableObject.h"
 #include "Rope.h"
 
-#define SIMON_IDLE_BBOX_WIDTH			32
-#define SIMON_IDLE_BBOX_HEIGHT			60
-#define SIMON_CROUCHING_BBOX_WIDTH		32
-#define SIMON_CROUCHING_BBOX_HEIGHT		46
+#define SIMON_IDLE_BBOX_WIDTH			16
+#define SIMON_IDLE_BBOX_HEIGHT			30
+#define SIMON_CROUCHING_BBOX_WIDTH		16
+#define SIMON_CROUCHING_BBOX_HEIGHT		23
 
-#define SIMON_ATTACKING_BBOX_WIDTH		32
+#define SIMON_ATTACKING_BBOX_WIDTH		16
 
 #define SIMON_WALKING_SPEED				0.12f
-#define SIMON_JUMP_SPEED_Y				0.41f
+#define SIMON_JUMP_SPEED_Y				0.4f
 #define SIMON_GRAVITY					0.0012f
 
 #define SIMON_STATE_IDLE				100
@@ -27,7 +27,7 @@
 #define SIMON_STATE_GO_IN				111
 #define SIMON_STATE_DIE					112
 
-#define ATTACKING_TIME					350
+#define ATTACKING_TIME					3000
 
 enum SimonAniID
 {
@@ -51,7 +51,8 @@ enum SimonAniID
 	DOWN_STAIR_ATTACK_LEFT,
 	UP_STAIR_ATTACK_RIGHT,
 	UP_STAIR_ATTACK_LEFT,
-	GO_IN
+	GO_IN,
+	DIE
 };
 
 class CSimon : public CMovableObject
