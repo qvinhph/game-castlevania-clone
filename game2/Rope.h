@@ -18,7 +18,7 @@
 #define Y_DISTANCE_BACK_ROPE_AND_SIMON_POS		2
 #define Y_DISTANCE_FRONT_ROPE_AND_SIMON_POS		6
 
-enum RopeAniID
+enum class RopeAniID
 {
 	LEVEL_ONE_RIGHT = 9800,
 	LEVEL_ONE_LEFT,
@@ -36,13 +36,16 @@ class CRope: public CMovableObject
 	bool visible;
 	
 public:
-	void LevelUp();
 
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL) override;
+	void ProcessCollision(std::vector<LPCOLLISIONEVENT> &coEvents);
 	void Render() override;
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
-
 	void RenderAnimation(int aniID) override;
+
+	void UpdateRopePosition(int aniID);
+	void LevelUp();
+	// To show or hide the rope
 	void SetVisible(bool isUsed);
 
 	static CRope * GetInstance();

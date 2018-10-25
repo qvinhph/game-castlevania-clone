@@ -69,6 +69,12 @@
     <ClInclude Include="Ground.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="BigCandle.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="DestroyedFire.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KeyEventHandler.cpp">
@@ -120,6 +126,12 @@
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Ground.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="BigCandle.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="DestroyedFire.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
   </ItemGroup>

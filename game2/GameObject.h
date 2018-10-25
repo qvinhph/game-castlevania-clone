@@ -9,6 +9,9 @@ using namespace std;
 
 #define ID_TEX_BBOX -100
 
+#define OUTSIDE_X 99999
+#define OUTSIDE_Y 99999
+
 
 class CGameObject;
 typedef CGameObject * LPGAMEOBJECT;
@@ -44,7 +47,6 @@ protected:
 	int state;
 	int currentAniID;
 
-	DWORD dt;
 	CAnimations* animations; // pointer helping getting the animations
 
 public:
@@ -59,7 +61,10 @@ public:
 	virtual void SetState(int state) { this->state = state; }
 	virtual void Render() = 0;
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
-	
+
+	// Send the object somewhere outside the game world.
+	virtual void Destroy();		
+
 	CGameObject();
 };
 

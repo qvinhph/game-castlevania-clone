@@ -192,7 +192,7 @@
       <FileName>Sprite.h</FileName>
     </TypeIdentifier>
   </Typedef>
-  <Enum Name="BrickAniID" Collapsed="true">
+  <Enum Name="BrickAniID">
     <Position X="12.75" Y="6.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>

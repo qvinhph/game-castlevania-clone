@@ -11,12 +11,13 @@
 
 #include "Simon.h"
 #include "Brick.h"
+#include "BigCandle.h"
 
 #define WINDOW_CLASS_NAME L"Game"
 #define MAIN_WINDOW_TITLE L"Castlevania"
 
-#define BACKGROUND_COLOR D3DCOLOR_XRGB(0, 0, 0)
-#define SCREEN_WIDTH		256
+#define BACKGROUND_COLOR D3DCOLOR_XRGB(255, 255, 200)
+#define SCREEN_WIDTH		1000//256
 #define SCREEN_HEIGHT		240
 
 #define MAX_FRAME_RATE		100
@@ -29,9 +30,10 @@
 
 CGame *game;
 
-CSimon * simon; //= CSimon::GetInstance();
-CBrick* brick;
+CSimon * simon;
 CRope * rope;
+CBigCandle * bigCandle;
+CBrick * brick;
 
 vector<LPGAMEOBJECT> objects;
 
@@ -165,6 +167,31 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int Sc
 #pragma endregion
 
 
+void InitObjectsForTesting()
+{
+	for (int i = 0; i < 30; i++)
+	{
+		brick = new CBrick();
+		brick->SetPosition(0 + i * 32.0f, 200);
+		objects.push_back(brick);
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		brick = new CBrick();
+		brick->SetPosition(100 + i * 32.0f, 50);
+		objects.push_back(brick);
+	}
+
+
+	bigCandle = new CBigCandle();
+	bigCandle->SetPosition(100.0f, 165.0f);
+	objects.push_back(bigCandle);
+
+
+	simon->SetPosition(0.0f, 0.0f);
+}
+
 /*
 	Load all game resources
 	In this example: load textures, sprites, animations and mario object
@@ -206,7 +233,7 @@ void LoadResources()
 	sprites->Add(99100, 6, 101, 22, 131, texSimon);		// idle left
 
 	sprites->Add(99001, 189, 1, 201, 32, texSimon);		// walk right
-	sprites->Add(99002, 157, 2, 172, 32, texSimon);		// walk right
+	sprites->Add(99002, 157, 2, 172, 32, texSimon);		// walk right 
 	sprites->Add(99003, 130, 1, 142, 32, texSimon);		// walk right
 	sprites->Add(99101, 39, 100, 51, 131, texSimon);	// walk left
 	sprites->Add(99102, 68, 101, 83, 131, texSimon);	// walk left
@@ -262,122 +289,123 @@ void LoadResources()
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99000);
-	animations->Add(SimonAniID::IDLE_RIGHT, ani);
+	animations->Add((int)SimonAniID::IDLE_RIGHT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99100);
-	animations->Add(SimonAniID::IDLE_LEFT, ani);
+	animations->Add((int)SimonAniID::IDLE_LEFT, ani);
 
-	ani = new CAnimation(1000);
+	ani = new CAnimation(100);
 	ani->AddFrame(99000);
 	ani->AddFrame(99001);
 	ani->AddFrame(99002);
 	ani->AddFrame(99003);
-	animations->Add(SimonAniID::WALK_RIGHT, ani);
+	animations->Add((int)SimonAniID::WALK_RIGHT, ani);
 
-	ani = new CAnimation(1000);
+	ani = new CAnimation(100);
 	ani->AddFrame(99100);
 	ani->AddFrame(99101);
 	ani->AddFrame(99102);
 	ani->AddFrame(99103);
-	animations->Add(SimonAniID::WALK_LEFT, ani);
+	animations->Add((int)SimonAniID::WALK_LEFT, ani);
 
-	ani = new CAnimation(1000);
+	ani = new CAnimation(100);
 	ani->AddFrame(99007);
 	ani->AddFrame(99008);
-	ani->AddFrame(99009, 150);
-	animations->Add(SimonAniID::ATTACK_RIGHT, ani);
+	ani->AddFrame(99009, 1000);
+	animations->Add((int)SimonAniID::ATTACK_RIGHT, ani);
 
-	ani = new CAnimation(1000);
+	ani = new CAnimation(100);
 	ani->AddFrame(99107);
 	ani->AddFrame(99108);
-	ani->AddFrame(99109, 150);
-	animations->Add(SimonAniID::ATTACK_LEFT, ani);
+	ani->AddFrame(99109, 200);
+	animations->Add((int)SimonAniID::ATTACK_LEFT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99004);
-	animations->Add(SimonAniID::CROUCH_RIGHT, ani);
+	animations->Add((int)SimonAniID::CROUCH_RIGHT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99104);
-	animations->Add(SimonAniID::CROUCH_LEFT, ani);
+	animations->Add((int)SimonAniID::CROUCH_LEFT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99020);
-	animations->Add(SimonAniID::GO_IN, ani);
+	animations->Add((int)SimonAniID::GO_IN, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99021);
-	animations->Add(SimonAniID::PUSHED_BACK_RIGHT, ani);
+	animations->Add((int)SimonAniID::PUSHED_BACK_RIGHT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99121);
-	animations->Add(SimonAniID::PUSHED_BACK_LEFT, ani);
+	animations->Add((int)SimonAniID::PUSHED_BACK_LEFT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99022);
 	ani->AddFrame(99023);
-	animations->Add(SimonAniID::DOWN_STAIR_RIGHT, ani);
+	animations->Add((int)SimonAniID::DOWN_STAIR_RIGHT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99122);
 	ani->AddFrame(99123);
-	animations->Add(SimonAniID::DOWN_STAIR_LEFT, ani);
+	animations->Add((int)SimonAniID::DOWN_STAIR_LEFT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99024);
 	ani->AddFrame(99025);
-	animations->Add(SimonAniID::UP_STAIR_RIGHT, ani);
+	animations->Add((int)SimonAniID::UP_STAIR_RIGHT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99124);
 	ani->AddFrame(99125);
-	animations->Add(SimonAniID::UP_STAIR_LEFT, ani);
+	animations->Add((int)SimonAniID::UP_STAIR_LEFT, ani);
 
-	ani = new CAnimation(1000);
+	ani = new CAnimation(100);
 	ani->AddFrame(99037);
 	ani->AddFrame(99038);
-	ani->AddFrame(99039, 150);
-	animations->Add(SimonAniID::CROUCH_ATTACK_RIGHT, ani);
+	ani->AddFrame(99039, 200);
+	animations->Add((int)SimonAniID::CROUCH_ATTACK_RIGHT, ani);
 
-	ani = new CAnimation(1000);
+	ani = new CAnimation(100);
 	ani->AddFrame(99137);
 	ani->AddFrame(99138);
-	ani->AddFrame(99139, 150);
-	animations->Add(SimonAniID::CROUCH_ATTACK_LEFT, ani);
+	ani->AddFrame(99139, 200);
+	animations->Add((int)SimonAniID::CROUCH_ATTACK_LEFT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99047);
 	ani->AddFrame(99048);
-	ani->AddFrame(99049, 150);
-	animations->Add(SimonAniID::DOWN_STAIR_ATTACK_RIGHT, ani);
+	ani->AddFrame(99049, 200);
+	animations->Add((int)SimonAniID::DOWN_STAIR_ATTACK_RIGHT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99147);
 	ani->AddFrame(99148);
-	ani->AddFrame(99149, 150);
-	animations->Add(SimonAniID::DOWN_STAIR_ATTACK_LEFT, ani);
+	ani->AddFrame(99149, 200);
+	animations->Add((int)SimonAniID::DOWN_STAIR_ATTACK_LEFT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99057);
 	ani->AddFrame(99058);
-	ani->AddFrame(99059, 150);
-	animations->Add(SimonAniID::UP_STAIR_ATTACK_RIGHT, ani);
+	ani->AddFrame(99059, 200);
+	animations->Add((int)SimonAniID::UP_STAIR_ATTACK_RIGHT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99157);
 	ani->AddFrame(99158);
-	ani->AddFrame(99159, 150);
-	animations->Add(SimonAniID::UP_STAIR_ATTACK_LEFT, ani);
+	ani->AddFrame(99159, 200);
+	animations->Add((int)SimonAniID::UP_STAIR_ATTACK_LEFT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99999);
-	animations->Add(SimonAniID::DIE, ani);
+	animations->Add((int)SimonAniID::DIE, ani);
 
 	simon = CSimon::GetInstance();
 	objects.push_back(simon);
 
 #pragma endregion
+
 
 #pragma region Loading rope resources
 
@@ -404,97 +432,76 @@ void LoadResources()
 	sprites->Add(98132, 31, 75, 47, 94, texRope);		// rope lv3 left side
 	sprites->Add(98133, 51, 80, 96, 86, texRope);		// rope lv3 left side
 
-	ani = new CAnimation(1000);
+	ani = new CAnimation(100);
 	ani->AddFrame(98011);
 	ani->AddFrame(98012);
-	ani->AddFrame(98013, 150);
-	animations->Add(RopeAniID::LEVEL_ONE_RIGHT, ani);
+	ani->AddFrame(98013, 1000); 
+	animations->Add((int)RopeAniID::LEVEL_ONE_RIGHT, ani);
 
-	ani = new CAnimation(1000);
+	ani = new CAnimation(100);
 	ani->AddFrame(98111);
 	ani->AddFrame(98112);
-	ani->AddFrame(98113, 150);
-	animations->Add(RopeAniID::LEVEL_ONE_LEFT, ani);
+	ani->AddFrame(98113, 200);
+	animations->Add((int)RopeAniID::LEVEL_ONE_LEFT, ani);
 
-	ani = new CAnimation(1000);
+	ani = new CAnimation(100);
 	ani->AddFrame(98021);
 	ani->AddFrame(98022);
-	ani->AddFrame(98023, 150);
-	animations->Add(RopeAniID::LEVEL_TWO_RIGHT, ani);
+	ani->AddFrame(98023, 200);
+	animations->Add((int)RopeAniID::LEVEL_TWO_RIGHT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(98121);
 	ani->AddFrame(98122);
-	ani->AddFrame(98123, 150);
-	animations->Add(RopeAniID::LEVEL_TWO_LEFT, ani);
+	ani->AddFrame(98123, 200);
+	animations->Add((int)RopeAniID::LEVEL_TWO_LEFT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(98031);
 	ani->AddFrame(98032);
-	ani->AddFrame(98033, 150);
-	animations->Add(RopeAniID::LEVEL_THREE_RIGHT, ani);
+	ani->AddFrame(98033, 200);
+	animations->Add((int)RopeAniID::LEVEL_THREE_RIGHT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(98131);
 	ani->AddFrame(98132);
-	ani->AddFrame(98133, 150);
-	animations->Add(RopeAniID::LEVEL_THREE_LEFT, ani);
+	ani->AddFrame(98133, 200);
+	animations->Add((int)RopeAniID::LEVEL_THREE_LEFT, ani);
 
 	rope = CRope::GetInstance();
 	objects.push_back(rope);
 	 
 #pragma endregion
 
-#pragma region Loading ground resources
 
+#pragma region Loading other objects
+
+	LPDIRECT3DTEXTURE9 texMISC = textures->Get(ID_TEX_MISC);
 	LPDIRECT3DTEXTURE9 texGround = CTextures::GetInstance()->Get(ID_TEX_GROUND);
+
+	// brick
 	sprites->Add(11000, 0, 0, 32, 32, texGround);
-	
-	brick = new CBrick();
+
+	ani = new CAnimation(1000000);
+	ani->AddFrame(11000);
+	animations->Add(BrickAniID::IDLE, ani);
+
+	// big candle
+	sprites->Add(12000, 0, 0, 16, 32, texMISC);
+	sprites->Add(12001, 16, 0, 32, 32, texMISC);
+
 	ani = new CAnimation(100);
-	ani->AddFrame(11000);
-	animations->Add(BrickAniID::IDLE, ani);
-
-	
-
-
-	/*ani = new CAnimation(100);
-	ani->AddFrame(11000);
-	animations->Add(BrickAniID::IDLE, ani);
-
-	for (int i = 0; i < 30; i++)
-	{
-		CBrick *brick = new CBrick();
-		brick->AddAnimation(BrickAniID::IDLE);
-		brick->SetPosition(0 + i * 32.0f, 200);
-		objects.push_back(brick);
-	}*/
-
+	ani->AddFrame(12000);
+	ani->AddFrame(12001);
+	animations->Add((int)BigCandleAniID::IDLE, ani);
 
 #pragma endregion
-		
-	for (int i = 0; i < 30; i++)
-	{
-		brick = new CBrick();
-		brick->SetPosition(0 + i * 32.0f, 200);
-		objects.push_back(brick);
-	}
 
-	for (int i = 0; i < 3; i++)
-	{
-		brick = new CBrick();
-		brick->SetPosition(100 + i * 32.0f, 50);
-		objects.push_back(brick);
-	}
 
+	InitObjectsForTesting();
 }
 
-void InitObjectsForTesting()
-{
-	
 
-	simon->SetPosition(0.0f, 0.0f);
-}
 
 
 /*
@@ -503,6 +510,8 @@ void InitObjectsForTesting()
 */
 void Update(DWORD dt)
 {
+	// TODO: Need an optimized way
+
 	vector<LPGAMEOBJECT> coObjects;
 	for (int i = 0; i < objects.size(); i++)
 	{
@@ -514,7 +523,7 @@ void Update(DWORD dt)
 		if (dynamic_cast<CMovableObject *>(objects[i]))
 		{
 			LPMOVABLEOBJECT obj = dynamic_cast<CMovableObject *>(objects[i]);
-			obj->Update(dt, &coObjects);
+ 			obj->Update(dt, &coObjects);
 		}
 	}
 }
@@ -591,7 +600,7 @@ int Run()
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	HWND hWnd = CreateGameWindow(hInstance, nCmdShow, SCREEN_WIDTH * 2, 2 * SCREEN_HEIGHT);
+	HWND hWnd = CreateGameWindow(hInstance, nCmdShow, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	game = CGame::GetInstance();
 	game->Init(hWnd);

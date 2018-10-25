@@ -12,8 +12,10 @@ protected:
 	float vy;
 
 	int nx;	
+	DWORD dt;
 
 public:
+
 	void SetSpeed(float vx, float vy) { this->vx = vx, this->vy = vy; }
 	void GetSpeed(float &vx, float &vy) { vx = this->vx, vy = this->vy; }
 

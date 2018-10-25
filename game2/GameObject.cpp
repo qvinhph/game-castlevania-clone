@@ -32,6 +32,12 @@ void CGameObject::RenderAnimation(int aniID)
 	animations->Get(aniID)->Render(x, y);
 }
 
+void CGameObject::Destroy()
+{
+	this->x = OUTSIDE_X;
+	this->y = OUTSIDE_Y;
+}
+
 CGameObject::CGameObject()
 {
 	x = y = 0;
@@ -40,5 +46,3 @@ CGameObject::CGameObject()
 
 	animations = CAnimations::GetInstance();
 }
-
-

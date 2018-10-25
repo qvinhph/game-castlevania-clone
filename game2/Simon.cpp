@@ -4,6 +4,7 @@
 #include "Simon.h"
 #include "Game.h"
 #include "Animations.h"
+#include "BigCandle.h"
 
 CSimon * CSimon::__instance = NULL;
 
@@ -12,7 +13,7 @@ CSimon::CSimon()
 	this->attacking = false;
 	this->jumping = false;
 	this->crouching = false;
-	this->attacking_start_time = 0;
+	this->attackStartTime = 0;
 
 	// ready to be used
 	rope = CRope::GetInstance();
@@ -104,37 +105,40 @@ void CSimon::Render()
 	if (attacking)
 	{
 		if (crouching)
-			currentAniID = (nx > 0) ? SimonAniID::CROUCH_ATTACK_RIGHT : SimonAniID::CROUCH_ATTACK_LEFT;
+			currentAniID = (nx > 0) ? 
+			(int)SimonAniID::CROUCH_ATTACK_RIGHT : 
+			(int)SimonAniID::CROUCH_ATTACK_LEFT;
 		else
-			currentAniID = (nx > 0) ? SimonAniID::ATTACK_RIGHT : SimonAniID::ATTACK_LEFT;
+			currentAniID = (nx > 0) ? 
+			(int)SimonAniID::ATTACK_RIGHT : 
+			(int)SimonAniID::ATTACK_LEFT;
 	}
 
 	// these two action use the same animation
 	else if (crouching || jumping)
 	{
-		currentAniID = (nx > 0) ? SimonAniID::CROUCH_RIGHT : SimonAniID::CROUCH_LEFT;
-
-		/*if (jumping && vy >= 0)
-		{
-			ani = (nx > 0) ? SimonAniID::IDLE_RIGHT : SimonAniID::IDLE_LEFT;
-		}*/
+		currentAniID = (nx > 0) ? 
+			(int)SimonAniID::CROUCH_RIGHT : 
+			(int)SimonAniID::CROUCH_LEFT;
 	}
 
 	else if (vx > 0)
 	{
 		nx = 1;
-		currentAniID = SimonAniID::WALK_RIGHT;
+		currentAniID = (int)SimonAniID::WALK_RIGHT;
 	}
 
 	else if (vx < 0)
 	{
 		nx = -1;
-		currentAniID = SimonAniID::WALK_LEFT;
+		currentAniID = (int)SimonAniID::WALK_LEFT;
 	}
 
 	else if (vx == 0)
 	{
-		currentAniID = (nx > 0) ? SimonAniID::IDLE_RIGHT : SimonAniID::IDLE_LEFT;
+		currentAniID = (nx > 0) ? 
+			(int)SimonAniID::IDLE_RIGHT : 
+			(int)SimonAniID::IDLE_LEFT;
 	}
 
 	
@@ -154,11 +158,11 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		vy += SIMON_GRAVITY * dt;
 	else
 		vy = 1.0f;	// similar to the game logic
-
+			
 
 	// Turn off the attacking flag when it'd done
 	if (attacking)
-		if (GetTickCount() - attacking_start_time >= ATTACKING_TIME)
+		if (GetTickCount() - attackStartTime >= ATTACKING_TIME)
 		{
 			attacking = false;
 			rope->SetVisible(false);
@@ -167,19 +171,13 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			this->ResetAnimation(currentAniID);
 		}
 
-
-	//
-	// Collision
-	//
 	vector<LPCOLLISIONEVENT> coEvents;
-	vector<LPCOLLISIONEVENT> coEventsResult;
-
 	coEvents.clear();
 
 	// Turn off collision when die 
 	if (state != SIMON_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
-	
+
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
@@ -187,27 +185,58 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		y += dy;
 	}
 	else
-	{
-		float min_tx, min_ty, nx, ny;
-		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
-
-		// Handling the collision
-		// Block ( almost with the ground )
-		x += min_tx * dx + nx * 0.04f;
-		y += min_ty * dy + ny * 0.04f;
-
-		if (nx != 0) vx = 0;
-		if (ny != 0)
-		{
-			vy = 0;
-			jumping = false; // while your feet touch the ground, you are not jumping
-		}
-
-		// Collision logic with Ghosts
-	}
+		ProcessCollision(coEvents);
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+
+}
+
+void CSimon::ProcessCollision(vector<LPCOLLISIONEVENT> &coEvents)
+{
+	vector<LPCOLLISIONEVENT> coEventsResult;
+
+	float min_tx, min_ty, nx, ny;
+	FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
+
+	for (UINT i = 0; i < coEventsResult.size(); i++)
+	{
+		LPCOLLISIONEVENT e = coEventsResult[i];
+
+		// Collision logic with BigCandle
+		if (dynamic_cast<CBigCandle *>(e->obj))
+		{
+			CBigCandle * bigCandle = dynamic_cast<CBigCandle *>(e->obj);
+			DebugOut(L"Touching candle \n");
+
+			if (e->nx != 0)
+			{
+				x += min_tx * dx;
+			}
+			if (e->ny != 0)
+			{
+				y += min_ty * dy;
+			}
+		}
+
+		// Block 
+		else
+		{
+			x += min_tx * dx + nx * 0.04f;
+			y += min_ty * dy + ny * 0.04f;
+
+			if (nx != 0)
+				vx = 0;
+
+			if (ny != 0)
+			{
+				vy = 0;
+
+				// while your feet on the ground, you are not jumping
+				jumping = false;
+			}
+		}
+	}
 }
 
 void CSimon::StartToAttack()
@@ -215,7 +244,7 @@ void CSimon::StartToAttack()
 	if (!attacking)
 	{
 		attacking = true;
-		attacking_start_time = GetTickCount();
+		attackStartTime = GetTickCount();
 		
 		rope->SetVisible(true);
 		rope->SetDirection(nx);
