@@ -77,6 +77,8 @@ public:
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
 
 	void ProcessCollision(vector<LPCOLLISIONEVENT> &coEvents);
+	// TODO: Maybe we need to make this as a virtual function
+	void SetMatchedAnimation(int state);
 
 	static CSimon * GetInstance();
 };

@@ -9,14 +9,14 @@ CRope * CRope::__instance = NULL;
 
 void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	// We dont need to do this function 
-	// if the rope isn't used.
+	// Do nothing if the rope isn't used
 	if (!visible)
 		return;
-
-	CSimon::GetInstance()->GetSpeed(vx, vy);
 	CMovableObject::Update(dt);
 
+	SetMatchedAnimation(state);
+	UpdateRopePosition(currentAniID);
+	
 	vector<LPCOLLISIONEVENT> coEvents;
 	coEvents.clear();
 	CalcPotentialCollisions(coObjects, coEvents);
@@ -25,31 +25,32 @@ void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		ProcessCollision(coEvents);
 
 	// Check overlapping
-	//for (UINT i = 0; i < coObjects->size(); i++)
-	//{
-	//	float l, t, r, b;
-	//	float lo, to, ro, bo;
-	//	
-	//	if (animations->Get(currentAniID)->GetCurrentFrame() == 2)	// EX1
-	//	{
-	//		LPGAMEOBJECT ptr = (coObjects->at(i));
-	//
-	//		if (dynamic_cast<CBigCandle *>(ptr))
-	//		{
-	//			
-	//			CBigCandle * candle = dynamic_cast<CBigCandle *>(ptr);
-	//			candle->GetBoundingBox(lo, to, ro, bo);
-	//			this->GetBoundingBox(l, t, r, b);
-	//			DebugOut(L"\nleft: %f - top: %f - right: %f - bottom: %f", l, t, r, b);
-	//			DebugOut(L"\nleft: %f - top: %f - right: %f - bottom: %f\n\n", lo, to, ro, bo);
-	//			if (l < ro && r > lo &&
-	//				t > bo && b < to)
-	//			{
-	//				candle->Destroy();
-	//			}
-	//		}
-	//	}		
-	//}
+	if (animations->Get(currentAniID)->GetCurrentFrame() == 2)
+	{
+		for (UINT i = 0; i < coObjects->size(); i++)
+		{
+			float left, top, right, bottom;
+			float leftObj, topObj, rightObj, bottomObj;
+
+			LPGAMEOBJECT obj = (coObjects->at(i));
+
+			if (dynamic_cast<CBigCandle *>(obj))
+			{
+				CBigCandle * candle = dynamic_cast<CBigCandle *>(obj);
+				candle->GetBoundingBox(leftObj, topObj, rightObj, bottomObj);
+				this->GetBoundingBox(left, top, right, bottom);
+
+				DebugOut(L"\nleft: %f - top: %f - right: %f - bottom: %f", left, top, right, bottomObj);
+				DebugOut(L"\nleft: %f - top: %f - right: %f - bottom: %f\n\n", leftObj, topObj, rightObj, bottomObj);
+
+				if (left < rightObj && right > leftObj &&
+					top < bottomObj && bottom > topObj)
+				{
+					candle->Destroy();
+				}
+			}
+		}
+	}
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
@@ -58,9 +59,18 @@ void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void CRope::Render()
 {
 	// Just render when Simon uses the rope to attack
-	if (!visible)
-		return;
+	if (visible)
+	{
+		RenderAnimation(currentAniID);
+		RenderBoundingBox();
+	}
+}
 
+/*
+	Get the current animation match with the state of the rope
+*/
+void CRope::SetMatchedAnimation(int state)
+{
 	switch (state)
 	{
 	case ROPE_STATE_LEVEL1:
@@ -81,9 +91,6 @@ void CRope::Render()
 			(int)RopeAniID::LEVEL_THREE_LEFT;
 		break;
 	}
-
-	RenderAnimation(currentAniID);
-	RenderBoundingBox();
 }
 
 void CRope::ProcessCollision(std::vector<LPCOLLISIONEVENT> &coEvents)
@@ -146,16 +153,9 @@ void CRope::GetBoundingBox(float & left, float & top, float & right, float & bot
 }
 
 /*
-	Because the rope may has different position each frame,
-	we need modify this function
+	Update rope position to match every frame with simon 
+	in the specified animation.
 */
-void CRope::RenderAnimation(int aniID)
-{
-	UpdateRopePosition(aniID);
-
-	CGameObject::RenderAnimation(aniID);
-}
-
 void CRope::UpdateRopePosition(int aniID)
 {
 	float xS, yS;
@@ -202,6 +202,9 @@ void CRope::UpdateRopePosition(int aniID)
 	}
 }
 
+/*
+	To show or hide the rope
+*/
 void CRope::SetVisible(bool visible)
 {
 	this->visible = visible;
@@ -214,8 +217,7 @@ void CRope::SetVisible(bool visible)
 		// clean the animation to prevent
 		if (currentAniID >= 0)
 			this->ResetAnimation(currentAniID);
-	}
-		
+	}	
 	
 }
 
@@ -247,8 +249,5 @@ CRope::CRope()
 {
 	state = ROPE_STATE_LEVEL1;
 	visible = false;
-
-	// EX1
-	//currentAniID = (int)RopeAniID::LEVEL_ONE_RIGHT;
 }
 

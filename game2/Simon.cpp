@@ -101,24 +101,30 @@ void CSimon::SetState(int state)
 }
 
 void CSimon::Render()
+{	
+	RenderAnimation(currentAniID);
+	//RenderBoundingBox();
+}
+
+void CSimon::SetMatchedAnimation(int state)
 {
 	if (attacking)
 	{
 		if (crouching)
-			currentAniID = (nx > 0) ? 
-			(int)SimonAniID::CROUCH_ATTACK_RIGHT : 
+			currentAniID = (nx > 0) ?
+			(int)SimonAniID::CROUCH_ATTACK_RIGHT :
 			(int)SimonAniID::CROUCH_ATTACK_LEFT;
 		else
-			currentAniID = (nx > 0) ? 
-			(int)SimonAniID::ATTACK_RIGHT : 
+			currentAniID = (nx > 0) ?
+			(int)SimonAniID::ATTACK_RIGHT :
 			(int)SimonAniID::ATTACK_LEFT;
 	}
 
 	// these two action use the same animation
 	else if (crouching || jumping)
 	{
-		currentAniID = (nx > 0) ? 
-			(int)SimonAniID::CROUCH_RIGHT : 
+		currentAniID = (nx > 0) ?
+			(int)SimonAniID::CROUCH_RIGHT :
 			(int)SimonAniID::CROUCH_LEFT;
 	}
 
@@ -136,22 +142,18 @@ void CSimon::Render()
 
 	else if (vx == 0)
 	{
-		currentAniID = (nx > 0) ? 
-			(int)SimonAniID::IDLE_RIGHT : 
+		currentAniID = (nx > 0) ?
+			(int)SimonAniID::IDLE_RIGHT :
 			(int)SimonAniID::IDLE_LEFT;
 	}
-
-	
-	//simonAnimations[ani]->Render(x, y);
-
-	RenderAnimation(currentAniID);
-	//RenderBoundingBox();
 }
 
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	// Calculate dx, dy
 	CMovableObject::Update(dt);
+
+	SetMatchedAnimation(state);
 
 	// Simple fall down
 	if (jumping)

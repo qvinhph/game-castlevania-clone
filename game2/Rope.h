@@ -41,11 +41,10 @@ public:
 	void ProcessCollision(std::vector<LPCOLLISIONEVENT> &coEvents);
 	void Render() override;
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
-	void RenderAnimation(int aniID) override;
 
 	void UpdateRopePosition(int aniID);
+	void SetMatchedAnimation(int state);
 	void LevelUp();
-	// To show or hide the rope
 	void SetVisible(bool isUsed);
 
 	static CRope * GetInstance();

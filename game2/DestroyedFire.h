@@ -8,7 +8,9 @@ enum class DesFireAniID
 	IDLE = 1400
 };
 
-// The fire after monsters/ breakable objects destroying.
+/*
+	The fire after monsters/ breakable objects destroying.
+*/
 class CDestroyedFire : public CGameObject
 {
 	DWORD fireStartTime;
