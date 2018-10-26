@@ -1,5 +1,6 @@
 #include "Animation.h"
 #include "Sprites.h"
+#include "debug.h"
 
 
 CAnimation::CAnimation(int defaultTime)
@@ -24,9 +25,10 @@ void CAnimation::Render(float x, float y, int alpha)
 	DWORD now = GetTickCount();
 	if (currentFrame == -1)
 	{
+		frames[0]->GetSprite()->Draw(x, y, alpha);
 		currentFrame = 0;
 		frameStartTime = now;
-		frames[currentFrame]->GetSprite()->Draw(x, y, alpha);
+
 	}
 	else
 	{

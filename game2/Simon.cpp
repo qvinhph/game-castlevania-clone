@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "Animations.h"
 #include "BigCandle.h"
+#include "ItemRope.h"
 
 CSimon * CSimon::__instance = NULL;
 
@@ -60,7 +61,6 @@ void CSimon::SetState(int state)
 		return;
 	}
 
-	CGameObject::SetState(state);
 
 	switch (state)
 	{		
@@ -157,20 +157,20 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// Simple fall down
 	if (jumping)
-		vy += SIMON_GRAVITY * dt;
+		vy += SIMON_JUMP_GRAVITY * dt;
 	else
-		vy = 1.0f;	// similar to the game logic
-			
+		vy = WORLD_GRAVITY;
 
 	// Turn off the attacking flag when it'd done
 	if (attacking)
 		if (GetTickCount() - attackStartTime >= ATTACKING_TIME)
 		{
+			// To rearrange attacking frames
+			this->ResetAnimation(currentAniID);
+			
 			attacking = false;
 			rope->SetVisible(false);
-
-			// To make sure that every frame is in their order again
-			this->ResetAnimation(currentAniID);
+			currentAniID = (nx > 0) ? (int)SimonAniID::IDLE_RIGHT : (int)SimonAniID::IDLE_LEFT;
 		}
 
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -187,14 +187,13 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		y += dy;
 	}
 	else
-		ProcessCollision(coEvents);
+		ProceedCollisions(coEvents);
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
-
 }
 
-void CSimon::ProcessCollision(vector<LPCOLLISIONEVENT> &coEvents)
+void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 {
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -209,7 +208,7 @@ void CSimon::ProcessCollision(vector<LPCOLLISIONEVENT> &coEvents)
 		if (dynamic_cast<CBigCandle *>(e->obj))
 		{
 			CBigCandle * bigCandle = dynamic_cast<CBigCandle *>(e->obj);
-			DebugOut(L"Touching candle \n");
+			DebugOut(L"\nTouch large candle");
 
 			if (e->nx != 0)
 			{
@@ -218,6 +217,18 @@ void CSimon::ProcessCollision(vector<LPCOLLISIONEVENT> &coEvents)
 			if (e->ny != 0)
 			{
 				y += min_ty * dy;
+			}
+		}
+
+		else if (dynamic_cast<CItemRope *>(e->obj))
+		{
+			CItemRope * itemRope = dynamic_cast<CItemRope *>(e->obj);
+			DebugOut(L"\nTouch item rope");
+
+			if (e->nx != 0 || e->ny != 0)
+			{
+				rope->LevelUp();
+				itemRope->Destroy();
 			}
 		}
 

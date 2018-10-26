@@ -12,6 +12,7 @@
 #include "Simon.h"
 #include "Brick.h"
 #include "BigCandle.h"
+#include "ItemRope.h"
 
 #define WINDOW_CLASS_NAME L"Game"
 #define MAIN_WINDOW_TITLE L"Castlevania"
@@ -34,6 +35,7 @@ CSimon * simon;
 CRope * rope;
 CBigCandle * bigCandle;
 CBrick * brick;
+CItemRope * itemRope;
 
 vector<LPGAMEOBJECT> objects;
 
@@ -50,7 +52,7 @@ CInputHandler * inputHandler;
 
 void CInputHandler::OnKeyDown(int keyCode)
 {
-	DebugOut(L"[INFO] KeyDown: %d\n", keyCode);
+	DebugOut(L"\n[INFO] KeyDown: %d", keyCode);
 	switch (keyCode)
 	{
 	case DIK_RIGHT:
@@ -76,7 +78,7 @@ void CInputHandler::OnKeyDown(int keyCode)
 
 void CInputHandler::OnKeyUp(int keyCode)
 {
-	DebugOut(L"[INFO] KeyDown: %d\n", keyCode);
+	DebugOut(L"\n[INFO] KeyUp: %d", keyCode);
 	switch (keyCode)
 	{
 	case DIK_DOWN:
@@ -169,6 +171,14 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int Sc
 
 void InitObjectsForTesting()
 {
+
+	simon = CSimon::GetInstance();
+	objects.push_back(simon);
+	simon->SetPosition(0.0f, 0.0f);
+
+	rope = CRope::GetInstance();
+	objects.push_back(rope);
+
 	for (int i = 0; i < 30; i++)
 	{
 		brick = new CBrick();
@@ -186,10 +196,12 @@ void InitObjectsForTesting()
 
 	bigCandle = new CBigCandle();
 	bigCandle->SetPosition(100.0f, 165.0f);
-	objects.push_back(bigCandle);
+	//objects.push_back(bigCandle);
 
+	itemRope = new CItemRope();
+	itemRope->SetPosition(000.0f, 0.0f);
+	//objects.push_back(itemRope);
 
-	simon->SetPosition(0.0f, 0.0f);
 }
 
 /*
@@ -287,15 +299,15 @@ void LoadResources()
 
 	sprites->Add(99999, 28, 149, 60, 164, texSimon);	// die
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(3000);
 	ani->AddFrame(99000);
 	animations->Add((int)SimonAniID::IDLE_RIGHT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(3000);
 	ani->AddFrame(99100);
 	animations->Add((int)SimonAniID::IDLE_LEFT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(1000);
 	ani->AddFrame(99000);
 	ani->AddFrame(99001);
 	ani->AddFrame(99002);
@@ -309,7 +321,7 @@ void LoadResources()
 	ani->AddFrame(99103);
 	animations->Add((int)SimonAniID::WALK_LEFT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(1000);
 	ani->AddFrame(99007);
 	ani->AddFrame(99008);
 	ani->AddFrame(99009, 1000);
@@ -401,8 +413,6 @@ void LoadResources()
 	ani->AddFrame(99999);
 	animations->Add((int)SimonAniID::DIE, ani);
 
-	simon = CSimon::GetInstance();
-	objects.push_back(simon);
 
 #pragma endregion
 
@@ -432,10 +442,10 @@ void LoadResources()
 	sprites->Add(98132, 31, 75, 47, 94, texRope);		// rope lv3 left side
 	sprites->Add(98133, 51, 80, 96, 86, texRope);		// rope lv3 left side
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(1000);
 	ani->AddFrame(98011);
 	ani->AddFrame(98012);
-	ani->AddFrame(98013, 1000); 
+	ani->AddFrame(98013); 
 	animations->Add((int)RopeAniID::LEVEL_ONE_RIGHT, ani);
 
 	ani = new CAnimation(100);
@@ -467,33 +477,39 @@ void LoadResources()
 	ani->AddFrame(98132);
 	ani->AddFrame(98133, 200);
 	animations->Add((int)RopeAniID::LEVEL_THREE_LEFT, ani);
-
-	rope = CRope::GetInstance();
-	objects.push_back(rope);
-	 
+		 
 #pragma endregion
 
 
 #pragma region Loading other objects
 
-	LPDIRECT3DTEXTURE9 texMISC = textures->Get(ID_TEX_MISC);
+	LPDIRECT3DTEXTURE9 texMisc = textures->Get(ID_TEX_MISC);
 	LPDIRECT3DTEXTURE9 texGround = CTextures::GetInstance()->Get(ID_TEX_GROUND);
 
 	// brick
 	sprites->Add(11000, 0, 0, 32, 32, texGround);
 
-	ani = new CAnimation(1000000);
+	ani = new CAnimation(999999);
 	ani->AddFrame(11000);
 	animations->Add(BrickAniID::IDLE, ani);
 
 	// big candle
-	sprites->Add(12000, 0, 0, 16, 32, texMISC);
-	sprites->Add(12001, 16, 0, 32, 32, texMISC);
+	sprites->Add(12000, 0, 0, 16, 32, texMisc);
+	sprites->Add(12001, 16, 0, 32, 32, texMisc);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(12000);
 	ani->AddFrame(12001);
 	animations->Add((int)BigCandleAniID::IDLE, ani);
+
+	// small candle - spriteID = 13xxx
+
+	// Item Rope
+	sprites->Add(14000, 73, 32, 89, 48, texMisc);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(14000);
+	animations->Add((int)ItemRopeAniID::IDLE, ani);
 
 #pragma endregion
 

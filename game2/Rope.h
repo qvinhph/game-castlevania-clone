@@ -38,7 +38,9 @@ class CRope: public CMovableObject
 public:
 
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL) override;
-	void ProcessCollision(std::vector<LPCOLLISIONEVENT> &coEvents);
+
+	// TODO: Maybe need to refactoring
+	void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents) override;
 	void Render() override;
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
 

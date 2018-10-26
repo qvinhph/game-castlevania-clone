@@ -6,7 +6,8 @@
 
 CMovableObject::CMovableObject()
 {
-	vx = vy = 0;
+	vx = 0;
+	vy = WORLD_GRAVITY;
 	nx = 1;
 	dt = 0;
 }
@@ -16,6 +17,23 @@ void CMovableObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	this->dt = dt;
 	this->dx = vx * dt;
 	this->dy = vy * dt;
+}
+
+/*
+	Simple collision handling with simple objects
+	Such as items, big heart
+*/
+void CMovableObject::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
+{
+	vector<LPCOLLISIONEVENT> coEventsResult;
+	float min_tx, min_ty, nx, ny;
+	FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
+
+	// Block when reach the ground
+	if (ny != 0)
+	{
+		y += min_ty * dy + 0.04f * ny;
+	}
 }
 
 /*

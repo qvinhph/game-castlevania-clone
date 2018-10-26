@@ -22,7 +22,7 @@ void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	CalcPotentialCollisions(coObjects, coEvents);
 
 	if (coEvents.size() != 0)
-		ProcessCollision(coEvents);
+		ProceedCollisions(coEvents);
 
 	// Check overlapping
 	if (animations->Get(currentAniID)->GetCurrentFrame() == 2)
@@ -40,8 +40,8 @@ void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				candle->GetBoundingBox(leftObj, topObj, rightObj, bottomObj);
 				this->GetBoundingBox(left, top, right, bottom);
 
-				DebugOut(L"\nleft: %f - top: %f - right: %f - bottom: %f", left, top, right, bottomObj);
-				DebugOut(L"\nleft: %f - top: %f - right: %f - bottom: %f\n\n", leftObj, topObj, rightObj, bottomObj);
+				// DebugOut(L"\nleft: %f - top: %f - right: %f - bottom: %f", left, top, right, bottomObj);
+				// DebugOut(L"\nleft: %f - top: %f - right: %f - bottom: %f\n\n", leftObj, topObj, rightObj, bottomObj);
 
 				if (left < rightObj && right > leftObj &&
 					top < bottomObj && bottom > topObj)
@@ -93,7 +93,7 @@ void CRope::SetMatchedAnimation(int state)
 	}
 }
 
-void CRope::ProcessCollision(std::vector<LPCOLLISIONEVENT> &coEvents)
+void CRope::ProceedCollisions(std::vector<LPCOLLISIONEVENT> &coEvents)
 {
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -135,7 +135,6 @@ void CRope::GetBoundingBox(float & left, float & top, float & right, float & bot
 			break;
 
 		default:
-			//case ROPE_STATE_LEVEL3:
 			right = x + FRONT_ROPE_LV3_BBOX_WIDTH;
 			bottom = y + FRONT_ROPE_LV3_BBOX_HEIGHT;
 			break;
@@ -146,10 +145,6 @@ void CRope::GetBoundingBox(float & left, float & top, float & right, float & bot
 
 		//DebugOut(L"Succeed getting the rope bbox\n");
 	}
-	/*else
-	{
-		DebugOut(L"Not get the rope bbox yet\n");
-	}*/
 }
 
 /*
@@ -214,9 +209,12 @@ void CRope::SetVisible(bool visible)
 	{
 		SetPosition(-100, -100);
 
-		// clean the animation to prevent
-		if (currentAniID >= 0)
+		// To rearrange the rope frames
+		if (currentAniID > 0)
+		{
+			//DebugOut(L"\n rope reset: %d", currentAniID);
 			this->ResetAnimation(currentAniID);
+		}
 	}	
 	
 }

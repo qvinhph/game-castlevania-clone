@@ -1,6 +1,8 @@
 #pragma once
 #include "GameObject.h"
 
+#define WORLD_GRAVITY	0.1f
+
 class CMovableObject : public CGameObject
 {
 protected:
@@ -33,6 +35,7 @@ public:
 		float &ny);
 	
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
+	virtual void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents);
 
 	CMovableObject();
 };
