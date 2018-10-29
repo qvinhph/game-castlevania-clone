@@ -6,10 +6,9 @@
 #include "Animations.h"
 #include "BigCandle.h"
 #include "ItemRope.h"
+#include "Brick.h"
 
 CSimon * CSimon::__instance = NULL;
-
-// Doing in the features/modify-simon-controls
 
 CSimon::CSimon()
 {
@@ -39,8 +38,7 @@ void CSimon::SetState(int state)
 		if (state == SIMON_STATE_ATTACK && !attacking)
 		{
 			StartToAttack();
-			crouching = false;
-			//y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
+			y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
 		}
 		
 		return;
@@ -119,20 +117,26 @@ void CSimon::SetMatchedAnimation(int state)
 	{
 		if (crouching)
 			currentAniID = (nx > 0) ?
-			(int)SimonAniID::CROUCH_ATTACK_RIGHT :
-			(int)SimonAniID::CROUCH_ATTACK_LEFT;
+				(int)SimonAniID::CROUCH_ATTACK_RIGHT :
+				(int)SimonAniID::CROUCH_ATTACK_LEFT;
 		else
 			currentAniID = (nx > 0) ?
-			(int)SimonAniID::ATTACK_RIGHT :
-			(int)SimonAniID::ATTACK_LEFT;
+				(int)SimonAniID::ATTACK_RIGHT :
+				(int)SimonAniID::ATTACK_LEFT;
 	}
 
 	// these two action use the same animation
 	else if (crouching || jumping)
 	{
-		currentAniID = (nx > 0) ?
-			(int)SimonAniID::CROUCH_RIGHT :
-			(int)SimonAniID::CROUCH_LEFT;
+		if (vy > 0 && jumping)
+			// if simon reaches the maximum height while jumping
+			currentAniID = (nx > 0) ?
+				(int)SimonAniID::IDLE_RIGHT :
+				(int)SimonAniID::IDLE_LEFT;
+		else
+			currentAniID = (nx > 0) ?
+				(int)SimonAniID::CROUCH_RIGHT :
+				(int)SimonAniID::CROUCH_LEFT;
 	}
 
 	else if (vx > 0)
@@ -164,7 +168,9 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// Simple fall down
 	if (jumping)
+	{
 		vy += SIMON_JUMP_GRAVITY * dt;
+	}		
 	else
 		vy = WORLD_GRAVITY;
 
@@ -174,10 +180,18 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			// To rearrange attacking frames
 			this->ResetAnimation(currentAniID);
-			
 			attacking = false;
 			rope->SetVisible(false);
-			currentAniID = (nx > 0) ? (int)SimonAniID::IDLE_RIGHT : (int)SimonAniID::IDLE_LEFT;
+
+			// Get back to the right animation
+			if (crouching)
+				currentAniID = (nx > 0) ? 
+				(int)SimonAniID::CROUCH_RIGHT : 
+				(int)SimonAniID::CROUCH_LEFT;
+			else
+				currentAniID = (nx > 0) ? 
+				(int)SimonAniID::IDLE_RIGHT : 
+				(int)SimonAniID::IDLE_LEFT;
 		}
 
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -242,6 +256,16 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 		// Block 
 		else
 		{
+			if (dynamic_cast<CBrick *>(e->obj))
+			{
+				DebugOut(L"\ntouchng brick");
+			}
+
+			if (vx > 0)
+			{
+				DebugOut(L"\nvx > 0");
+			}
+
 			x += min_tx * dx + nx * 0.04f;
 			y += min_ty * dy + ny * 0.04f;
 
@@ -252,12 +276,9 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			{
 				vy = 0;
 
-				// while your feet on the ground, you are not jumping
+				// you are not jumping while your feet on the ground
 				if (jumping)
-				{
 					jumping = false;
-					y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
-				}
 			}
 		}
 	}
@@ -284,6 +305,8 @@ void CSimon::GetBoundingBox(float & left, float & top, float & right, float & bo
 	{
 	case (int)SimonAniID::CROUCH_RIGHT:
 	case (int)SimonAniID::CROUCH_LEFT:
+	case (int)SimonAniID::CROUCH_ATTACK_LEFT:
+	case (int)SimonAniID::CROUCH_ATTACK_RIGHT:
 		right = x + SIMON_CROUCHING_BBOX_WIDTH;
 		bottom = y + SIMON_CROUCHING_BBOX_HEIGHT;
 		break;

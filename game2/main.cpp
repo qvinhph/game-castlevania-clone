@@ -71,6 +71,10 @@ void CInputHandler::OnKeyDown(int keyCode)
 		simon->SetState(SIMON_STATE_ATTACK);
 		break;
 
+	case DIK_1:
+		simon->SetPosition(0.0f, 0.0f);
+		break;
+
 	default:
 		break;
 	}
@@ -193,6 +197,9 @@ void InitObjectsForTesting()
 		objects.push_back(brick);
 	}
 
+	brick = new CBrick();
+	brick->SetPosition(132.0f, 240);
+	objects.push_back(brick);
 
 	bigCandle = new CBigCandle();
 	bigCandle->SetPosition(200.0f, 165.0f);
