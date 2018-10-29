@@ -29,23 +29,23 @@ void CSimon::SetState(int state)
 	{
 		if (!jumping)
 			vx = 0;
-		return;
 	}
 
 	// Game logic: while jumping, simon can only attack
-	if (jumping)
+	else if (jumping)
 	{
 		if (state == SIMON_STATE_ATTACK && !attacking)
 		{
 			StartToAttack();
+
+			// re-locate Simon to avoid overlapping the ground
+			// because when Simon attacks, it may changes from crouching-height to standing-height
 			y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
 		}
-		
-		return;
 	}
 
 	// Game logic: while crouching, simon can only change direction or attack
-	if (crouching)
+	else if (crouching)
 	{
 		if (state == SIMON_STATE_WALK_RIGHT)
 			nx = 1;
@@ -56,52 +56,55 @@ void CSimon::SetState(int state)
 		else if (state == SIMON_STATE_ATTACK && !attacking)
 			StartToAttack();
 
+		// stop crouching
 		else if (state == SIMON_STATE_IDLE)
 		{
 			crouching = false;
 			y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
+			CGameObject::SetState(SIMON_STATE_IDLE);
 		}
-
-		return;
 	}
 
-	CGameObject::SetState(state);
+	else
+	{
+		CGameObject::SetState(state);
 
-	switch (state)
-	{		
-		
-	case SIMON_STATE_WALK_RIGHT:
-		nx = 1;
-		vx = SIMON_WALKING_SPEED;
-		break;
-
-	case SIMON_STATE_WALK_LEFT:
-		nx = -1;
-		vx = -SIMON_WALKING_SPEED;
-		break;	
-		
-	case SIMON_STATE_ATTACK:
-		StartToAttack();
-		break;
-
-	case SIMON_STATE_JUMP:
-		vy = -SIMON_JUMP_SPEED_Y;
-		jumping = true;
-		break;
-
-	case SIMON_STATE_CROUCH:
-		crouching = true;
-		vx = 0;
-		break;
-
-	case SIMON_STATE_IDLE:
-		vx = 0;
-		if (crouching)
+		switch (state)
 		{
-			crouching = false;
-			y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
+
+		case SIMON_STATE_WALK_RIGHT:
+			nx = 1;
+			vx = SIMON_WALKING_SPEED;
+			break;
+
+		case SIMON_STATE_WALK_LEFT:
+			nx = -1;
+			vx = -SIMON_WALKING_SPEED;
+			break;
+
+		case SIMON_STATE_ATTACK:
+			StartToAttack();
+			break;
+
+		case SIMON_STATE_JUMP:
+			vy = -SIMON_JUMP_SPEED_Y;
+			jumping = true;
+			break;
+
+		case SIMON_STATE_CROUCH:
+			crouching = true;
+			vx = 0;
+			break;
+
+		case SIMON_STATE_IDLE:
+			vx = 0;
+			/*if (crouching)
+			{
+				crouching = false;
+				y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
+			}*/
+			break;
 		}
-		break;
 	}
 }
 
@@ -128,15 +131,9 @@ void CSimon::SetMatchedAnimation(int state)
 	// these two action use the same animation
 	else if (crouching || jumping)
 	{
-		if (vy > 0 && jumping)
-			// if simon reaches the maximum height while jumping
-			currentAniID = (nx > 0) ?
-				(int)SimonAniID::IDLE_RIGHT :
-				(int)SimonAniID::IDLE_LEFT;
-		else
-			currentAniID = (nx > 0) ?
-				(int)SimonAniID::CROUCH_RIGHT :
-				(int)SimonAniID::CROUCH_LEFT;
+		currentAniID = (nx > 0) ?
+			(int)SimonAniID::CROUCH_RIGHT :
+			(int)SimonAniID::CROUCH_LEFT;
 	}
 
 	else if (vx > 0)
@@ -221,6 +218,23 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 	float min_tx, min_ty, nx, ny;
 	FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
+	// block
+	x += min_tx * dx + nx * 0.04f;
+	y += min_ty * dy + ny * 0.04f;
+	if (ny < 0)
+	{
+		vy = 0;
+
+		// you are not jumping while your feet on the ground
+		if (jumping)
+		{
+			jumping = false;
+
+			// re-locate Simon to avoid overlapping the ground
+			y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
+		}
+	}
+
 	for (UINT i = 0; i < coEventsResult.size(); i++)
 	{
 		LPCOLLISIONEVENT e = coEventsResult[i];
@@ -253,34 +267,31 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			}
 		}
 
+		// BUG: Simon sometimes ignores the bricks 
 		// Block 
-		else
-		{
-			if (dynamic_cast<CBrick *>(e->obj))
-			{
-				DebugOut(L"\ntouchng brick");
-			}
-
-			if (vx > 0)
-			{
-				DebugOut(L"\nvx > 0");
-			}
-
-			x += min_tx * dx + nx * 0.04f;
-			y += min_ty * dy + ny * 0.04f;
-
-			if (nx != 0)
-				vx = 0;
-
-			if (ny != 0)
-			{
-				vy = 0;
-
-				// you are not jumping while your feet on the ground
-				if (jumping)
-					jumping = false;
-			}
-		}
+		// 
+		//else
+		//{
+		//	if (dynamic_cast<CBrick *>(e->obj))
+		//	{
+		//		DebugOut(L"\ntouchng brick");
+		//	}
+		//	if (vx > 0)
+		//	{
+		//		DebugOut(L"\nvx > 0");
+		//	}
+		//	x += min_tx * dx + nx * 0.04f;
+		//	y += min_ty * dy + ny * 0.04f;
+		//	if (nx != 0)
+		//		vx = 0;
+		//	if (ny != 0)
+		//	{
+		//		vy = 0;
+		//		// you are not jumping while your feet on the ground
+		//		if (jumping)
+		//			jumping = false;
+		//	}
+		//}
 	}
 }
 
