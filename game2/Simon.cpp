@@ -9,6 +9,8 @@
 
 CSimon * CSimon::__instance = NULL;
 
+// Doing in the features/modify-simon-controls
+
 CSimon::CSimon()
 {
 	this->attacking = false;
