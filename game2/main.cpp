@@ -210,7 +210,7 @@ void InitObjectsForTesting()
 	objects.push_back(itemRope);
 
 	itemRope = new CItemRope();
-	itemRope->SetPosition(16.0f, 60.0f);
+	itemRope->SetPosition(400.0f, 60.0f);
 	objects.push_back(itemRope);
 
 }

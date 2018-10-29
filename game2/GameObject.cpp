@@ -35,12 +35,15 @@ void CGameObject::ResetAnimation(int aniID)
 
 void CGameObject::Destroy()
 {
-	this->x = OUTSIDE_X;
-	this->y = OUTSIDE_Y;
+	this->x = GRAVEYARD_X;
+	this->y = GRAVEYARD_Y;
 }
 
 CGameObject::CGameObject()
 {
+	flickering = false;
+	ARGB argb = ARGB();
+
 	x = y = 0;
 	state = 0;
 	currentAniID = -1;

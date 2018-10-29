@@ -9,60 +9,71 @@ CRope * CRope::__instance = NULL;
 
 void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	// Do nothing if the rope isn't used
-	if (!visible)
-		return;
-	CMovableObject::Update(dt);
-
-	SetMatchedAnimation(state);
-	UpdateRopePosition(currentAniID);
-	
-	vector<LPCOLLISIONEVENT> coEvents;
-	coEvents.clear();
-	CalcPotentialCollisions(coObjects, coEvents);
-
-	if (coEvents.size() != 0)
-		ProceedCollisions(coEvents);
-
-	// Check overlapping
-	if (animations->Get(currentAniID)->GetCurrentFrame() == 2)
+	if (visible)
 	{
-		for (UINT i = 0; i < coObjects->size(); i++)
+		CMovableObject::Update(dt);
+
+		SetMatchedAnimation(state);
+		UpdateRopePosition(currentAniID);
+
+		vector<LPCOLLISIONEVENT> coEvents;
+		coEvents.clear();
+		CalcPotentialCollisions(coObjects, coEvents);
+
+		if (coEvents.size() != 0)
+			ProceedCollisions(coEvents);
+
+		// TODO: refactoring
+		// Check overlapping
+		if (animations->Get(currentAniID)->GetCurrentFrame() == 2)
 		{
-			float left, top, right, bottom;
-			float leftObj, topObj, rightObj, bottomObj;
-
-			LPGAMEOBJECT obj = (coObjects->at(i));
-
-			if (dynamic_cast<CBigCandle *>(obj))
+			for (UINT i = 0; i < coObjects->size(); i++)
 			{
-				CBigCandle * candle = dynamic_cast<CBigCandle *>(obj);
-				candle->GetBoundingBox(leftObj, topObj, rightObj, bottomObj);
-				this->GetBoundingBox(left, top, right, bottom);
+				float left, top, right, bottom;
+				float leftObj, topObj, rightObj, bottomObj;
 
-				// DebugOut(L"\nleft: %f - top: %f - right: %f - bottom: %f", left, top, right, bottomObj);
-				// DebugOut(L"\nleft: %f - top: %f - right: %f - bottom: %f\n\n", leftObj, topObj, rightObj, bottomObj);
+				LPGAMEOBJECT obj = (coObjects->at(i));
 
-				if (left < rightObj && right > leftObj &&
-					top < bottomObj && bottom > topObj)
+				if (dynamic_cast<CBigCandle *>(obj))
 				{
-					candle->Destroy();
+					CBigCandle * candle = dynamic_cast<CBigCandle *>(obj);
+					candle->GetBoundingBox(leftObj, topObj, rightObj, bottomObj);
+					this->GetBoundingBox(left, top, right, bottom);
+
+					// DebugOut(L"\nleft: %f - top: %f - right: %f - bottom: %f", left, top, right, bottomObj);
+					// DebugOut(L"\nleft: %f - top: %f - right: %f - bottom: %f\n\n", leftObj, topObj, rightObj, bottomObj);
+
+					if (left < rightObj && right > leftObj &&
+						top < bottomObj && bottom > topObj)
+					{
+						candle->Destroy();
+					}
 				}
 			}
 		}
-	}
 
-	// clean up collision events
-	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+		// clean up collision events
+		for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+	}
 }
 
 void CRope::Render()
 {
-	// Just render when Simon uses the rope to attack
 	if (visible)
 	{
-		animations->Get(currentAniID)->Render(x, y);
-		RenderBoundingBox();
+		if (flickering)
+		{
+			if (argb.blue != 0)
+				argb.blue = 0;
+			else if (argb.green != 0)
+				argb.green = 0;
+			else
+				argb = ARGB();
+
+			animations->Get(currentAniID)->Render(x, y, argb);
+		}
+		else
+			animations->Get(currentAniID)->Render(x, y);
 	}
 }
 
@@ -86,6 +97,7 @@ void CRope::SetMatchedAnimation(int state)
 		break;
 
 	default:
+		flickering = true;
 		currentAniID = (nx > 0) ?
 			(int)RopeAniID::LEVEL_THREE_RIGHT :
 			(int)RopeAniID::LEVEL_THREE_LEFT;

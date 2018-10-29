@@ -29,6 +29,7 @@
 #define SIMON_STATE_DIE					112
 
 #define ATTACKING_TIME					400 
+#define FLICKERING_TIME					1000
 
 enum class SimonAniID
 {
@@ -63,24 +64,24 @@ class CSimon : public CMovableObject
 	bool crouching;
 	bool stairing;
 	DWORD attackStartTime;
+	DWORD flickerStartTime;
 	CRope * rope;
 
 	static CSimon * __instance;
 	CSimon();
 
 public:
-	void StartToAttack();
 
 	void SetState(int state) override;
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL) override;
 	void Render() override;
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
-
-	// TODO: maybe need to refactoring
 	void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents) override;
 	
 	// TODO: Maybe need to make this as a virtual function
 	void SetMatchedAnimation(int state);
+	void StartToAttack();
+	void StartToFlicker();
 
 	static CSimon * GetInstance();
 };

@@ -9,8 +9,8 @@ using namespace std;
 
 #define ID_TEX_BBOX -100
 
-#define OUTSIDE_X 99999
-#define OUTSIDE_Y 99999
+#define GRAVEYARD_X 99999
+#define GRAVEYARD_Y 99999
 
 
 class CGameObject;
@@ -48,6 +48,10 @@ protected:
 	int currentAniID;
 
 	CAnimations* animations; // pointer helping getting the animations
+
+	// use for flickerable objects
+	bool flickering;
+	ARGB argb;
 
 public:
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }

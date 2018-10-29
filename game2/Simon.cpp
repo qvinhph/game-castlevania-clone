@@ -98,11 +98,6 @@ void CSimon::SetState(int state)
 
 		case SIMON_STATE_IDLE:
 			vx = 0;
-			/*if (crouching)
-			{
-				crouching = false;
-				y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
-			}*/
 			break;
 		}
 	}
@@ -110,8 +105,21 @@ void CSimon::SetState(int state)
 
 void CSimon::Render()
 {	
-	animations->Get(currentAniID)->Render(x, y);
-	RenderBoundingBox();
+	if (flickering)
+	{
+		if (argb.blue != 0)
+			argb.blue = 0;
+		else if (argb.green != 0)
+			argb.green = 0;
+		else
+			argb = ARGB();
+
+		animations->Get(currentAniID)->Render(x, y, argb);
+	}
+	else
+		animations->Get(currentAniID)->Render(x, y);
+
+	//RenderBoundingBox();
 }
 
 void CSimon::SetMatchedAnimation(int state)
@@ -161,8 +169,6 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Calculate dx, dy
 	CMovableObject::Update(dt);
 
-	SetMatchedAnimation(state);
-
 	// Simple fall down
 	if (jumping)
 	{
@@ -179,17 +185,14 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			this->ResetAnimation(currentAniID);
 			attacking = false;
 			rope->SetVisible(false);
-
-			// Get back to the right animation
-			if (crouching)
-				currentAniID = (nx > 0) ? 
-				(int)SimonAniID::CROUCH_RIGHT : 
-				(int)SimonAniID::CROUCH_LEFT;
-			else
-				currentAniID = (nx > 0) ? 
-				(int)SimonAniID::IDLE_RIGHT : 
-				(int)SimonAniID::IDLE_LEFT;
 		}
+
+	// Turn off the flickering flag when it'd done
+	if (flickering)
+		if (GetTickCount() - flickerStartTime >= FLICKERING_TIME)
+			flickering = 0;
+
+	SetMatchedAnimation(state);
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	coEvents.clear();
@@ -209,6 +212,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+
 }
 
 void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
@@ -247,11 +251,11 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 
 			if (e->nx != 0)
 			{
-				x += min_tx * dx;
+				x -= nx * 0.4f;
 			}
 			if (e->ny != 0)
 			{
-				y += min_ty * dy;
+				y -= ny * 0.4f;
 			}
 		}
 
@@ -260,11 +264,14 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			CItemRope * itemRope = dynamic_cast<CItemRope *>(e->obj);
 			DebugOut(L"\nTouch item rope");
 
-			if (e->nx != 0 || e->ny != 0)
+			rope->LevelUp();
+			itemRope->Destroy();
+			this->StartToFlicker();
+
+			/*if (e->nx != 0 || e->ny != 0)
 			{
-				rope->LevelUp();
-				itemRope->Destroy();
-			}
+				
+			}*/
 		}
 
 		// BUG: Simon sometimes ignores the bricks 
@@ -304,6 +311,15 @@ void CSimon::StartToAttack()
 		
 		rope->SetVisible(true);
 		rope->SetDirection(nx);
+	}
+}
+
+void CSimon::StartToFlicker()
+{
+	if (!flickering)
+	{
+		flickering = true;
+		flickerStartTime = GetTickCount();
 	}
 }
 

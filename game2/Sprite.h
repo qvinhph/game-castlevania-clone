@@ -6,7 +6,7 @@
 
 class CSprite
 {
-	// DEBUGGING int id;				// Sprite ID in the sprite database
+	int id;				// Sprite ID in the sprite database
 
 	int left;
 	int top;
@@ -16,7 +16,6 @@ class CSprite
 	LPDIRECT3DTEXTURE9 texture;
 
 public:
-	int id;
 
 	CSprite(int id, int left, int top, int right, int bottom, LPDIRECT3DTEXTURE9 tex);
 
