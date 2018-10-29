@@ -7,8 +7,6 @@
 #include "BigCandle.h"
 #include "ItemRope.h"
 
-//test git
-
 CSimon * CSimon::__instance = NULL;
 
 CSimon::CSimon()
