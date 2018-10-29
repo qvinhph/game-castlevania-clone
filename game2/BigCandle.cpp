@@ -11,5 +11,6 @@ void CBigCandle::GetBoundingBox(float &left, float &top, float &right, float &bo
 
 void CBigCandle::Render()
 {
-	RenderAnimation((int)BigCandleAniID::IDLE);
+	int aniID = (int)BigCandleAniID::IDLE;
+	animations->Get(aniID)->Render(x, y);
 }

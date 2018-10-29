@@ -57,7 +57,7 @@ public:
 	void RenderBoundingBox();
 
 	virtual void ResetAnimation(int aniID);
-	virtual	void RenderAnimation(int aniID);	
+	//virtual	void RenderAnimation(int aniID);	
 	virtual void SetState(int state) { this->state = state; }
 	virtual void Render() = 0;
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;

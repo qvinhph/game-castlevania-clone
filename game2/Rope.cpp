@@ -61,7 +61,7 @@ void CRope::Render()
 	// Just render when Simon uses the rope to attack
 	if (visible)
 	{
-		RenderAnimation(currentAniID);
+		animations->Get(currentAniID)->Render(x, y);
 		RenderBoundingBox();
 	}
 }

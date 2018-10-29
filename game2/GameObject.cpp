@@ -17,8 +17,10 @@ void CGameObject::RenderBoundingBox()
 	rect.top = 0;
 	rect.right = (int)r - (int)l;
 	rect.bottom = (int)b - (int)t;
+	
+	ARGB argb = ARGB(100, 255, 255, 255);
 
-	CGame::GetInstance()->Draw(x, y, bbox, rect.left, rect.top, rect.right, rect.bottom, 125);
+	CGame::GetInstance()->Draw(x, y, bbox, rect.left, rect.top, rect.right, rect.bottom, argb);
 }
 
 void CGameObject::ResetAnimation(int aniID)
@@ -26,10 +28,10 @@ void CGameObject::ResetAnimation(int aniID)
 	animations->Get(aniID)->SetCurrentFrame(-1);
 }
 
-void CGameObject::RenderAnimation(int aniID)
-{
-	animations->Get(aniID)->Render(x, y);
-}
+//void CGameObject::RenderAnimation(int aniID)
+//{
+//	animations->Get(aniID)->Render(x, y);
+//}
 
 void CGameObject::Destroy()
 {

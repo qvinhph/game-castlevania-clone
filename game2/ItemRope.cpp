@@ -18,7 +18,10 @@ void CItemRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CItemRope::Render()
 {
-	RenderAnimation((int)ItemRopeAniID::IDLE);
+	int aniID = (int)ItemRopeAniID::IDLE;
+	animations->Get(aniID)->Render(x, y);
+
+	RenderBoundingBox();
 }
 
 void CItemRope::GetBoundingBox(float & left, float & top, float & right, float & bottom)

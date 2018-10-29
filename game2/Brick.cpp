@@ -3,7 +3,8 @@
 
 void CBrick::Render()
 {
-	RenderAnimation(BrickAniID::IDLE);
+	int aniID = (int)BrickAniID::IDLE;
+	animations->Get(aniID)->Render(x, y);
 }
 
 void CBrick::GetBoundingBox(float &left, float &top, float &right, float &bottom)

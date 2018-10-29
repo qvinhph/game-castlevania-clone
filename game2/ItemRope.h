@@ -1,8 +1,8 @@
 #pragma once
 #include "MovableObject.h"
 
-#define ITEM_ROPE_BBOX_WIDTH 16
-#define ITEM_ROPE_BBOX_HEIGHT 16
+#define ITEM_ROPE_BBOX_WIDTH 32
+#define ITEM_ROPE_BBOX_HEIGHT 32
 
 enum class ItemRopeAniID
 {

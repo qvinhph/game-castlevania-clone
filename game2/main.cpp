@@ -15,11 +15,11 @@
 #include "ItemRope.h"
 
 #define WINDOW_CLASS_NAME L"Game"
-#define MAIN_WINDOW_TITLE L"Castlevania"
+#define MAIN_WINDOW_TITLE L"Castlevania - Simon'quest"
 
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(255, 255, 200)
-#define SCREEN_WIDTH		1000//256
-#define SCREEN_HEIGHT		240
+#define SCREEN_WIDTH		1000//512
+#define SCREEN_HEIGHT		480
 
 #define MAX_FRAME_RATE		100
 
@@ -182,7 +182,7 @@ void InitObjectsForTesting()
 	for (int i = 0; i < 30; i++)
 	{
 		brick = new CBrick();
-		brick->SetPosition(0 + i * 32.0f, 200);
+		brick->SetPosition(0 + i * 32.0f, 300);
 		objects.push_back(brick);
 	}
 
@@ -195,14 +195,19 @@ void InitObjectsForTesting()
 
 
 	bigCandle = new CBigCandle();
-	bigCandle->SetPosition(100.0f, 165.0f);
-	//objects.push_back(bigCandle);
+	bigCandle->SetPosition(200.0f, 165.0f);
+	objects.push_back(bigCandle);
 
 	itemRope = new CItemRope();
 	itemRope->SetPosition(000.0f, 0.0f);
-	//objects.push_back(itemRope);
+	objects.push_back(itemRope);
+
+	itemRope = new CItemRope();
+	itemRope->SetPosition(16.0f, 60.0f);
+	objects.push_back(itemRope);
 
 }
+
 
 /*
 	Load all game resources
@@ -241,73 +246,73 @@ void LoadResources()
 
 	LPDIRECT3DTEXTURE9 texSimon = textures->Get(ID_TEX_SIMON);
 	
-	sprites->Add(99000, 218, 2, 234, 32, texSimon);		// idle right
-	sprites->Add(99100, 6, 101, 22, 131, texSimon);		// idle left
+	sprites->Add(99000, 436, 4, 468, 64, texSimon);		// idle right
+	sprites->Add(99100, 12, 202, 44, 262, texSimon);	// idle left
 
-	sprites->Add(99001, 189, 1, 201, 32, texSimon);		// walk right
-	sprites->Add(99002, 157, 2, 172, 32, texSimon);		// walk right 
-	sprites->Add(99003, 130, 1, 142, 32, texSimon);		// walk right
-	sprites->Add(99101, 39, 100, 51, 131, texSimon);	// walk left
-	sprites->Add(99102, 68, 101, 83, 131, texSimon);	// walk left
-	sprites->Add(99103, 98, 100, 110, 131, texSimon);	// walk left
+	sprites->Add(99001, 378, 2, 402, 64, texSimon);		// walk right
+	sprites->Add(99002, 314, 4, 344, 64, texSimon);		// walk right
+	sprites->Add(99003, 260, 3, 284, 64, texSimon);		// walk right
+	sprites->Add(99101, 78, 200, 102, 262, texSimon);	// walk left
+	sprites->Add(99102, 136, 202, 166, 262, texSimon);	// walk left
+	sprites->Add(99103, 196, 201, 220, 262, texSimon);	// walk left
 
-	sprites->Add(99004, 98, 0, 114, 23, texSimon);		// crouch right
-	sprites->Add(99104, 126, 99, 142, 122, texSimon);	// crouch left
+	sprites->Add(99004, 196, 1, 229, 47, texSimon);		// crouch right
+	sprites->Add(99104, 252, 199, 284, 245, texSimon);	// crouch left
 
-	sprites->Add(99007, 68, 2, 84, 32, texSimon);		// attack right
-	sprites->Add(99008, 37, 2, 53, 32, texSimon);		// attack right
-	sprites->Add(99009, 8, 2, 24, 32, texSimon);		// attack right
-	sprites->Add(99107, 156, 101, 172, 131, texSimon);	// attack left
-	sprites->Add(99108, 186, 101, 202, 131, texSimon);	// attack left
-	sprites->Add(99109, 216, 101, 232, 131, texSimon);	// attack left
+	sprites->Add(99007, 136, 4, 168, 64, texSimon);		// attack right
+	sprites->Add(99008, 75, 4, 107, 64, texSimon);		// attack right
+	sprites->Add(99009, 16, 4, 59, 64, texSimon);		// attack right
+	sprites->Add(99107, 312, 202, 344, 262, texSimon);	// attack left
+	sprites->Add(99108, 373, 202, 405, 262, texSimon);	// attack left
+	sprites->Add(99109, 432, 202, 464, 262, texSimon);	// attack left
 	
-	sprites->Add(99020, 184, 33, 200, 65, texSimon);	// go in
+	sprites->Add(99020, 438, 72, 470, 130, texSimon);	// go in
 
-	sprites->Add(99021, 5, 135, 21, 164, texSimon);		// pushed back right
-	sprites->Add(99121, 219, 36, 235, 65, texSimon);	// pushed back left
+	sprites->Add(99021, 10, 270, 42, 328, texSimon);	// pushed back right
+	sprites->Add(99121, 438, 72, 470, 130, texSimon);	// pushed back left
 
-	sprites->Add(99022, 159, 34, 175, 65, texSimon);	// down stair right
-	sprites->Add(99023, 133, 34, 145, 65, texSimon);	// down stair right
-	sprites->Add(99122, 65, 133, 81, 164, texSimon);	// down stair left
-	sprites->Add(99123, 85, 133, 107, 164, texSimon);	// down stair left
+	sprites->Add(99022, 318, 68, 350, 130, texSimon);	// down stair right
+	sprites->Add(99023, 266, 68, 290, 130, texSimon);	// down stair right
+	sprites->Add(99122, 130, 266, 162, 328, texSimon);	// down stair left
+	sprites->Add(99123, 190, 266, 214, 328, texSimon);	// down stair left
 
-	sprites->Add(99024, 95, 34, 110, 65, texSimon);		// up stair right
-	sprites->Add(99025, 67, 34, 79, 65, texSimon);		// up stair right
-	sprites->Add(99124, 129, 133, 144, 164, texSimon);	// up stair left
-	sprites->Add(99125, 161, 133, 173, 164, texSimon);	// up stair left
+	sprites->Add(99024, 191, 68, 222, 130, texSimon);	// up stair right
+	sprites->Add(99025, 134, 68, 158, 130, texSimon);	// up stair right
+	sprites->Add(99124, 259, 266, 289, 328, texSimon);	// up stair left
+	sprites->Add(99125, 322, 266, 346, 328, texSimon);	// up stair left
 	
-	sprites->Add(99037, 8, 33, 24, 56, texSimon);		// crouch attack right
-	sprites->Add(99038, 218, 66, 234, 89, texSimon);	// crouch attack right
-	sprites->Add(99039, 187, 66, 203, 89, texSimon);	// crouch attack right
-	sprites->Add(99137, 216, 132, 232, 155, texSimon);	// crouch attack left
-	sprites->Add(99138, 5, 165, 21, 188, texSimon);		// crouch attack left
-	sprites->Add(99139, 36, 165, 52, 188, texSimon);	// crouch attack left
+	sprites->Add(99037, 16, 67, 48, 113, texSimon);		// crouch attack right
+	sprites->Add(99038, 437, 133, 469, 179, texSimon);	// crouch attack right
+	sprites->Add(99039, 375, 133, 407, 179, texSimon);	// crouch attack right
+	sprites->Add(99137, 432, 265, 464, 311, texSimon);	// crouch attack left
+	sprites->Add(99138, 11, 331, 43, 377, texSimon);	// crouch attack left
+	sprites->Add(99139, 73, 331, 105, 377, texSimon);	// crouch attack left
 
-	sprites->Add(99047, 159, 67, 175, 98, texSimon);	// down stair attack right
-	sprites->Add(99048, 129, 67, 145, 98, texSimon);	// down stair attack right
-	sprites->Add(99049, 99, 67, 115, 98, texSimon);		// down stair attack right
-	sprites->Add(99147, 65, 166, 81, 197, texSimon);	// down stair attack left
-	sprites->Add(99148, 95, 166, 111, 197, texSimon);	// down stair attack left
-	sprites->Add(99149, 125, 166, 141, 197, texSimon);	// down stair attack left
+	sprites->Add(99047, 302, 134, 350, 196, texSimon);	// down stair attack right
+	sprites->Add(99048, 258, 134, 290, 196, texSimon);	// down stair attack right
+	sprites->Add(99049, 198, 136, 239, 196, texSimon);	// down stair attack right
+	sprites->Add(99147, 130, 332, 178, 394, texSimon);	// down stair attack left
+	sprites->Add(99148, 190, 332, 222, 394, texSimon);	// down stair attack left
+	sprites->Add(99149, 241, 334, 282, 394, texSimon);	// down stair attack left
 
-	sprites->Add(99057, 34, 67, 50, 98, texSimon);		// up stair attack right
-	sprites->Add(99058, 64, 64, 80, 98, texSimon);		// up stair attack right
-	sprites->Add(99059, 4, 68, 20, 98, texSimon);		// up stair attack right
-	sprites->Add(99157, 159, 166, 175, 197, texSimon);	// up stair attack left
-	sprites->Add(99158, 189, 166, 205, 197, texSimon);	// up stair attack left
-	sprites->Add(99159, 219, 166, 235, 197, texSimon);	// up stair attack left
+	sprites->Add(99057, 120, 134, 161, 196, texSimon);	// up stair attack right
+	sprites->Add(99058, 69, 134, 101, 196, texSimon);	// up stair attack right
+	sprites->Add(99059, 9, 136, 53, 196, texSimon);		// up stair attack right
+	sprites->Add(99157, 319, 332, 360, 394, texSimon);	// up stair attack left
+	sprites->Add(99158, 379, 332, 411, 394, texSimon);	// up stair attack left
+	sprites->Add(99159, 427, 334, 471, 394, texSimon);	// up stair attack left
 
-	sprites->Add(99999, 28, 149, 60, 164, texSimon);	// die
+	sprites->Add(99999, 60, 269, 64, 60, texSimon);	// die
 
-	ani = new CAnimation(3000);
+	ani = new CAnimation(999999);
 	ani->AddFrame(99000);
 	animations->Add((int)SimonAniID::IDLE_RIGHT, ani);
 
-	ani = new CAnimation(3000);
+	ani = new CAnimation(999999);
 	ani->AddFrame(99100);
 	animations->Add((int)SimonAniID::IDLE_LEFT, ani);
 
-	ani = new CAnimation(1000);
+	ani = new CAnimation(100);
 	ani->AddFrame(99000);
 	ani->AddFrame(99001);
 	ani->AddFrame(99002);
@@ -321,10 +326,10 @@ void LoadResources()
 	ani->AddFrame(99103);
 	animations->Add((int)SimonAniID::WALK_LEFT, ani);
 
-	ani = new CAnimation(1000);
+	ani = new CAnimation(100);
 	ani->AddFrame(99007);
 	ani->AddFrame(99008);
-	ani->AddFrame(99009, 1000);
+	ani->AddFrame(99009, 200);
 	animations->Add((int)SimonAniID::ATTACK_RIGHT, ani);
 
 	ani = new CAnimation(100);
@@ -333,23 +338,23 @@ void LoadResources()
 	ani->AddFrame(99109, 200);
 	animations->Add((int)SimonAniID::ATTACK_LEFT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(999999);
 	ani->AddFrame(99004);
 	animations->Add((int)SimonAniID::CROUCH_RIGHT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(999999);
 	ani->AddFrame(99104);
 	animations->Add((int)SimonAniID::CROUCH_LEFT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(999999);
 	ani->AddFrame(99020);
 	animations->Add((int)SimonAniID::GO_IN, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(999999);
 	ani->AddFrame(99021);
 	animations->Add((int)SimonAniID::PUSHED_BACK_RIGHT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(999999);
 	ani->AddFrame(99121);
 	animations->Add((int)SimonAniID::PUSHED_BACK_LEFT, ani);
 
@@ -409,7 +414,7 @@ void LoadResources()
 	ani->AddFrame(99159, 200);
 	animations->Add((int)SimonAniID::UP_STAIR_ATTACK_LEFT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(999999);
 	ani->AddFrame(99999);
 	animations->Add((int)SimonAniID::DIE, ani);
 
@@ -421,31 +426,31 @@ void LoadResources()
 
 	LPDIRECT3DTEXTURE9 texRope = textures->Get(ID_TEX_ROPE);
 
-	sprites->Add(98011, 185, 1, 201, 30, texRope);		// rope lv1 right side
-	sprites->Add(98012, 154, 6, 170, 25, texRope);		// rope lv1 right side
-	sprites->Add(98013, 106	, 8, 134, 17, texRope);		// rope lv1 right side
-	sprites->Add(98111, 1, 2, 16, 31, texRope);			// rope lv1 left side
-	sprites->Add(98112, 31, 7, 47, 26, texRope);		// rope lv1 left side
-	sprites->Add(98113, 67, 9, 95, 18, texRope);		// rope lv1 left side
+	sprites->Add(98011, 420, 2, 452, 60, texRope);		// rope lv1 right side
+	sprites->Add(98012, 358, 12, 390, 50, texRope);		// rope lv1 right side
+	sprites->Add(98013, 262, 16, 318, 34, texRope);		// rope lv1 right side
+	sprites->Add(98111, 2, 4, 34, 62, texRope);			// rope lv1 left side
+	sprites->Add(98112, 63, 14, 95, 52, texRope);		// rope lv1 left side
+	sprites->Add(98113, 135, 18, 191, 36, texRope);		// rope lv1 left side
 
-	sprites->Add(98021, 185, 35, 201, 64, texRope);		// rope lv2 right side
-	sprites->Add(98022, 154, 40, 170, 59, texRope);		// rope lv2 right side
-	sprites->Add(98023, 106, 45, 134, 51, texRope);		// rope lv2 right side
-	sprites->Add(98121, 0, 36, 16, 65, texRope);		// rope lv2 left side
-	sprites->Add(98122, 31, 41, 47, 60, texRope);		// rope lv2 left side
-	sprites->Add(98123, 67, 46, 95, 52, texRope);		// rope lv2 left side
+	sprites->Add(98021, 420, 70, 452, 128, texRope);	// rope lv2 right side
+	sprites->Add(98022, 358, 80, 390, 118, texRope);	// rope lv2 right side
+	sprites->Add(98023, 262, 84, 318, 102, texRope);	// rope lv2 right side
+	sprites->Add(98121, 2, 72, 34, 130, texRope);		// rope lv2 left side
+	sprites->Add(98122, 63, 82, 95, 120, texRope);		// rope lv2 left side
+	sprites->Add(98123, 135, 86, 191, 104, texRope);	// rope lv2 left side
 
-	sprites->Add(98031, 185, 69, 201, 98, texRope);		// rope lv3 right side
-	sprites->Add(98032, 154, 74, 170, 93, texRope);		// rope lv3 right side
-	sprites->Add(98033, 106, 79, 150, 85, texRope);		// rope lv3 right side
-	sprites->Add(98131, 1, 70, 16, 99, texRope);		// rope lv3 left side
-	sprites->Add(98132, 31, 75, 47, 94, texRope);		// rope lv3 left side
-	sprites->Add(98133, 51, 80, 96, 86, texRope);		// rope lv3 left side
+	sprites->Add(98031, 420, 138, 452, 196, texRope);	// rope lv3 right side
+	sprites->Add(98032, 358, 148, 390, 186, texRope);	// rope lv3 right side
+	sprites->Add(98033, 261, 158, 350, 170, texRope);	// rope lv3 right side
+	sprites->Add(98131, 2, 140, 34, 198, texRope);		// rope lv3 left side
+	sprites->Add(98132, 63, 150, 95, 188, texRope);		// rope lv3 left side
+	sprites->Add(98133, 103, 160, 192, 172, texRope);	// rope lv3 left side
 
-	ani = new CAnimation(1000);
+	ani = new CAnimation(100);
 	ani->AddFrame(98011);
 	ani->AddFrame(98012);
-	ani->AddFrame(98013); 
+	ani->AddFrame(98013, 200); 
 	animations->Add((int)RopeAniID::LEVEL_ONE_RIGHT, ani);
 
 	ani = new CAnimation(100);
@@ -494,8 +499,8 @@ void LoadResources()
 	animations->Add(BrickAniID::IDLE, ani);
 
 	// big candle
-	sprites->Add(12000, 0, 0, 16, 32, texMisc);
-	sprites->Add(12001, 16, 0, 32, 32, texMisc);
+	sprites->Add(12000, 0, 0, 32, 64, texMisc);
+	sprites->Add(12001, 32, 0, 64, 64, texMisc);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(12000);
@@ -505,9 +510,9 @@ void LoadResources()
 	// small candle - spriteID = 13xxx
 
 	// Item Rope
-	sprites->Add(14000, 73, 32, 89, 48, texMisc);
+	sprites->Add(14000, 146, 65, 178, 97, texMisc);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(999999);
 	ani->AddFrame(14000);
 	animations->Add((int)ItemRopeAniID::IDLE, ani);
 
@@ -516,8 +521,6 @@ void LoadResources()
 
 	InitObjectsForTesting();
 }
-
-
 
 
 /*
@@ -578,6 +581,7 @@ int Run()
 	MSG msg;
 	int done = 0;
 	DWORD frameStart = GetTickCount();
+
 	DWORD tickPerFrame = 1000 / MAX_FRAME_RATE;
 
 	while (!done)

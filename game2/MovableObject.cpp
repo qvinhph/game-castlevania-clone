@@ -2,6 +2,7 @@
 
 #include "MovableObject.h"
 #include "Game.h"
+#include "ItemRope.h"
 
 
 CMovableObject::CMovableObject()
@@ -28,6 +29,11 @@ void CMovableObject::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 	vector<LPCOLLISIONEVENT> coEventsResult;
 	float min_tx, min_ty, nx, ny;
 	FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
+
+	if (dynamic_cast<CItemRope *> (coEventsResult[0]->obj))
+	{
+		OutputDebugString(L"sasd");
+	}
 
 	// Block when reach the ground
 	if (ny != 0)

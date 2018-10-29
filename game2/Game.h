@@ -9,9 +9,24 @@
 #define DIRECTINPUT_VERSION 0x0800
 #define KEYBOARD_BUFFER_SIZE 1024
 
+struct ARGB
+{
+	ARGB() : alpha(255), red(255), green(255), blue(255)
+	{}
+
+	ARGB(int alpha, int red, int green, int blue)
+		: alpha(alpha), red(red), green(green), blue(blue)
+	{}
+
+	int alpha;
+	int red;
+	int green;
+	int blue;
+};
 
 class CGame
-{
+{	
+
 	HWND hWnd;
 
 	LPDIRECT3D9 d3d = NULL;						// Direct3D handle
@@ -35,7 +50,8 @@ class CGame
 public:
 	void InitKeyboard(LPKEY_EVENT_HANDLER handler);
 	void Init(HWND hWnd);
-	void Draw(float x, float y, LPDIRECT3DTEXTURE9 tex, int left, int top, int right, int bottom, int alpha = 255);
+	void Draw(float x, float y, LPDIRECT3DTEXTURE9 tex, int left, int top, int right, int bottom, 
+		ARGB &argb = ARGB());
 
 	int IsKeyDown(int keyCode);
 	void ProcessKeyboard();

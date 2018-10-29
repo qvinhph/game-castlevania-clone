@@ -1,6 +1,5 @@
-#include "Animation.h"
-#include "Sprites.h"
 #include "debug.h"
+#include "Animation.h"
 
 
 CAnimation::CAnimation(int defaultTime)
@@ -19,20 +18,20 @@ void CAnimation::AddFrame(int spriteId, DWORD time)
 	frames.push_back(frame);
 }
 
-void CAnimation::Render(float x, float y, int alpha)
+void CAnimation::Render(float x, float y, ARGB argb)
 {
 
 	DWORD now = GetTickCount();
 	if (currentFrame == -1)
 	{
-		frames[0]->GetSprite()->Draw(x, y, alpha);
+		frames[0]->GetSprite()->Draw(x, y, argb);
 		currentFrame = 0;
 		frameStartTime = now;
 
 	}
 	else
 	{
-		frames[currentFrame]->GetSprite()->Draw(x, y, alpha);
+		frames[currentFrame]->GetSprite()->Draw(x, y, argb);
 
 		/*
 			Maybe we'll want setup something for the frame before

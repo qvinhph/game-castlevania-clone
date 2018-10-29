@@ -4,7 +4,8 @@
 
 void CDestroyedFire::Render()
 {
-	RenderAnimation((int)DesFireAniID::IDLE);
+	int aniID = (int)DesFireAniID::IDLE;
+	animations->Get(aniID)->Render(x, y);
 }
 
 void CDestroyedFire::GetBoundingBox(float & left, float & top, float & right, float & bottom)

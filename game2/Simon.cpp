@@ -35,7 +35,11 @@ void CSimon::SetState(int state)
 	if (jumping)
 	{
 		if (state == SIMON_STATE_ATTACK && !attacking)
+		{
 			StartToAttack();
+			crouching = false;
+			//y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
+		}
 		
 		return;
 	}
@@ -61,6 +65,7 @@ void CSimon::SetState(int state)
 		return;
 	}
 
+	CGameObject::SetState(state);
 
 	switch (state)
 	{		
@@ -102,8 +107,8 @@ void CSimon::SetState(int state)
 
 void CSimon::Render()
 {	
-	RenderAnimation(currentAniID);
-	//RenderBoundingBox();
+	animations->Get(currentAniID)->Render(x, y);
+	RenderBoundingBox();
 }
 
 void CSimon::SetMatchedAnimation(int state)
@@ -246,7 +251,11 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 				vy = 0;
 
 				// while your feet on the ground, you are not jumping
-				jumping = false;
+				if (jumping)
+				{
+					jumping = false;
+					y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
+				}
 			}
 		}
 	}
@@ -268,15 +277,18 @@ void CSimon::GetBoundingBox(float & left, float & top, float & right, float & bo
 {
 	left = x;
 	top = y;
-	if (crouching)
+
+	switch (currentAniID)
 	{
+	case (int)SimonAniID::CROUCH_RIGHT:
+	case (int)SimonAniID::CROUCH_LEFT:
 		right = x + SIMON_CROUCHING_BBOX_WIDTH;
 		bottom = y + SIMON_CROUCHING_BBOX_HEIGHT;
-	}
-	else
-	{
+		break;
+	default:
 		right = x + SIMON_IDLE_BBOX_WIDTH;
 		bottom = y + SIMON_IDLE_BBOX_HEIGHT;
+		break;
 	}
 }
 

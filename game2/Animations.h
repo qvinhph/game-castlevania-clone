@@ -11,8 +11,10 @@ using namespace std;
 class CAnimations
 {
 	static CAnimations * __instance;
+	CAnimations() {};
 
 	unordered_map<int, LPANIMATION> animations;
+
 public:
 	void Add(int id, LPANIMATION ani);
 	LPANIMATION Get(int id);
