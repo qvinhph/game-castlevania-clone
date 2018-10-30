@@ -1,7 +1,10 @@
 #pragma once
 #include "GameObject.h"
 
-#define FIRE_SHOWING_TIME 150
+#define BURNING_TIME					300
+
+#define DESTROYING_FLAME_BBOX_HEIGHT	30
+#define DESTROYING_FLAME_BBOX_WIDTH		16		
 
 enum class DesFireAniID
 {
@@ -11,16 +14,16 @@ enum class DesFireAniID
 /*
 	The fire after monsters/ breakable objects destroying.
 */
-class CDestroyedFire : public CGameObject
+class CDestroyingFlame : public CGameObject
 {
-	DWORD fireStartTime;
-	bool visible;
-
+	DWORD burnStartTime;
 public:
 
 	void Render() override;
-	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
 
-	void ShowThenHide(CGameObject * obj);
+	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
+	void StartToBurn();
+
+	CDestroyingFlame();
 };
 

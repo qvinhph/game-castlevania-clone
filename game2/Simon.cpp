@@ -184,7 +184,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			// To rearrange attacking frames
 			this->ResetAnimation(currentAniID);
 			attacking = false;
-			rope->SetVisible(false);
+			rope->SetState(STATE_INVISIBLE);
 		}
 
 	// Turn off the flickering flag when it'd done
@@ -267,11 +267,6 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			rope->LevelUp();
 			itemRope->Destroy();
 			this->StartToFlicker();
-
-			/*if (e->nx != 0 || e->ny != 0)
-			{
-				
-			}*/
 		}
 
 		// BUG: Simon sometimes ignores the bricks 
@@ -309,7 +304,7 @@ void CSimon::StartToAttack()
 		attacking = true;
 		attackStartTime = GetTickCount();
 		
-		rope->SetVisible(true);
+		rope->SetState(STATE_VISIBLE);
 		rope->SetDirection(nx);
 	}
 }

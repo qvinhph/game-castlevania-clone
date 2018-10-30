@@ -7,10 +7,13 @@
 
 using namespace std;
 
-#define ID_TEX_BBOX -100
+#define ID_TEX_BBOX			-100
 
-#define GRAVEYARD_X 99999
-#define GRAVEYARD_Y 99999
+#define GRAVEYARD_X			99999
+#define GRAVEYARD_Y			99999
+
+#define STATE_VISIBLE		0
+#define STATE_INVISIBLE		-1
 
 
 class CGameObject;
@@ -60,10 +63,9 @@ public:
 	int GetState() { return this->state; }
 	void RenderBoundingBox();
 
-	virtual void ResetAnimation(int aniID);
-	//virtual	void RenderAnimation(int aniID);	
+	virtual void ResetAnimation(int aniID);	
 	virtual void SetState(int state) { this->state = state; }
-	virtual void Render() = 0;
+	virtual void Render();
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
 
 	// Send the object somewhere outside the game world.

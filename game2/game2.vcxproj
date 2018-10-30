@@ -24,10 +24,10 @@
     <ClInclude Include="Animations.h" />
     <ClInclude Include="Brick.h" />
     <ClInclude Include="debug.h" />
-    <ClInclude Include="DestroyedFire.h" />
+    <ClInclude Include="DestroyingFlame.h" />
+    <ClInclude Include="DestroyingFlames.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
-    <ClInclude Include="Ghost.h" />
     <ClInclude Include="ItemRope.h" />
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="MovableObject.h" />
@@ -43,9 +43,9 @@
     <ClCompile Include="AnimationFrame.cpp" />
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="Brick.cpp" />
-    <ClCompile Include="DestroyedFire.cpp" />
+    <ClCompile Include="DestroyingFlame.cpp" />
+    <ClCompile Include="DestroyingFlames.cpp" />
     <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="Ghost.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="ItemRope.cpp" />

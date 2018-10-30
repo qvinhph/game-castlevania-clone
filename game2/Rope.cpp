@@ -9,7 +9,7 @@ CRope * CRope::__instance = NULL;
 
 void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (visible)
+	if (state == STATE_VISIBLE)
 	{
 		CMovableObject::Update(dt);
 
@@ -23,43 +23,38 @@ void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (coEvents.size() != 0)
 			ProceedCollisions(coEvents);
 
-		// TODO: refactoring
 		// Check overlapping
 		if (animations->Get(currentAniID)->GetCurrentFrame() == 2)
-		{
 			for (UINT i = 0; i < coObjects->size(); i++)
-			{
-				float left, top, right, bottom;
-				float leftObj, topObj, rightObj, bottomObj;
-
-				LPGAMEOBJECT obj = (coObjects->at(i));
-
-				if (dynamic_cast<CBigCandle *>(obj))
-				{
-					CBigCandle * candle = dynamic_cast<CBigCandle *>(obj);
-					candle->GetBoundingBox(leftObj, topObj, rightObj, bottomObj);
-					this->GetBoundingBox(left, top, right, bottom);
-
-					// DebugOut(L"\nleft: %f - top: %f - right: %f - bottom: %f", left, top, right, bottomObj);
-					// DebugOut(L"\nleft: %f - top: %f - right: %f - bottom: %f\n\n", leftObj, topObj, rightObj, bottomObj);
-
-					if (left < rightObj && right > leftObj &&
-						top < bottomObj && bottom > topObj)
-					{
-						candle->Destroy();
-					}
-				}
-			}
-		}
+				if (dynamic_cast<CBigCandle *>(coObjects->at(i))
+					&& this->IsOverlapping(coObjects->at(i)))
+					coObjects->at(i)->Destroy();
 
 		// clean up collision events
 		for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 	}
 }
 
+bool CRope::IsOverlapping(LPGAMEOBJECT obj)
+{
+	bool result = false;
+
+	float left, top, right, bottom;
+	float leftObj, topObj, rightObj, bottomObj;
+
+	obj->GetBoundingBox(leftObj, topObj, rightObj, bottomObj);
+	GetBoundingBox(left, top, right, bottom);
+
+	if (left < rightObj && right > leftObj &&
+		top < bottomObj && bottom > topObj)
+		result = true;
+
+	return result;
+}
+
 void CRope::Render()
 {
-	if (visible)
+	if (state == STATE_VISIBLE)
 	{
 		if (flickering)
 		{
@@ -82,15 +77,15 @@ void CRope::Render()
 */
 void CRope::SetMatchedAnimation(int state)
 {
-	switch (state)
+	switch (level)
 	{
-	case ROPE_STATE_LEVEL1:
+	case ROPE_LEVEL1:
 		currentAniID = (nx > 0) ?
 			(int)RopeAniID::LEVEL_ONE_RIGHT :
 			(int)RopeAniID::LEVEL_ONE_LEFT;
 		break;
 
-	case ROPE_STATE_LEVEL2:
+	case ROPE_LEVEL2:
 		currentAniID = (nx > 0) ?
 			(int)RopeAniID::LEVEL_TWO_RIGHT :
 			(int)RopeAniID::LEVEL_TWO_LEFT;
@@ -134,14 +129,14 @@ void CRope::GetBoundingBox(float & left, float & top, float & right, float & bot
 	// Just get the only rope in the front of simon
 	if ((nx > 0 && x > xS) || (nx < 0 && x < xS))
 	{
-		switch (state)
+		switch (level)
 		{
-		case ROPE_STATE_LEVEL1:
+		case ROPE_LEVEL1:
 			right = x + FRONT_ROPE_LV1_BBOX_WIDTH;
 			bottom = y + FRONT_ROPE_LV1_BBOX_HEIGHT;
 			break;
 
-		case ROPE_STATE_LEVEL2:
+		case ROPE_LEVEL2:
 			right = x + FRONT_ROPE_LV2_BBOX_WIDTH;
 			bottom = y + FRONT_ROPE_LV2_BBOX_HEIGHT;
 			break;
@@ -170,17 +165,17 @@ void CRope::UpdateRopePosition(int aniID)
 
 	// get the current rope texture width
 	int ropeTexWidth;
-	switch (state)
+	switch (level)
 	{
-	case ROPE_STATE_LEVEL1:
+	case ROPE_LEVEL1:
 		ropeTexWidth = FRONT_ROPE_LV1_BBOX_WIDTH;
 		break;
 
-	case ROPE_STATE_LEVEL2:
+	case ROPE_LEVEL2:
 		ropeTexWidth = FRONT_ROPE_LV2_BBOX_WIDTH;
 		break;
 
-	case ROPE_STATE_LEVEL3:
+	case ROPE_LEVEL3:
 		ropeTexWidth = FRONT_ROPE_LV3_BBOX_WIDTH;
 		break;
 
@@ -209,15 +204,29 @@ void CRope::UpdateRopePosition(int aniID)
 	}
 }
 
-/*
-	To show or hide the rope
-*/
-void CRope::SetVisible(bool visible)
+
+void CRope::LevelUp()
 {
-	this->visible = visible;
-	
+	switch (level)
+	{
+	case ROPE_LEVEL1:
+		level = ROPE_LEVEL2;
+		break;
+
+	case ROPE_LEVEL2:
+		level = ROPE_LEVEL3;
+
+	default:
+		break;
+	}
+}
+
+void CRope::SetState(int state)
+{
+	CGameObject::SetState(state);
+
 	// hide the rope
-	if (!visible)
+	if (state == STATE_INVISIBLE)
 	{
 		SetPosition(-100, -100);
 
@@ -227,23 +236,6 @@ void CRope::SetVisible(bool visible)
 			//DebugOut(L"\n rope reset: %d", currentAniID);
 			this->ResetAnimation(currentAniID);
 		}
-	}	
-	
-}
-
-void CRope::LevelUp()
-{
-	switch (state)
-	{
-	case ROPE_STATE_LEVEL1:
-		state = ROPE_STATE_LEVEL2;
-		break;
-
-	case ROPE_STATE_LEVEL2:
-		state = ROPE_STATE_LEVEL3;
-
-	default:
-		break;
 	}
 }
 
@@ -257,7 +249,7 @@ CRope * CRope::GetInstance()
 
 CRope::CRope()
 {
-	state = ROPE_STATE_LEVEL1;
-	visible = false;
+	state = STATE_INVISIBLE;
+	level = ROPE_LEVEL1;
 }
 

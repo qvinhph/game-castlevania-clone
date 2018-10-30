@@ -11,11 +11,9 @@ enum class BigCandleAniID
 
 class CBigCandle : public CGameObject
 {
-
 public:
 
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
-	void Render() override;
-
+	CBigCandle();
 };
 

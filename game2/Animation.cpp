@@ -4,7 +4,9 @@
 
 CAnimation::CAnimation(int defaultTime)
 {
-	this->defaultTime = defaultTime; frameStartTime = -1; currentFrame = -1;
+	this->defaultTime = defaultTime; 
+	frameStartTime = -1; 
+	currentFrame = -1;
 }
 
 void CAnimation::AddFrame(int spriteId, DWORD time)

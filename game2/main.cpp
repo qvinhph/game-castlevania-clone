@@ -13,6 +13,8 @@
 #include "Brick.h"
 #include "BigCandle.h"
 #include "ItemRope.h"
+#include "DestroyingFlame.h"
+#include "DestroyingFlames.h"
 
 #define WINDOW_CLASS_NAME L"Game"
 #define MAIN_WINDOW_TITLE L"Castlevania - Simon'quest"
@@ -36,6 +38,7 @@ CRope * rope;
 CBigCandle * bigCandle;
 CBrick * brick;
 CItemRope * itemRope;
+CDestroyingFlame * destroyingFlame;
 
 vector<LPGAMEOBJECT> objects;
 
@@ -73,6 +76,10 @@ void CInputHandler::OnKeyDown(int keyCode)
 
 	case DIK_1:
 		simon->SetPosition(0.0f, 0.0f);
+		break;
+
+	case DIK_2:
+		bigCandle->SetPosition(200.0f, 200.0f);
 		break;
 
 	default:
@@ -178,7 +185,7 @@ void InitObjectsForTesting()
 
 	simon = CSimon::GetInstance();
 	objects.push_back(simon);
-	simon->SetPosition(0.0f, 0.0f);
+	simon->SetPosition(130.0f, -50.0f);
 
 	rope = CRope::GetInstance();
 	objects.push_back(rope);
@@ -195,6 +202,13 @@ void InitObjectsForTesting()
 		brick = new CBrick();
 		brick->SetPosition(100 + i * 32.0f, 50);
 		objects.push_back(brick);
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		destroyingFlame = new CDestroyingFlame();
+		CDestroyingFlames::GetInstance()->Add(destroyingFlame);
+		objects.push_back(destroyingFlame);
 	}
 
 	brick = new CBrick();
@@ -449,10 +463,10 @@ void LoadResources()
 
 	sprites->Add(98031, 420, 138, 452, 196, texRope);	// rope lv3 right side
 	sprites->Add(98032, 358, 148, 390, 186, texRope);	// rope lv3 right side
-	sprites->Add(98033, 261, 158, 350, 170, texRope);	// rope lv3 right side
+	sprites->Add(98033, 261, 152, 350, 170, texRope);	// rope lv3 right side
 	sprites->Add(98131, 2, 140, 34, 198, texRope);		// rope lv3 left side
 	sprites->Add(98132, 63, 150, 95, 188, texRope);		// rope lv3 left side
-	sprites->Add(98133, 103, 160, 192, 172, texRope);	// rope lv3 left side
+	sprites->Add(98133, 103, 154, 192, 172, texRope);	// rope lv3 left side
 
 	ani = new CAnimation(100);
 	ani->AddFrame(98011);
@@ -523,6 +537,17 @@ void LoadResources()
 	ani->AddFrame(14000);
 	animations->Add((int)ItemRopeAniID::IDLE, ani);
 
+	// Destroying Flame
+	sprites->Add(15000, 156, 7, 172, 37, texMisc);
+	sprites->Add(15001, 198, 7, 214, 37, texMisc);
+	sprites->Add(15002, 113, 7, 129, 37, texMisc);
+
+	ani = new CAnimation(80);
+	ani->AddFrame(15000);
+	ani->AddFrame(15001);
+	ani->AddFrame(15002);
+	animations->Add((int)DesFireAniID::IDLE, ani);
+
 #pragma endregion
 
 
@@ -537,14 +562,14 @@ void LoadResources()
 void Update(DWORD dt)
 {
 	// TODO: Need an optimized way
-
+	// only the objects in the camera zone
 	vector<LPGAMEOBJECT> coObjects;
-	for (int i = 0; i < objects.size(); i++)
+	for (UINT i = 0; i < objects.size(); i++)
 	{
 		coObjects.push_back(objects[i]);
 	}
 
-	for (int i = 0; i < objects.size(); i++)
+	for (UINT i = 0; i < objects.size(); i++)
 	{
 		if (dynamic_cast<CMovableObject *>(objects[i]))
 		{
@@ -571,8 +596,11 @@ void Render()
 
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 
-		for (int i = 0; i < objects.size(); i++)
+		for (UINT i = 0; i < objects.size(); i++)
+		{
 			objects[i]->Render();
+			objects[i]->RenderBoundingBox();
+		}
 
 		spriteHandler->End();
 		d3ddv->EndScene();

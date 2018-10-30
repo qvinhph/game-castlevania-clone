@@ -11,7 +11,7 @@ using namespace std;
 class CAnimations
 {
 	static CAnimations * __instance;
-	CAnimations() {};
+	CAnimations() = default;
 
 	unordered_map<int, LPANIMATION> animations;
 

@@ -51,9 +51,6 @@
     <ClInclude Include="Brick.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Ghost.h">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Simon.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
@@ -61,9 +58,6 @@
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
     <ClInclude Include="BigCandle.h">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="DestroyedFire.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
     <ClInclude Include="MovableObject.h">
@@ -74,6 +68,12 @@
     </ClInclude>
     <ClInclude Include="ItemRope.h">
       <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="DestroyingFlame.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="DestroyingFlames.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -104,9 +104,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Ghost.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Brick.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
@@ -122,9 +119,6 @@
     <ClCompile Include="BigCandle.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="DestroyedFire.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
@@ -133,6 +127,12 @@
     </ClCompile>
     <ClCompile Include="ItemRope.cpp">
       <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="DestroyingFlame.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="DestroyingFlames.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

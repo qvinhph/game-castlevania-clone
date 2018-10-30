@@ -10,6 +10,7 @@ using namespace std;
 class CSprites
 {
 	static CSprites * __instance;
+	CSprites() = default;
 
 	unordered_map<int, LPSPRITE> sprites;
 

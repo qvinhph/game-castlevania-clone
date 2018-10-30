@@ -9,8 +9,7 @@ void CBigCandle::GetBoundingBox(float &left, float &top, float &right, float &bo
 	bottom = y + TORCH_BBOX_HEIGHT;
 }
 
-void CBigCandle::Render()
+CBigCandle::CBigCandle()
 {
-	int aniID = (int)BigCandleAniID::IDLE;
-	animations->Get(aniID)->Render(x, y);
+	currentAniID = (int)BigCandleAniID::IDLE;
 }

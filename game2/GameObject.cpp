@@ -2,6 +2,8 @@
 
 #include "Textures.h"
 #include "Game.h"
+#include "DestroyingFlame.h"
+#include "DestroyingFlames.h"
 
 void CGameObject::RenderBoundingBox()
 {
@@ -23,9 +25,17 @@ void CGameObject::RenderBoundingBox()
 	CGame::GetInstance()->Draw(x, y, bbox, rect.left, rect.top, rect.right, rect.bottom, argb);
 }
 
+/*
+	Rearrange the frames of the specified animation.
+*/
 void CGameObject::ResetAnimation(int aniID)
 {
 	animations->Get(aniID)->SetCurrentFrame(-1);
+}
+
+void CGameObject::Render()
+{
+	animations->Get(currentAniID)->Render(x, y);
 }
 
 //void CGameObject::RenderAnimation(int aniID)
@@ -35,6 +45,13 @@ void CGameObject::ResetAnimation(int aniID)
 
 void CGameObject::Destroy()
 {
+	// Get the central point (x , y) of the destroying object
+	float l, t, r, b;
+	GetBoundingBox(l, t, r, b);
+	float central_x = (l + r) / 2;
+	float central_y = (t + b) / 2;
+	CDestroyingFlames::GetInstance()->ShowAFlame(central_x, central_y);
+
 	this->x = GRAVEYARD_X;
 	this->y = GRAVEYARD_Y;
 }
@@ -43,10 +60,8 @@ CGameObject::CGameObject()
 {
 	flickering = false;
 	ARGB argb = ARGB();
-
 	x = y = 0;
-	state = 0;
+	state = STATE_INVISIBLE;
 	currentAniID = -1;
-
 	animations = CAnimations::GetInstance();
 }
