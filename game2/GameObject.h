@@ -9,8 +9,8 @@ using namespace std;
 
 #define ID_TEX_BBOX			-100
 
-#define GRAVEYARD_X			99999
-#define GRAVEYARD_Y			99999
+#define INSIVIBLE_ZONE_X	-99999
+#define INSIVIBLE_ZONE_Y	-99999
 
 #define STATE_VISIBLE		0
 #define STATE_INVISIBLE		-1
@@ -64,7 +64,7 @@ public:
 	void RenderBoundingBox();
 
 	virtual void ResetAnimation(int aniID);	
-	virtual void SetState(int state) { this->state = state; }
+	virtual void SetState(int state);
 	virtual void Render();
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
 

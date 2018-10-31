@@ -82,6 +82,10 @@ void CInputHandler::OnKeyDown(int keyCode)
 		bigCandle->SetPosition(200.0f, 200.0f);
 		break;
 
+	case DIK_3:
+		itemRope->SetPosition(300.0f, 200.0f);
+		break;
+
 	default:
 		break;
 	}
@@ -546,7 +550,7 @@ void LoadResources()
 	ani->AddFrame(15000);
 	ani->AddFrame(15001);
 	ani->AddFrame(15002);
-	animations->Add((int)DesFireAniID::IDLE, ani);
+	animations->Add((int)DestroyingFlameAniID::IDLE, ani);
 
 #pragma endregion
 

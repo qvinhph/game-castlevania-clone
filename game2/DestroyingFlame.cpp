@@ -26,7 +26,7 @@ void CDestroyingFlame::StartToBurn()
 
 CDestroyingFlame::CDestroyingFlame()
 {
-	currentAniID = (int)DesFireAniID::IDLE;
+	currentAniID = (int)DestroyingFlameAniID::IDLE;
 }
 
 

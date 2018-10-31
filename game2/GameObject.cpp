@@ -33,6 +33,15 @@ void CGameObject::ResetAnimation(int aniID)
 	animations->Get(aniID)->SetCurrentFrame(-1);
 }
 
+void CGameObject::SetState(int state)
+{
+	this->state = state;
+
+	// Send the object to invisible zone
+	if (state == STATE_INVISIBLE)
+		SetPosition(INSIVIBLE_ZONE_X, INSIVIBLE_ZONE_Y);
+}
+
 void CGameObject::Render()
 {
 	animations->Get(currentAniID)->Render(x, y);
@@ -52,15 +61,16 @@ void CGameObject::Destroy()
 	float central_y = (t + b) / 2;
 	CDestroyingFlames::GetInstance()->ShowAFlame(central_x, central_y);
 
-	this->x = GRAVEYARD_X;
-	this->y = GRAVEYARD_Y;
+	this->x = INSIVIBLE_ZONE_X;
+	this->y = INSIVIBLE_ZONE_Y;
 }
 
 CGameObject::CGameObject()
 {
 	flickering = false;
 	ARGB argb = ARGB();
-	x = y = 0;
+	x = INSIVIBLE_ZONE_X;
+	y = INSIVIBLE_ZONE_Y;
 	state = STATE_INVISIBLE;
 	currentAniID = -1;
 	animations = CAnimations::GetInstance();

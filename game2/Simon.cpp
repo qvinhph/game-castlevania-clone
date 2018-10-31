@@ -222,22 +222,9 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 	float min_tx, min_ty, nx, ny;
 	FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
-	// block
-	x += min_tx * dx + nx * 0.04f;
-	y += min_ty * dy + ny * 0.04f;
-	if (ny < 0)
-	{
-		vy = 0;
-
-		// you are not jumping while your feet on the ground
-		if (jumping)
-		{
-			jumping = false;
-
-			// re-locate Simon to avoid overlapping the ground
-			y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
-		}
-	}
+	// update x, y to be at the collision position
+	x += min_tx * dx;
+	y += min_ty * dy;
 
 	for (UINT i = 0; i < coEventsResult.size(); i++)
 	{
@@ -248,52 +235,39 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 		{
 			CBigCandle * bigCandle = dynamic_cast<CBigCandle *>(e->obj);
 			DebugOut(L"\nTouch large candle");
-
-			if (e->nx != 0)
-			{
-				x -= nx * 0.4f;
-			}
-			if (e->ny != 0)
-			{
-				y -= ny * 0.4f;
-			}
 		}
 
+		// Collision logic with RopeItem
 		else if (dynamic_cast<CItemRope *>(e->obj))
 		{
 			CItemRope * itemRope = dynamic_cast<CItemRope *>(e->obj);
 			DebugOut(L"\nTouch item rope");
 
 			rope->LevelUp();
-			itemRope->Destroy();
+			itemRope->SetState(STATE_INVISIBLE);
 			this->StartToFlicker();
 		}
 
-		// BUG: Simon sometimes ignores the bricks 
-		// Block 
-		// 
-		//else
-		//{
-		//	if (dynamic_cast<CBrick *>(e->obj))
-		//	{
-		//		DebugOut(L"\ntouchng brick");
-		//	}
-		//	if (vx > 0)
-		//	{
-		//		DebugOut(L"\nvx > 0");
-		//	}
-		//	x += min_tx * dx + nx * 0.04f;
-		//	y += min_ty * dy + ny * 0.04f;
-		//	if (nx != 0)
-		//		vx = 0;
-		//	if (ny != 0)
-		//	{
-		//		vy = 0;
-		//		// you are not jumping while your feet on the ground
-		//		if (jumping)
-		//			jumping = false;
-		//	}
-		//}
+		// block with other objects
+		else
+		{
+			x += nx * 0.4f;
+			y += ny * 0.4f;
+
+			if (ny < 0)
+			{
+				vy = 0;
+
+				// you are not jumping while your feet on the ground
+				if (jumping)
+				{
+					jumping = false;
+
+					// re-locate Simon to avoid overlapping the ground
+					y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
+				}
+			}
+		}
 	}
 }
 

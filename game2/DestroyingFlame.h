@@ -6,7 +6,7 @@
 #define DESTROYING_FLAME_BBOX_HEIGHT	30
 #define DESTROYING_FLAME_BBOX_WIDTH		16		
 
-enum class DesFireAniID
+enum class DestroyingFlameAniID
 {
 	IDLE = 1400
 };
