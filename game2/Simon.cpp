@@ -251,7 +251,7 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			this->StartToFlicker();
 		}
 
-		// block with other objects
+		// block with ground objects
 		else
 		{
 			x += nx * 0.4f;

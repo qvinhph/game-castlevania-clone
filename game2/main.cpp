@@ -2,19 +2,8 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 
-#include "debug.h"
-#include "Game.h"
-#include "Textures.h"
-#include "Sprites.h"
-#include "Animations.h"
-#include "MovableObject.h"
-
-#include "Simon.h"
-#include "Brick.h"
-#include "BigCandle.h"
-#include "ItemRope.h"
-#include "DestroyingFlame.h"
-#include "DestroyingFlames.h"
+#include "Castlevania.h"
+#include "TileMap.h"
 
 #define WINDOW_CLASS_NAME L"Game"
 #define MAIN_WINDOW_TITLE L"Castlevania - Simon'quest"
@@ -25,20 +14,8 @@
 
 #define MAX_FRAME_RATE		100
 
-#define ID_TEX_SIMON		0
-#define ID_TEX_ROPE			1
-#define ID_TEX_GROUND		2
-#define ID_TEX_MISC			3
-#define ID_TEX_MONSTERS		4
+CTileMap *tileMap;
 
-
-CGame *game;
-CSimon * simon;
-CRope * rope;
-CBigCandle * bigCandle;
-CBrick * brick;
-CItemRope * itemRope;
-CDestroyingFlame * destroyingFlame;
 
 vector<LPGAMEOBJECT> objects;
 
@@ -231,6 +208,12 @@ void InitObjectsForTesting()
 	itemRope->SetPosition(400.0f, 60.0f);
 	//objects.push_back(itemRope);
 
+
+	//CTileMap *tileMap = new CTileMap(L"json\\scene_outside_jsonmap.json");
+	tileMap = new CTileMap(L"json\\scene_outside_jsonmap.json");
+	tileMap->Init(ID_TEX_TILESET);
+	tileMap->Draw();
+
 }
 
 
@@ -252,12 +235,13 @@ void LoadResources()
 	// LOAD TEXTURES
 	//
 	CTextures * textures = CTextures::GetInstance();
-	textures->Add(ID_TEX_SIMON, L"Textures\\simon.png", D3DCOLOR_XRGB(255, 0, 255));
-	textures->Add(ID_TEX_GROUND, L"Textures\\ground1.png", D3DCOLOR_XRGB(255, 0, 255));
-	textures->Add(ID_TEX_BBOX, L"Textures\\bbox.png", D3DCOLOR_XRGB(255, 0, 255));
-	textures->Add(ID_TEX_ROPE, L"Textures\\rope.png", D3DCOLOR_XRGB(255, 0, 255));
-	textures->Add(ID_TEX_MISC, L"Textures\\misc.png", D3DCOLOR_XRGB(255, 0, 255));
-	textures->Add(ID_TEX_MONSTERS, L"Textures\\monsters.png", D3DCOLOR_XRGB(255, 0, 255));
+	textures->Add(ID_TEX_SIMON, L"textures\\simon.png", D3DCOLOR_XRGB(255, 0, 255));
+	textures->Add(ID_TEX_GROUND, L"textures\\ground1.png", D3DCOLOR_XRGB(255, 0, 255));
+	textures->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 0, 255));
+	textures->Add(ID_TEX_ROPE, L"textures\\rope.png", D3DCOLOR_XRGB(255, 0, 255));
+	textures->Add(ID_TEX_MISC, L"textures\\misc.png", D3DCOLOR_XRGB(255, 0, 255));
+	textures->Add(ID_TEX_MONSTERS, L"textures\\monsters.png", D3DCOLOR_XRGB(255, 0, 255));
+	textures->Add(ID_TEX_TILESET, L"textures\\tileset.png", NULL);
 
 
 	//
@@ -540,14 +524,14 @@ void LoadResources()
 
 	// small candle - spriteID = 13xxx
 
-	// Item Rope
+	// item Rope
 	sprites->Add(14000, 146, 65, 178, 97, texMisc);
 
 	ani = new CAnimation(999999);
 	ani->AddFrame(14000);
 	animations->Add((int)ItemRopeAniID::IDLE, ani);
 
-	// Destroying Flame
+	// destroying Flame
 	sprites->Add(15000, 156, 7, 172, 37, texMisc);
 	sprites->Add(15001, 198, 7, 214, 37, texMisc);
 	sprites->Add(15002, 113, 7, 129, 37, texMisc);
@@ -605,6 +589,8 @@ void Render()
 		d3ddv->ColorFill(bb, NULL, BACKGROUND_COLOR);
 
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
+
+		tileMap->Draw();
 
 		for (UINT i = 0; i < objects.size(); i++)
 		{
