@@ -57,7 +57,11 @@ void CGame::Init(HWND hWnd)
 */
 void CGame::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, ARGB& argb)
 {
-	D3DXVECTOR3 p(x, y, 0);
+	// get the viewport position
+	float xv = x - xCamera;
+	float yv = y - yCamera;
+
+	D3DXVECTOR3 p(xv, yv, 0);
 	RECT r;
 	r.left = left;
 	r.top = top;

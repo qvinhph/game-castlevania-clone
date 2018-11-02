@@ -15,7 +15,6 @@ using namespace std;
 #define STATE_VISIBLE		0
 #define STATE_INVISIBLE		-1
 
-
 class CGameObject;
 typedef CGameObject * LPGAMEOBJECT;
 

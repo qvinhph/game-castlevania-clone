@@ -8,7 +8,7 @@
 CMovableObject::CMovableObject()
 {
 	vx = 0;
-	vy = WORLD_GRAVITY;
+	vy = WORLD_FALL_SPEED;
 	nx = 1;
 	dt = 0;
 }

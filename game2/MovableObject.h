@@ -1,7 +1,7 @@
 #pragma once
 #include "GameObject.h"
 
-#define WORLD_GRAVITY	0.1f
+#define WORLD_FALL_SPEED	0.1f
 
 class CMovableObject : public CGameObject
 {

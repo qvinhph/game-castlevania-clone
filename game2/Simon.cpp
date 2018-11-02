@@ -171,11 +171,9 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// Simple fall down
 	if (jumping)
-	{
 		vy += SIMON_JUMP_GRAVITY * dt;
-	}		
 	else
-		vy = WORLD_GRAVITY;
+		vy = WORLD_FALL_SPEED;
 
 	// Turn off the attacking flag when it'd done
 	if (attacking)
@@ -212,6 +210,11 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+
+	// get the camera following Simon
+	float xCam, yCam;
+	CalibrateCameraPosition(xCam, yCam);
+	CGame::GetInstance()->SetCameraPosition(xCam, yCam);
 
 }
 
@@ -290,6 +293,22 @@ void CSimon::StartToFlicker()
 		flickering = true;
 		flickerStartTime = GetTickCount();
 	}
+}
+
+void CSimon::CalibrateCameraPosition(float & xCam, float & yCam)
+{
+	float l, t, r, b;
+	this->GetBoundingBox(l, t, r, b);
+
+	// get simon's central point
+	float xCentral = (l + r) / 2;
+	float yCentral = (t + b) / 2;
+
+	float viewportWidth;
+	float viewportHeight;
+	CGame::GetInstance()->GetViewportSize(viewportHeight, viewportWidth);
+	xCam = xCentral - viewportWidth / 2;
+	yCam = yCentral - viewportHeight / 2;
 }
 
 void CSimon::GetBoundingBox(float & left, float & top, float & right, float & bottom)

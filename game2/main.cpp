@@ -20,8 +20,8 @@
 #define MAIN_WINDOW_TITLE L"Castlevania - Simon'quest"
 
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(255, 255, 200)
-#define SCREEN_WIDTH		1000//512
-#define SCREEN_HEIGHT		480
+#define SCREEN_WIDTH		512
+#define SCREEN_HEIGHT		380//480
 
 #define MAX_FRAME_RATE		100
 
@@ -31,8 +31,8 @@
 #define ID_TEX_MISC			3
 #define ID_TEX_MONSTERS		4
 
-CGame *game;
 
+CGame *game;
 CSimon * simon;
 CRope * rope;
 CBigCandle * bigCandle;
@@ -221,15 +221,15 @@ void InitObjectsForTesting()
 
 	bigCandle = new CBigCandle();
 	bigCandle->SetPosition(200.0f, 165.0f);
-	objects.push_back(bigCandle);
+	//objects.push_back(bigCandle);
 
 	itemRope = new CItemRope();
 	itemRope->SetPosition(000.0f, 0.0f);
-	objects.push_back(itemRope);
+	//objects.push_back(itemRope);
 
 	itemRope = new CItemRope();
 	itemRope->SetPosition(400.0f, 60.0f);
-	objects.push_back(itemRope);
+	//objects.push_back(itemRope);
 
 }
 
@@ -242,6 +242,12 @@ void InitObjectsForTesting()
 */
 void LoadResources()
 {
+	//
+	//	GET VIEWPORT SIZE
+	//
+	CGame::GetInstance()->SetViewportWidth(SCREEN_WIDTH);
+	CGame::GetInstance()->SetViewportHeight(SCREEN_HEIGHT);
+
 	//
 	// LOAD TEXTURES
 	//

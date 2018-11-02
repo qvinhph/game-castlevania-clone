@@ -6,17 +6,16 @@
 
 #include "KeyEventHandler.h"
 
-#define DIRECTINPUT_VERSION 0x0800
+#define DIRECTINPUT_VERSION	 0x0800
 #define KEYBOARD_BUFFER_SIZE 1024
+
 
 struct ARGB
 {
-	ARGB() : alpha(255), red(255), green(255), blue(255)
-	{}
+	ARGB() : alpha(255), red(255), green(255), blue(255) {}
 
 	ARGB(int alpha, int red, int green, int blue)
-		: alpha(alpha), red(red), green(green), blue(blue)
-	{}
+		: alpha(alpha), red(red), green(green), blue(blue) {}
 
 	int alpha;
 	int red;
@@ -43,11 +42,20 @@ class CGame
 
 	LPKEY_EVENT_HANDLER keyEventHandler;
 
+	float xCamera;
+	float yCamera;
+	float viewportWidth;
+	float viewportHeight;
 
 	static CGame * __instance;
 	CGame();
 
 public:
+	void SetCameraPosition(float x, float y) { this->xCamera = x; this->yCamera = y; }
+	void SetViewportWidth(float viewportWidth) { this->viewportWidth = viewportWidth; }
+	void SetViewportHeight(float viewportHeight) { this->viewportHeight = viewportHeight; }
+	void GetViewportSize(float &height, float &width) { height = this->viewportHeight, width = this->viewportWidth; }
+
 	void InitKeyboard(LPKEY_EVENT_HANDLER handler);
 	void Init(HWND hWnd);
 	void Draw(float x, float y, LPDIRECT3DTEXTURE9 tex, int left, int top, int right, int bottom, 

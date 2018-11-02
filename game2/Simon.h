@@ -79,6 +79,7 @@ public:
 	void SetMatchedAnimation(int state);
 	void StartToAttack();
 	void StartToFlicker();
+	void CalibrateCameraPosition(float &xCam, float &yCam);		// To keep Simon at center of camera
 
 	static CSimon * GetInstance();
 };
