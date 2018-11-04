@@ -47,11 +47,6 @@ void CGameObject::Render()
 	animations->Get(currentAniID)->Render(x, y);
 }
 
-//void CGameObject::RenderAnimation(int aniID)
-//{
-//	animations->Get(aniID)->Render(x, y);
-//}
-
 void CGameObject::Destroy()
 {
 	// Get the central point (x , y) of the destroying object
@@ -67,11 +62,13 @@ void CGameObject::Destroy()
 
 CGameObject::CGameObject()
 {
-	flickering = false;
-	ARGB argb = ARGB();
 	x = INSIVIBLE_ZONE_X;
 	y = INSIVIBLE_ZONE_Y;
+
 	state = STATE_INVISIBLE;
 	currentAniID = -1;
+
+	flickering = false;
+	ARGB argb = ARGB();
 	animations = CAnimations::GetInstance();
 }

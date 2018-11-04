@@ -2,15 +2,16 @@
 #include "MovableObject.h"
 #include "Rope.h"
 
-#define SIMON_IDLE_BBOX_WIDTH			32
-#define SIMON_IDLE_BBOX_HEIGHT			60
-#define SIMON_CROUCHING_BBOX_WIDTH		32
-#define SIMON_CROUCHING_BBOX_HEIGHT		46
+#define SIMON_IDLE_BBOX_WIDTH			32.0f
+#define SIMON_IDLE_BBOX_HEIGHT			62.0f
+#define SIMON_CROUCHING_BBOX_WIDTH		32.0f
+#define SIMON_CROUCHING_BBOX_HEIGHT		46.0f
+										
+// TO-DO: SHOULD THIS NEED TO CALIBRATE ??
+#define SIMON_ATTACKING_BBOX_WIDTH		32.0f
+#define SIMON_ATTACKING_BBOX_HEIGHT		60.0f
 
-#define SIMON_ATTACKING_BBOX_WIDTH		32
-#define SIMON_ATTACKING_BBOX_HEIGHT		60
-
-#define SIMON_WALKING_SPEED				0.1f
+#define SIMON_WALKING_SPEED				0.15f
 #define SIMON_JUMP_SPEED_Y				0.3f // 0.1
 #define SIMON_JUMP_GRAVITY				0.001f //0.0001
 
@@ -75,7 +76,7 @@ public:
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
 	void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents) override;
 	
-	// TODO: Maybe need to make this as a virtual function
+	// TO-DO: Maybe need to make this as a virtual function
 	void SetMatchedAnimation(int state);
 	void StartToAttack();
 	void StartToFlicker();

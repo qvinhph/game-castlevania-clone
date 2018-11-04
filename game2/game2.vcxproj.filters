@@ -102,6 +102,9 @@
     <ClInclude Include="JsonUtility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InvisibleWall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Brick.cpp">
@@ -171,6 +174,9 @@
       <Filter>Source Files\TiledMap</Filter>
     </ClCompile>
     <ClCompile Include="JsonUtility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InvisibleWall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

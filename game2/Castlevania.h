@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Animation.h"
 #include "Animations.h"
 #include "AnimationFrame.h"
@@ -17,6 +19,7 @@
 #include "DestroyingFlame.h"
 #include "DestroyingFlames.h"
 #include "ItemRope.h"
+#include "InvisibleWall.h"
 
 
 #define ID_TEX_SIMON		0
@@ -27,10 +30,9 @@
 #define ID_TEX_TILESET		5
 
 
-CGame *game;
-CSimon * simon;
-CRope * rope;
-CBigCandle * bigCandle;
-CBrick * brick;
-CItemRope * itemRope;
-CDestroyingFlame * destroyingFlame;
+//CSimon * simon;
+//CRope * rope;
+//CBigCandle * bigCandle;
+//CBrick * brick;
+//CItemRope * itemRope;
+//CDestroyingFlame * destroyingFlame;

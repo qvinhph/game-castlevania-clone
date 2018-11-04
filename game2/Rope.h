@@ -1,12 +1,12 @@
 #pragma once
 #include "MovableObject.h"
 
-#define FRONT_ROPE_LV1_BBOX_HEIGHT		18
-#define FRONT_ROPE_LV1_BBOX_WIDTH		56
-#define FRONT_ROPE_LV2_BBOX_HEIGHT		18
-#define FRONT_ROPE_LV2_BBOX_WIDTH		56
-#define FRONT_ROPE_LV3_BBOX_HEIGHT		18
-#define FRONT_ROPE_LV3_BBOX_WIDTH		89
+#define FRONT_ROPE_LV1_BBOX_HEIGHT		18.0f
+#define FRONT_ROPE_LV1_BBOX_WIDTH		56.0f
+#define FRONT_ROPE_LV2_BBOX_HEIGHT		18.0f
+#define FRONT_ROPE_LV2_BBOX_WIDTH		56.0f
+#define FRONT_ROPE_LV3_BBOX_HEIGHT		18.0f
+#define FRONT_ROPE_LV3_BBOX_WIDTH		89.0f
 
 #define BACK_ROPE_BBOX_WIDTH			32
 
@@ -38,7 +38,7 @@ public:
 
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL) override;
 
-	// TODO: Maybe need to refactoring
+	// TO-DO: Maybe need to refactoring
 	void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents) override;
 	void Render() override;
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;

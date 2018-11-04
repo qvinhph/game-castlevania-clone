@@ -29,6 +29,7 @@
     <ClInclude Include="DestroyingFlames.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="InvisibleWall.h" />
     <ClInclude Include="ItemRope.h" />
     <ClInclude Include="JsonUtility.h" />
     <ClInclude Include="KeyEventHandler.h" />
@@ -53,6 +54,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="InvisibleWall.cpp" />
     <ClCompile Include="ItemRope.cpp" />
     <ClCompile Include="JsonUtility.cpp" />
     <ClCompile Include="KeyEventHandler.cpp" />

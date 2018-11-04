@@ -6,9 +6,16 @@
 #include "Sprites.h"
 #include "Textures.h"
 
+#define TILESET_KEY_MARGIN				"margin"
+#define TILESET_KEY_SPACING				"spacing"
+#define TILESET_KEY_TILEHEIGHT			"tileheight"
+#define TILESET_KEY_TILEWIDTH			"tilewidth"
+#define TILESET_KEY_IMAGEHEIGHT			"imageheight"
+#define TILESET_KEY_IMAGEWIDTH			"imagewidth"
+
 using json = nlohmann::json;
 
-CTileset::CTileset(int textureID, LPCWSTR jsonFilePath, int firstGrid)
+CTileset::CTileset(int textureID, string jsonFilePath, int firstGrid)
 	: jsonFilePath(jsonFilePath), firstGrid(firstGrid)
 {
 	this->texture = CTextures::GetInstance()->Get(textureID);
@@ -21,17 +28,17 @@ void CTileset::Init()
 	inputFile >> root;
 	inputFile.close();
 	
-	if (root["margin"] != 0 && root["spacing"] != 0)
+	if (root[TILESET_KEY_MARGIN] != 0 && root[TILESET_KEY_SPACING] != 0)
 	{
-		DebugOut(L"\nTileset image was not in a correct format\n");
+		DebugOut(L"\n[ERROR] Tileset image was not in a correct format\n");
 		return;
 	}
 	else 
 	{
-		tileHeight = root["tileheight"].get<int>();
-		tileWidth = root["tilewidth"].get<int>();
-		rows = root["imageheight"].get<int>() / tileHeight;
-		colums = root["imagewidth"].get<int>() / tileWidth;
+		tileHeight = root[TILESET_KEY_TILEHEIGHT].get<int>();
+		tileWidth = root[TILESET_KEY_TILEWIDTH].get<int>();
+		rows = root[TILESET_KEY_IMAGEHEIGHT].get<int>() / tileHeight;
+		colums = root[TILESET_KEY_IMAGEWIDTH].get<int>() / tileWidth;
 
 
 		LPTILE tile;

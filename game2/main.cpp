@@ -8,14 +8,17 @@
 #define WINDOW_CLASS_NAME L"Game"
 #define MAIN_WINDOW_TITLE L"Castlevania - Simon'quest"
 
-#define BACKGROUND_COLOR D3DCOLOR_XRGB(255, 255, 200)
-#define SCREEN_WIDTH		512
-#define SCREEN_HEIGHT		380//480
+#define BACKGROUND_COLOR	D3DCOLOR_XRGB(0, 0, 0)
 
-#define MAX_FRAME_RATE		100
+// TO-DO : ...
+#define SCREEN_WIDTH		528.5f//512
+#define SCREEN_HEIGHT		490.8f//448
+
+#define MAX_FRAME_RATE		120
 
 CTileMap *tileMap;
-
+CGame *game;
+CGameObject *gameObject;
 
 vector<LPGAMEOBJECT> objects;
 
@@ -36,31 +39,31 @@ void CInputHandler::OnKeyDown(int keyCode)
 	switch (keyCode)
 	{
 	case DIK_RIGHT:
-		simon->SetState(SIMON_STATE_WALK_RIGHT);
+		CSimon::GetInstance()->SetState(SIMON_STATE_WALK_RIGHT);
 		break;
 
 	case DIK_LEFT:
-		simon->SetState(SIMON_STATE_WALK_LEFT);
+		CSimon::GetInstance()->SetState(SIMON_STATE_WALK_LEFT);
 		break;
 
 	case DIK_N:
-		simon->SetState(SIMON_STATE_JUMP);
+		CSimon::GetInstance()->SetState(SIMON_STATE_JUMP);
 		break;
 
 	case DIK_M:
-		simon->SetState(SIMON_STATE_ATTACK);
+		CSimon::GetInstance()->SetState(SIMON_STATE_ATTACK);
 		break;
 
 	case DIK_1:
-		simon->SetPosition(0.0f, 0.0f);
+		CSimon::GetInstance()->SetPosition(0.0f, 0.0f);
 		break;
 
 	case DIK_2:
-		bigCandle->SetPosition(200.0f, 200.0f);
+		//bigCandle->SetPosition(200.0f, 200.0f);
 		break;
 
 	case DIK_3:
-		itemRope->SetPosition(300.0f, 200.0f);
+		//itemRope->SetPosition(300.0f, 200.0f);
 		break;
 
 	default:
@@ -74,23 +77,23 @@ void CInputHandler::OnKeyUp(int keyCode)
 	switch (keyCode)
 	{
 	case DIK_DOWN:
-		simon->SetState(SIMON_STATE_IDLE);
+		CSimon::GetInstance()->SetState(SIMON_STATE_IDLE);
 	}		
 }
 
 void CInputHandler::KeyState(BYTE *states)
 {
 	if (game->IsKeyDown(DIK_DOWN))
-		simon->SetState(SIMON_STATE_CROUCH);
+		CSimon::GetInstance()->SetState(SIMON_STATE_CROUCH);
 
 	else if (game->IsKeyDown(DIK_RIGHT))
-		simon->SetState(SIMON_STATE_WALK_RIGHT);
+		CSimon::GetInstance()->SetState(SIMON_STATE_WALK_RIGHT);
 
 	else if (game->IsKeyDown(DIK_LEFT))
-		simon->SetState(SIMON_STATE_WALK_LEFT);
+		CSimon::GetInstance()->SetState(SIMON_STATE_WALK_LEFT);
 
 	else
-		simon->SetState(SIMON_STATE_IDLE);
+		CSimon::GetInstance()->SetState(SIMON_STATE_IDLE);
 }
 
 #pragma endregion
@@ -164,58 +167,63 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int Sc
 void InitObjectsForTesting()
 {
 
-	simon = CSimon::GetInstance();
-	objects.push_back(simon);
-	simon->SetPosition(130.0f, -50.0f);
+	gameObject = CSimon::GetInstance();
+	objects.push_back(gameObject);
+	gameObject->SetPosition(130.0f, -50.0f);
 
-	rope = CRope::GetInstance();
-	objects.push_back(rope);
+	gameObject = CRope::GetInstance();
+	objects.push_back(gameObject);
 
 	for (int i = 0; i < 30; i++)
 	{
-		brick = new CBrick();
-		brick->SetPosition(0 + i * 32.0f, 300);
-		objects.push_back(brick);
+		gameObject = new CBrick();
+		gameObject->SetPosition(0 + i * 32.0f, 300);
+		objects.push_back(gameObject);
 	}
 
 	for (int i = 0; i < 3; i++)
 	{
-		brick = new CBrick();
-		brick->SetPosition(100 + i * 32.0f, 50);
-		objects.push_back(brick);
+		gameObject = new CBrick();
+		gameObject->SetPosition(100 + i * 32.0f, 50);
+		objects.push_back(gameObject);
 	}
 
 	for (int i = 0; i < 3; i++)
 	{
-		destroyingFlame = new CDestroyingFlame();
-		CDestroyingFlames::GetInstance()->Add(destroyingFlame);
-		objects.push_back(destroyingFlame);
+		gameObject = new CDestroyingFlame();
+		CDestroyingFlames::GetInstance()->Add((CDestroyingFlame *)gameObject);
+		objects.push_back(gameObject);
 	}
 
-	brick = new CBrick();
-	brick->SetPosition(132.0f, 240);
-	objects.push_back(brick);
+	gameObject = new CBrick();
+	gameObject->SetPosition(132.0f, 240);
+	objects.push_back(gameObject);
 
-	bigCandle = new CBigCandle();
-	bigCandle->SetPosition(200.0f, 165.0f);
-	//objects.push_back(bigCandle);
+	gameObject = new CBigCandle();
+	gameObject->SetPosition(200.0f, 165.0f);
+	objects.push_back(gameObject);
 
-	itemRope = new CItemRope();
-	itemRope->SetPosition(000.0f, 0.0f);
-	//objects.push_back(itemRope);
+	gameObject = new CItemRope();
+	gameObject->SetPosition(000.0f, 0.0f);
+	objects.push_back(gameObject);
 
-	itemRope = new CItemRope();
-	itemRope->SetPosition(400.0f, 60.0f);
-	//objects.push_back(itemRope);
+	gameObject = new CItemRope();
+	gameObject->SetPosition(400.0f, 60.0f);
+	objects.push_back(gameObject);
 
-
-	//CTileMap *tileMap = new CTileMap(L"json\\scene_outside_jsonmap.json");
 	tileMap = new CTileMap(L"json\\scene_outside_jsonmap.json");
 	tileMap->Init(ID_TEX_TILESET);
 	tileMap->Draw();
 
 }
 
+void TestInit()
+{
+	tileMap = new CTileMap(L"json\\scene_outside_jsonmap.json");
+	tileMap->Init(ID_TEX_TILESET);
+	tileMap->Draw();
+	objects = tileMap->GetGameObjects();
+}
 
 /*
 	Load all game resources
@@ -261,25 +269,25 @@ void LoadResources()
 
 	LPDIRECT3DTEXTURE9 texSimon = textures->Get(ID_TEX_SIMON);
 	
-	sprites->Add(99000, 436, 4, 468, 64, texSimon);		// idle right
-	sprites->Add(99100, 12, 202, 44, 262, texSimon);	// idle left
+	sprites->Add(99000, 436, 2, 468, 64, texSimon);		// idle right
+	sprites->Add(99100, 12, 200, 44, 262, texSimon);	// idle left
 
-	sprites->Add(99001, 378, 2, 402, 64, texSimon);		// walk right
-	sprites->Add(99002, 314, 4, 344, 64, texSimon);		// walk right
-	sprites->Add(99003, 260, 3, 284, 64, texSimon);		// walk right
-	sprites->Add(99101, 78, 200, 102, 262, texSimon);	// walk left
-	sprites->Add(99102, 136, 202, 166, 262, texSimon);	// walk left
-	sprites->Add(99103, 196, 201, 220, 262, texSimon);	// walk left
+	sprites->Add(99001, 374, 2, 406, 64, texSimon);		// walk right
+	sprites->Add(99002, 313, 2, 345, 64, texSimon);		// walk right
+	sprites->Add(99003, 256, 2, 288, 64, texSimon);		// walk right
+	sprites->Add(99101, 74, 200, 106, 262, texSimon);	// walk left
+	sprites->Add(99102, 135, 200, 167, 262, texSimon);	// walk left
+	sprites->Add(99103, 192, 200, 224, 262, texSimon);	// walk left
 
-	sprites->Add(99004, 196, 1, 229, 47, texSimon);		// crouch right
+	sprites->Add(99004, 196, 1, 228, 47, texSimon);		// crouch right
 	sprites->Add(99104, 252, 199, 284, 245, texSimon);	// crouch left
 
-	sprites->Add(99007, 136, 4, 168, 64, texSimon);		// attack right
-	sprites->Add(99008, 75, 4, 107, 64, texSimon);		// attack right
-	sprites->Add(99009, 16, 4, 59, 64, texSimon);		// attack right
-	sprites->Add(99107, 312, 202, 344, 262, texSimon);	// attack left
-	sprites->Add(99108, 373, 202, 405, 262, texSimon);	// attack left
-	sprites->Add(99109, 432, 202, 464, 262, texSimon);	// attack left
+	sprites->Add(99007, 136, 2, 168, 64, texSimon);		// attack right
+	sprites->Add(99008, 75, 2, 107, 64, texSimon);		// attack right
+	sprites->Add(99009, 16, 2, 48, 64, texSimon);		// attack right
+	sprites->Add(99107, 312, 200, 344, 262, texSimon);	// attack left
+	sprites->Add(99108, 373, 200, 405, 262, texSimon);	// attack left
+	sprites->Add(99109, 432, 200, 464, 262, texSimon);	// attack left
 	
 	sprites->Add(99020, 438, 72, 470, 130, texSimon);	// go in
 
@@ -319,11 +327,11 @@ void LoadResources()
 
 	sprites->Add(99999, 60, 269, 64, 60, texSimon);	// die
 
-	ani = new CAnimation(999999);
+	ani = new CAnimation(100);
 	ani->AddFrame(99000);
 	animations->Add((int)SimonAniID::IDLE_RIGHT, ani);
 
-	ani = new CAnimation(999999);
+	ani = new CAnimation(100);
 	ani->AddFrame(99100);
 	animations->Add((int)SimonAniID::IDLE_LEFT, ani);
 
@@ -353,23 +361,23 @@ void LoadResources()
 	ani->AddFrame(99109, 200);
 	animations->Add((int)SimonAniID::ATTACK_LEFT, ani);
 
-	ani = new CAnimation(999999);
+	ani = new CAnimation(100);
 	ani->AddFrame(99004);
 	animations->Add((int)SimonAniID::CROUCH_RIGHT, ani);
 
-	ani = new CAnimation(999999);
+	ani = new CAnimation(100);
 	ani->AddFrame(99104);
 	animations->Add((int)SimonAniID::CROUCH_LEFT, ani);
 
-	ani = new CAnimation(999999);
+	ani = new CAnimation(100);
 	ani->AddFrame(99020);
 	animations->Add((int)SimonAniID::GO_IN, ani);
 
-	ani = new CAnimation(999999);
+	ani = new CAnimation(100);
 	ani->AddFrame(99021);
 	animations->Add((int)SimonAniID::PUSHED_BACK_RIGHT, ani);
 
-	ani = new CAnimation(999999);
+	ani = new CAnimation(100);
 	ani->AddFrame(99121);
 	animations->Add((int)SimonAniID::PUSHED_BACK_LEFT, ani);
 
@@ -429,7 +437,7 @@ void LoadResources()
 	ani->AddFrame(99159, 200);
 	animations->Add((int)SimonAniID::UP_STAIR_ATTACK_LEFT, ani);
 
-	ani = new CAnimation(999999);
+	ani = new CAnimation(100);
 	ani->AddFrame(99999);
 	animations->Add((int)SimonAniID::DIE, ani);
 
@@ -509,7 +517,7 @@ void LoadResources()
 	// brick
 	sprites->Add(11000, 0, 0, 32, 32, texGround);
 
-	ani = new CAnimation(999999);
+	ani = new CAnimation(100);
 	ani->AddFrame(11000);
 	animations->Add(BrickAniID::IDLE, ani);
 
@@ -527,7 +535,7 @@ void LoadResources()
 	// item Rope
 	sprites->Add(14000, 146, 65, 178, 97, texMisc);
 
-	ani = new CAnimation(999999);
+	ani = new CAnimation(100);
 	ani->AddFrame(14000);
 	animations->Add((int)ItemRopeAniID::IDLE, ani);
 
@@ -545,7 +553,9 @@ void LoadResources()
 #pragma endregion
 
 
-	InitObjectsForTesting();
+	//InitObjectsForTesting();
+	TestInit();
+
 }
 
 
@@ -555,7 +565,7 @@ void LoadResources()
 */
 void Update(DWORD dt)
 {
-	// TODO: Need an optimized way
+	// TO-DO: Need an optimized way
 	// only the objects in the camera zone
 	vector<LPGAMEOBJECT> coObjects;
 	for (UINT i = 0; i < objects.size(); i++)
@@ -660,6 +670,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	game->InitKeyboard(inputHandler);
 
 	LoadResources();
+
+	SetWindowPos(hWnd, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
+
 	Run();
 
 	return 0;

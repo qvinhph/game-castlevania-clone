@@ -15,6 +15,7 @@ using namespace std;
 #define STATE_VISIBLE		0
 #define STATE_INVISIBLE		-1
 
+
 class CGameObject;
 typedef CGameObject * LPGAMEOBJECT;
 
@@ -45,14 +46,12 @@ protected:
 
 	float x;
 	float y;
-
 	int state;
+
+	CAnimations* animations;		// pointer helping getting the animations
 	int currentAniID;
 
-	CAnimations* animations; // pointer helping getting the animations
-
-	// use for flickerable objects
-	bool flickering;
+	bool flickering;				// use for flickerable objects
 	ARGB argb;
 
 public:
@@ -67,8 +66,7 @@ public:
 	virtual void Render();
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
 
-	// Send the object somewhere outside the game world.
-	virtual void Destroy();		
+	virtual void Destroy();			// Send the object somewhere outside the game world.
 
 	CGameObject();
 };

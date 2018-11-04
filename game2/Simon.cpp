@@ -16,6 +16,7 @@ CSimon::CSimon()
 	this->jumping = false;
 	this->crouching = false;
 	this->attackStartTime = 0;
+	this->currentAniID = SIMON_STATE_DIE;
 
 	// ready to be used
 	rope = CRope::GetInstance();
@@ -176,6 +177,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		vy = WORLD_FALL_SPEED;
 
 	// Turn off the attacking flag when it'd done
+	// TO-DO: maybe these codes need to be refactoring -> TryEndAttacking(time) & TryEndFlickering(time)
 	if (attacking)
 		if (GetTickCount() - attackStartTime >= ATTACKING_TIME)
 		{
@@ -237,14 +239,14 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 		if (dynamic_cast<CBigCandle *>(e->obj))
 		{
 			CBigCandle * bigCandle = dynamic_cast<CBigCandle *>(e->obj);
-			DebugOut(L"\nTouch large candle");
+			DebugOut(L"\n[INFO] Touch large candle");
 		}
 
 		// Collision logic with RopeItem
 		else if (dynamic_cast<CItemRope *>(e->obj))
 		{
 			CItemRope * itemRope = dynamic_cast<CItemRope *>(e->obj);
-			DebugOut(L"\nTouch item rope");
+			DebugOut(L"\n[INFO] Touch item rope");
 
 			rope->LevelUp();
 			itemRope->SetState(STATE_INVISIBLE);
@@ -308,7 +310,7 @@ void CSimon::CalibrateCameraPosition(float & xCam, float & yCam)
 	float viewportHeight;
 	CGame::GetInstance()->GetViewportSize(viewportHeight, viewportWidth);
 	xCam = xCentral - viewportWidth / 2;
-	yCam = yCentral - viewportHeight / 2;
+	yCam = 0;//yCentral - viewportHeight / 2;
 }
 
 void CSimon::GetBoundingBox(float & left, float & top, float & right, float & bottom)

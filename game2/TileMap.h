@@ -1,8 +1,12 @@
 #pragma once
 #include <nlohmann/json.hpp>
 #include "Tileset.h"
+#include "GameObject.h"
 
 using json = nlohmann::json;
+
+
+#pragma region Some struct help containing infomation
 
 struct CLayerInfo
 {
@@ -12,26 +16,38 @@ struct CLayerInfo
 	vector<int> data;
 
 	CLayerInfo(string name, int width, int height, vector<int> data)
-	{
-		this->name = name;
-		this->width = width;
-		this->height = height;
-		this->data = data;
-	}
+		: name(name), width(width), height(height), data(data) {}
 };
 typedef CLayerInfo * LPLAYERINFO;
+
+
+struct CObjectInfo
+{
+	std::string name;
+	float x;
+	float y;
+	float width;
+	float height;
+
+	CObjectInfo(string name, float x, float y, float width, float height)
+		: name(name), x(x), y(y), width(width), height(height) {}
+};
+typedef CObjectInfo * LPOBJECTINFO;
+
+#pragma endregion
+
 
 class CTileMap
 {
 
-	int width;									// map size by tiles
-	int height;
+	int width;												// map width by tiles
+	int height;												// map height by tiles
 
 	CTileset* tileset;
-	LPCWSTR jsonFilePath;							// dir to json file contains the tileset information
+	LPCWSTR jsonFilePath;									// dir to json file contains the tileset information
 
-	vector<LPLAYERINFO> layers;						// a collection of layers we should load to map
-	vector<LPLAYERINFO> GetTileLayers(json root);	// return vector of layers in json object if has
+	vector<LPLAYERINFO> layers;								// a vector of layers we should load to map
+	vector<LPOBJECTINFO> objects;							// a vector of game objects
 
 public:
 
@@ -39,6 +55,10 @@ public:
 
 	void Init(int tilesetTextureID);
 	void Draw();
+	vector<LPGAMEOBJECT> GetGameObjects();					// return a vector of game objects in the map
+
+	static vector<LPLAYERINFO> GetTileLayers(json root);	// return a vector of layers in the json tilemap if has
+	static vector<LPOBJECTINFO> GetObjects(json root);		// return a vector of objects in the json tilemap if has
 
 };
 

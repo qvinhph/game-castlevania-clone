@@ -149,8 +149,6 @@ void CRope::GetBoundingBox(float & left, float & top, float & right, float & bot
 
 		left = x;
 		top = y;
-
-		//DebugOut(L"Succeed getting the rope bbox\n");
 	}
 }
 
@@ -232,10 +230,7 @@ void CRope::SetState(int state)
 
 		// To rearrange the rope frames
 		if (currentAniID > 0)
-		{
-			//DebugOut(L"\n rope reset: %d", currentAniID);
 			this->ResetAnimation(currentAniID);
-		}
 	}
 }
 
