@@ -22,6 +22,13 @@ CSimon::CSimon()
 	rope = CRope::GetInstance();
 }
 
+// TODO: Think twice: 
+// Should I use SetAction(Action action) instead of SetState(...) ?
+// By that, SetState() will be consistent with all the game objects, 
+// only used for set visibile state or invisible state
+/*
+	Use to tell Simon to do something and process the call
+*/
 void CSimon::SetState(int state)
 {
 	// Game logic: while attacking, Simon stops moving and reject other action
@@ -310,6 +317,8 @@ void CSimon::CalibrateCameraPosition(float & xCam, float & yCam)
 	float viewportHeight;
 	CGame::GetInstance()->GetViewportSize(viewportHeight, viewportWidth);
 	xCam = xCentral - viewportWidth / 2;
+
+	// TODO: should this need a more generic code ?
 	yCam = 0;//yCentral - viewportHeight / 2;
 }
 

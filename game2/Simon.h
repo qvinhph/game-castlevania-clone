@@ -76,7 +76,6 @@ public:
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
 	void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents) override;
 	
-	// TO-DO: Maybe need to make this as a virtual function
 	void SetMatchedAnimation(int state);
 	void StartToAttack();
 	void StartToFlicker();

@@ -20,7 +20,8 @@ public:
 		if (root[name].is_array() && !(root[name].is_null()))
 			result = root[name];
 		else
-			DebugOut(L"\n[ERROR] No json array found");
+			// TODO: FIX THIS. Output doesn't meet out expectation.
+			DebugOut(L"\n[INFO] No json array found with key = %s", name.c_str());
 
 		return result;
 	}

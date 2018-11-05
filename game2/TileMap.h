@@ -28,9 +28,10 @@ struct CObjectInfo
 	float y;
 	float width;
 	float height;
+	Item dropableItem;
 
-	CObjectInfo(string name, float x, float y, float width, float height)
-		: name(name), x(x), y(y), width(width), height(height) {}
+	CObjectInfo(string name, float x, float y, float width, float height, Item item)
+		: name(name), x(x), y(y), width(width), height(height), dropableItem(item) {}
 };
 typedef CObjectInfo * LPOBJECTINFO;
 
@@ -55,10 +56,11 @@ public:
 
 	void Init(int tilesetTextureID);
 	void Draw();
-	vector<LPGAMEOBJECT> GetGameObjects();					// return a vector of game objects in the map
 
+	vector<LPGAMEOBJECT> GetGameObjects();					// return a vector of game objects in the map
 	static vector<LPLAYERINFO> GetTileLayers(json root);	// return a vector of layers in the json tilemap if has
 	static vector<LPOBJECTINFO> GetObjects(json root);		// return a vector of objects in the json tilemap if has
+	static Item GetDropableItem(string string);		// return DropableItem value by string given.
 
 };
 

@@ -73,9 +73,9 @@ void CRope::Render()
 }
 
 /*
-	Get the current animation match with the state of the rope
+	Get the current animation match with the current rope
 */
-void CRope::SetMatchedAnimation(int state)
+void CRope::SetMatchedAnimation()
 {
 	switch (level)
 	{
@@ -226,6 +226,7 @@ void CRope::SetState(int state)
 	// hide the rope
 	if (state == STATE_INVISIBLE)
 	{
+		// TODO: NEED CLEANING THIS
 		SetPosition(-100, -100);
 
 		// To rearrange the rope frames

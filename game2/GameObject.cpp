@@ -2,8 +2,8 @@
 
 #include "Textures.h"
 #include "Game.h"
-#include "DestroyingFlame.h"
 #include "DestroyingFlames.h"
+#include "Items.h"
 
 void CGameObject::RenderBoundingBox()
 {
@@ -56,6 +56,9 @@ void CGameObject::Destroy()
 	float central_y = (t + b) / 2;
 	CDestroyingFlames::GetInstance()->ShowAFlame(central_x, central_y);
 
+	// Drop the item the object is holding, if has
+	CItems::GetInstance()->CheckAndDrop(this);
+
 	this->x = INSIVIBLE_ZONE_X;
 	this->y = INSIVIBLE_ZONE_Y;
 }
@@ -65,10 +68,10 @@ CGameObject::CGameObject()
 	x = INSIVIBLE_ZONE_X;
 	y = INSIVIBLE_ZONE_Y;
 
-	state = STATE_INVISIBLE;
-	currentAniID = -1;
-
 	flickering = false;
 	ARGB argb = ARGB();
+
+	state = STATE_INVISIBLE;
+	currentAniID = -1;
 	animations = CAnimations::GetInstance();
 }

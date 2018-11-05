@@ -45,7 +45,7 @@ public:
 	void SetState(int state) override;
 
 	void UpdateRopePosition(int aniID);
-	void SetMatchedAnimation(int state);
+	void SetMatchedAnimation();
 	void LevelUp();
 	bool IsOverlapping(LPGAMEOBJECT obj);
 

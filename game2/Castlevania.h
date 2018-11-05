@@ -20,6 +20,7 @@
 #include "DestroyingFlames.h"
 #include "ItemRope.h"
 #include "InvisibleWall.h"
+#include "Items.h"
 
 
 #define ID_TEX_SIMON		0

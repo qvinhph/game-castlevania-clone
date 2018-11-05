@@ -15,6 +15,12 @@ using namespace std;
 #define STATE_VISIBLE		0
 #define STATE_INVISIBLE		-1
 
+enum class Item
+{
+	NONE,
+	ITEMROPE,
+	HEART,
+};
 
 class CGameObject;
 typedef CGameObject * LPGAMEOBJECT;
@@ -53,20 +59,25 @@ protected:
 
 	bool flickering;				// use for flickerable objects
 	ARGB argb;
+	Item item;						// the item object holds, drop when destroyed
 
 public:
+
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
 	void GetPosition(float &x, float &y) { x = this->x, y = this->y; }
 
-	int GetState() { return this->state; }
-	void RenderBoundingBox();
+	void SetHoldingItem(Item item) { this->item = item; }
+	Item GetHoldingItem() { return this->item; }				// return the item name (enum class)
 
-	virtual void ResetAnimation(int aniID);	
 	virtual void SetState(int state);
-	virtual void Render();
+	int GetState() { return this->state; }
+	
+	void RenderBoundingBox();
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
-
-	virtual void Destroy();			// Send the object somewhere outside the game world.
+	
+	virtual void ResetAnimation(int aniID);	
+	virtual void Render();
+	virtual void Destroy();			// Add destroying effect and send object to invisible zone
 
 	CGameObject();
 };

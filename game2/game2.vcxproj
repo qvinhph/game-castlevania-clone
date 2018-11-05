@@ -31,6 +31,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="InvisibleWall.h" />
     <ClInclude Include="ItemRope.h" />
+    <ClInclude Include="Items.h" />
     <ClInclude Include="JsonUtility.h" />
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="MovableObject.h" />
@@ -49,6 +50,7 @@
     <ClCompile Include="AnimationFrame.cpp" />
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="Brick.cpp" />
+    <ClCompile Include="Items.cpp" />
     <ClCompile Include="DestroyingFlame.cpp" />
     <ClCompile Include="DestroyingFlames.cpp" />
     <ClCompile Include="GameObject.cpp" />

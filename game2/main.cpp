@@ -6,7 +6,7 @@
 #include "TileMap.h"
 
 #define WINDOW_CLASS_NAME L"Game"
-#define MAIN_WINDOW_TITLE L"Castlevania - Simon'quest"
+#define MAIN_WINDOW_TITLE L"Castlevania I"
 
 #define BACKGROUND_COLOR	D3DCOLOR_XRGB(0, 0, 0)
 
@@ -605,7 +605,7 @@ void Render()
 		for (UINT i = 0; i < objects.size(); i++)
 		{
 			objects[i]->Render();
-			objects[i]->RenderBoundingBox();
+			//objects[i]->RenderBoundingBox();
 		}
 
 		spriteHandler->End();

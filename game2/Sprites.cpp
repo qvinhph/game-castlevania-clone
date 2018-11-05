@@ -15,6 +15,7 @@ LPSPRITE CSprites::Get(int id)
 
 CSprites *CSprites::GetInstance()
 {
-	if (__instance == NULL) __instance = new CSprites();
+	if (__instance == NULL) 
+		__instance = new CSprites();
 	return __instance;
 }
