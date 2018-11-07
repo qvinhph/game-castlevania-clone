@@ -176,8 +176,7 @@ void CGame::ProcessKeyboard()
 	}
 
 	keyEventHandler->KeyState((BYTE *)&keyStates);
-
-
+	
 
 	// Collect all buffered events
 	DWORD dwElements = KEYBOARD_BUFFER_SIZE;

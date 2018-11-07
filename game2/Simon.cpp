@@ -1,12 +1,13 @@
 #include <algorithm>
 
-#include "debug.h"
 #include "Simon.h"
 #include "Game.h"
 #include "Animations.h"
 #include "BigCandle.h"
 #include "ItemRope.h"
 #include "Brick.h"
+#include "BigHeart.h"
+#include "debug.h"
 
 CSimon * CSimon::__instance = NULL;
 
@@ -220,10 +221,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 
-	// get the camera following Simon
-	float xCam, yCam;
-	CalibrateCameraPosition(xCam, yCam);
-	CGame::GetInstance()->SetCameraPosition(xCam, yCam);
+	CalibrateCameraPosition();
 
 }
 
@@ -242,22 +240,29 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 	{
 		LPCOLLISIONEVENT e = coEventsResult[i];
 
-		// Collision logic with BigCandle
 		if (dynamic_cast<CBigCandle *>(e->obj))
 		{
 			CBigCandle * bigCandle = dynamic_cast<CBigCandle *>(e->obj);
 			DebugOut(L"\n[INFO] Touch large candle");
 		}
 
-		// Collision logic with RopeItem
+		else if (dynamic_cast<CBigHeart *>(e->obj))
+		{
+			CGameObject * obj = dynamic_cast<CBigHeart *>(e->obj);
+			DebugOut(L"\n[INFO] Touch item heart rope");
+
+			obj->SetState(STATE_INVISIBLE);
+		}
+
 		else if (dynamic_cast<CItemRope *>(e->obj))
 		{
-			CItemRope * itemRope = dynamic_cast<CItemRope *>(e->obj);
+			CGameObject * obj = dynamic_cast<CItemRope *>(e->obj);
 			DebugOut(L"\n[INFO] Touch item rope");
 
-			rope->LevelUp();
-			itemRope->SetState(STATE_INVISIBLE);
+			this->rope->LevelUp();
 			this->StartToFlicker();
+
+			obj->SetState(STATE_INVISIBLE);
 		}
 
 		// block with ground objects
@@ -304,8 +309,9 @@ void CSimon::StartToFlicker()
 	}
 }
 
-void CSimon::CalibrateCameraPosition(float & xCam, float & yCam)
+void CSimon::CalibrateCameraPosition()
 {
+	float xCam, yCam;
 	float l, t, r, b;
 	this->GetBoundingBox(l, t, r, b);
 
@@ -320,6 +326,9 @@ void CSimon::CalibrateCameraPosition(float & xCam, float & yCam)
 
 	// TODO: should this need a more generic code ?
 	yCam = 0;//yCentral - viewportHeight / 2;
+
+
+	CGame::GetInstance()->SetCameraPosition(xCam, yCam);
 }
 
 void CSimon::GetBoundingBox(float & left, float & top, float & right, float & bottom)

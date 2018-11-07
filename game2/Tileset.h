@@ -4,6 +4,8 @@
 
 #include "Tile.h"
 
+#define TILESET_DIR		"json\\"
+
 using namespace std;
 
 /*
@@ -31,8 +33,9 @@ public:
 
 	void Init();
 	LPTILE Get(int grid);
+	int GetFirstGrid()	{ return this->firstGrid; }
 	int GetTileHeight() { return this->tileHeight; }
-	int GetTileWidth() { return this->tileWidth; }
+	int GetTileWidth()	{ return this->tileWidth; }
 
 };
 

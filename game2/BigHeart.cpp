@@ -1,6 +1,6 @@
-#include "ItemRope.h"
+#include "BigHeart.h"
 
-void CItemRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void CBigHeart::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CMovableObject::Update(dt);
 	vy = WORLD_FALL_SPEED;				// simple fall down
@@ -15,10 +15,10 @@ void CItemRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		ProceedCollisions(coEvents);
 }
 
-void CItemRope::GetBoundingBox(float & left, float & top, float & right, float & bottom)
+void CBigHeart::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
 	left = x;
 	top = y;
-	right = x + ITEM_ROPE_BBOX_WIDTH;
-	bottom = y + ITEM_ROPE_BBOX_HEIGHT;
+	right = BIGHEART_BBOX_WIDTH + x;
+	bottom = BIGHEART_BBOX_HEIGHT + y;
 }

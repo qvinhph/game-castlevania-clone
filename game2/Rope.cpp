@@ -13,7 +13,7 @@ void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		CMovableObject::Update(dt);
 
-		SetMatchedAnimation(state);
+		SetMatchedAnimation();
 		UpdateRopePosition(currentAniID);
 
 		vector<LPCOLLISIONEVENT> coEvents;
@@ -184,10 +184,10 @@ void CRope::UpdateRopePosition(int aniID)
 	LPANIMATION ani = CAnimations::GetInstance()->Get(aniID);
 
 	// the third frame of Rope Animation is the one we want to treat differently.
-	if (ani->GetCurrentFrame() == 2)
+	if (ani->GetCurrentFrame() == 2)	// 2 because vector counts index from 0 (OPT: CAN THIS CONSTANT REMOVED?)
 	{
 		x = (nx > 0) ?
-			xS + SIMON_ATTACKING_BBOX_WIDTH :
+			xS + SIMON_IDLE_BBOX_WIDTH :
 			xS - ropeTexWidth;
 
 		y = yS + Y_DISTANCE_FRONT_ROPE_AND_SIMON_POS;
@@ -196,7 +196,7 @@ void CRope::UpdateRopePosition(int aniID)
 	{
 		x = (nx > 0) ?
 			xS - BACK_ROPE_BBOX_WIDTH :
-			xS + SIMON_ATTACKING_BBOX_WIDTH;
+			xS + SIMON_IDLE_BBOX_WIDTH;
 
 		y = yS + Y_DISTANCE_BACK_ROPE_AND_SIMON_POS;
 	}

@@ -30,32 +30,28 @@ void CTileMap::Init(int tilesetTextureID)
 	inputFile.close();
 
 	if (root[TILEMAP_KEY_TYPE] != "map")
-	{
-		DebugOut(L"\n[ERROR] Json Tile Map was not in a correct format.");
-		return;
-	}
+		DebugOut(L"\n[ERROR] Json Tile Map not found.");
 
-	if (root[TILEMAP_KEY_TILESETS].size() > 1)	// value mapped by "tilesets" is a json array
-	{
+	else if (root[TILEMAP_KEY_TILESETS].size() > 1)	// value mapped by "tilesets" is a json array
 		DebugOut(L"\n[ERROR] This TileMap class haven't supported loading from multi-tilesets yet.");
-		return;
+
+	else
+	{
+		height = root[TILEMAP_KEY_HEIGHT].get<int>();
+		width = root[TILEMAP_KEY_WIDTH].get<int>();
+
+		string tilesetPath;
+		int firstGrid;
+
+		json tilesetInfo = *root[TILEMAP_KEY_TILESETS].begin();	
+		firstGrid = tilesetInfo[TILEMAP_KEY_FIRSTGRID].get<int>();
+		tilesetPath = TILESET_DIR + tilesetInfo[TILEMAP_KEY_SOURCE].get<string>();
+
+		tileset = new CTileset(tilesetTextureID, tilesetPath, firstGrid);
+		tileset->Init();
+		layers = GetTileLayers(root);
+		objects = GetObjects(root);
 	}
-	
-	height = root[TILEMAP_KEY_HEIGHT].get<int>();
-	width = root[TILEMAP_KEY_WIDTH].get<int>() ;
-
-	string tilesetPath;
-	int firstGrid;
-	
-	json tilesetInfo = *root[TILEMAP_KEY_TILESETS].begin();
-	firstGrid = tilesetInfo[TILEMAP_KEY_FIRSTGRID].get<int>();
-	tilesetPath = tilesetInfo[TILEMAP_KEY_SOURCE].get<string>();
-
-	tileset = new CTileset(tilesetTextureID, tilesetPath, firstGrid);
-	tileset->Init();
-	layers = GetTileLayers(root);
-	objects = GetObjects(root);
-	
 }
 
 void CTileMap::Draw()
@@ -68,10 +64,10 @@ void CTileMap::Draw()
 			for (UINT column = 0; column < layers[i]->width; column++)
 			{
 				int gridID = layers[i]->data.at(index++);
-				if (gridID == 0) continue;			// empty tile
+				if (gridID < tileset->GetFirstGrid()) continue;			// empty tile
 
 				tileset->Get(gridID)->Draw(column * tileset->GetTileWidth(),
-										row * tileset->GetTileHeight());
+											row * tileset->GetTileHeight());
 			}
 
 	}
@@ -82,27 +78,46 @@ vector<LPGAMEOBJECT> CTileMap::GetGameObjects()
 	vector<LPGAMEOBJECT> result;
 	LPOBJECTINFO info;
 	LPGAMEOBJECT obj;
+	CItems * itemManager = CItems::GetInstance();		// For adding and managing the item type objects
+	CFlames * flameManager = CFlames::GetInstance();	// For adding and managing the 
+														// destroying flame objects
 
 	for (UINT i = 0; i < objects.size(); i++)
 	{
 		info = objects.at(i);
 
-		if (info->name == "insiviblewall")
+		if		(info->name == "bigcandle") obj = new CBigCandle();
+		else if (info->name == "rope")		obj = CRope::GetInstance();
+		else if (info->name == "simon")		obj = CSimon::GetInstance();
+
+		// item-type game objects
+		else if (info->name == "itemrope")
+		{
+			obj = new CItemRope();
+			itemManager->Add(Item::ITEMROPE, obj);
+		}
+		else if (info->name == "bigheart")
+		{
+			obj = new CBigHeart();
+			itemManager->Add(Item::BIGHEART, obj);
+		}
+		else if (info->name == "insiviblewall")
 		{
 			obj = new CInvisibleWall();
 			dynamic_cast<CInvisibleWall *>(obj)->SetSize(info->width, info->height);
 		}
-		else if (info->name == "bigcandle") obj = new CBigCandle();
-		else if (info->name == "itemrope")
+
+		// destroying flame 
+		else if (info->name == "flame")
 		{
-			obj = new CItemRope();
-			CItems::GetInstance()->Add(Item::ITEMROPE, obj);
+			obj = new CFlame();
+			flameManager->Add((CFlame *)obj);
 		}
-		else if (info->name == "rope")		obj = CRope::GetInstance();
-		else if (info->name == "simon")		obj = CSimon::GetInstance();
+
 		else
 		{
-			DebugOut(L"[ERROR] Load Game Objects failed");
+			// in case something mismatched
+			DebugOut(L"\n[ERROR] Load Game Objects failed");
 			return vector<LPGAMEOBJECT>();		// return empty vector
 		}
 
@@ -110,7 +125,6 @@ vector<LPGAMEOBJECT> CTileMap::GetGameObjects()
 		float y = info->y;
 		obj->SetPosition(x, y);
 		obj->SetHoldingItem(info->dropableItem);
-
 		result.push_back(obj);
 	}
 
@@ -184,8 +198,8 @@ vector<LPOBJECTINFO> CTileMap::GetObjects(json root)
 						for (json::iterator prop = properties.begin(); prop != properties.end(); ++prop)
 							if ((*prop)[TILEMAP_KEY_NAME] == "itemholding")
 								item = ((*prop)[TILEMAP_KEY_VALUE].is_null()) ?
-								Item::NONE :
-								GetDropableItem((*prop)[TILEMAP_KEY_VALUE]);
+										Item::NONE :
+										GetHoldingItem((*prop)[TILEMAP_KEY_VALUE]);
 
 					result.push_back(
 						new CObjectInfo(
@@ -203,9 +217,10 @@ vector<LPOBJECTINFO> CTileMap::GetObjects(json root)
 	return result;
 }
 
-Item CTileMap::GetDropableItem(string string)
+Item CTileMap::GetHoldingItem(string string)
 {
 	if (string == "itemrope") return Item::ITEMROPE;
+	if (string == "bigheart") return Item::BIGHEART;
 
 	return Item::NONE;
 }

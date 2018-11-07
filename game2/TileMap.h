@@ -60,7 +60,7 @@ public:
 	vector<LPGAMEOBJECT> GetGameObjects();					// return a vector of game objects in the map
 	static vector<LPLAYERINFO> GetTileLayers(json root);	// return a vector of layers in the json tilemap if has
 	static vector<LPOBJECTINFO> GetObjects(json root);		// return a vector of objects in the json tilemap if has
-	static Item GetDropableItem(string string);		// return DropableItem value by string given.
+	static Item GetHoldingItem(string string);				// return DropableItem value by string given.
 
 };
 

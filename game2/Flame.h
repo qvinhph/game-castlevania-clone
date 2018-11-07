@@ -3,18 +3,18 @@
 
 #define BURNING_TIME					300
 
-#define DESTROYING_FLAME_BBOX_HEIGHT	30
-#define DESTROYING_FLAME_BBOX_WIDTH		16		
+#define FLAME_BBOX_HEIGHT	30
+#define FLAME_BBOX_WIDTH		16		
 
-enum class DestroyingFlameAniID
+enum class FlameAniID
 {
 	IDLE = 1400
 };
 
 /*
-	The fire after monsters/ breakable objects destroying.
+	The flame which appears after monsters/ destroyed
 */
-class CDestroyingFlame : public CGameObject
+class CFlame : public CGameObject
 {
 	DWORD burnStartTime;
 public:
@@ -24,6 +24,6 @@ public:
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
 	void StartToBurn();
 
-	CDestroyingFlame();
+	CFlame();
 };
 

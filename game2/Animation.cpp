@@ -36,7 +36,7 @@ void CAnimation::Render(float x, float y, ARGB argb)
 		frames[currentFrame]->GetSprite()->Draw(x, y, argb);
 
 		/*
-			Maybe we'll want setup something for the frame before
+			Maybe we'll want setup something for the next frame before
 			it is rendered. So put the frame changing code last.
 		*/
 		DWORD t = frames[currentFrame]->GetTime();

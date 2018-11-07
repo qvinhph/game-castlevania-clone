@@ -190,8 +190,8 @@ void InitObjectsForTesting()
 
 	for (int i = 0; i < 3; i++)
 	{
-		gameObject = new CDestroyingFlame();
-		CDestroyingFlames::GetInstance()->Add((CDestroyingFlame *)gameObject);
+		gameObject = new CFlame();
+		CFlames::GetInstance()->Add((CFlame *)gameObject);
 		objects.push_back(gameObject);
 	}
 
@@ -516,7 +516,6 @@ void LoadResources()
 
 	// brick
 	sprites->Add(11000, 0, 0, 32, 32, texGround);
-
 	ani = new CAnimation(100);
 	ani->AddFrame(11000);
 	animations->Add(BrickAniID::IDLE, ani);
@@ -524,7 +523,6 @@ void LoadResources()
 	// big candle
 	sprites->Add(12000, 0, 0, 32, 64, texMisc);
 	sprites->Add(12001, 32, 0, 64, 64, texMisc);
-
 	ani = new CAnimation(100);
 	ani->AddFrame(12000);
 	ani->AddFrame(12001);
@@ -534,7 +532,6 @@ void LoadResources()
 
 	// item Rope
 	sprites->Add(14000, 146, 65, 178, 97, texMisc);
-
 	ani = new CAnimation(100);
 	ani->AddFrame(14000);
 	animations->Add((int)ItemRopeAniID::IDLE, ani);
@@ -543,12 +540,18 @@ void LoadResources()
 	sprites->Add(15000, 156, 7, 172, 37, texMisc);
 	sprites->Add(15001, 198, 7, 214, 37, texMisc);
 	sprites->Add(15002, 113, 7, 129, 37, texMisc);
-
 	ani = new CAnimation(80);
 	ani->AddFrame(15000);
 	ani->AddFrame(15001);
 	ani->AddFrame(15002);
-	animations->Add((int)DestroyingFlameAniID::IDLE, ani);
+	animations->Add((int)FlameAniID::IDLE, ani);
+
+	// big heart
+	sprites->Add(16000, 120, 65, 144, 85, texMisc);
+	ani = new CAnimation(100);
+	ani->AddFrame(16000);
+	animations->Add((int)BigHeartAniID::IDLE, ani);
+
 
 #pragma endregion
 

@@ -16,11 +16,12 @@
 #include "Rope.h"
 #include "BigCandle.h"
 #include "Brick.h"
-#include "DestroyingFlame.h"
-#include "DestroyingFlames.h"
+#include "Flame.h"
+#include "Flames.h"
 #include "ItemRope.h"
 #include "InvisibleWall.h"
 #include "Items.h"
+#include "BigHeart.h"
 
 
 #define ID_TEX_SIMON		0
@@ -29,11 +30,3 @@
 #define ID_TEX_MISC			3
 #define ID_TEX_MONSTERS		4
 #define ID_TEX_TILESET		5
-
-
-//CSimon * simon;
-//CRope * rope;
-//CBigCandle * bigCandle;
-//CBrick * brick;
-//CItemRope * itemRope;
-//CDestroyingFlame * destroyingFlame;

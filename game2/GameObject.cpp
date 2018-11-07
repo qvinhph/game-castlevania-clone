@@ -2,7 +2,7 @@
 
 #include "Textures.h"
 #include "Game.h"
-#include "DestroyingFlames.h"
+#include "Flames.h"
 #include "Items.h"
 
 void CGameObject::RenderBoundingBox()
@@ -49,15 +49,7 @@ void CGameObject::Render()
 
 void CGameObject::Destroy()
 {
-	// Get the central point (x , y) of the destroying object
-	float l, t, r, b;
-	GetBoundingBox(l, t, r, b);
-	float central_x = (l + r) / 2;
-	float central_y = (t + b) / 2;
-	CDestroyingFlames::GetInstance()->ShowAFlame(central_x, central_y);
-
-	// Drop the item the object is holding, if has
-	CItems::GetInstance()->CheckAndDrop(this);
+	CFlames::GetInstance()->ShowAFlame(this);
 
 	this->x = INSIVIBLE_ZONE_X;
 	this->y = INSIVIBLE_ZONE_Y;

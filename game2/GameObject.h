@@ -20,6 +20,7 @@ enum class Item
 	NONE,
 	ITEMROPE,
 	HEART,
+	BIGHEART,
 };
 
 class CGameObject;

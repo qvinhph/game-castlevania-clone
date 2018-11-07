@@ -10,7 +10,6 @@ CMovableObject::CMovableObject()
 	vx = 0;
 	vy = WORLD_FALL_SPEED;
 	nx = 1;
-	dt = 0;
 }
 
 void CMovableObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -21,8 +20,8 @@ void CMovableObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 }
 
 /*
-	Simple collision handling with simple objects
-	Such as items, big heart
+	Simple collision handling with objects has vertically simply falling movement.
+	Such as items, bigheart, etc.
 */
 void CMovableObject::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 {

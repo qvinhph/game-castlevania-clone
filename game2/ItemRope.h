@@ -17,8 +17,9 @@ class CItemRope : public CMovableObject
 public:
 
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL) override;
-	void Render() override;
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+
+	CItemRope() { this->currentAniID = (int)ItemRopeAniID::IDLE; }
 
 };
 
