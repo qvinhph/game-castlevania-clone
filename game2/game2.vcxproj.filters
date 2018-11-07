@@ -99,17 +99,17 @@
     <ClInclude Include="Flame.h">
       <Filter>Header Files\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="Flames.h">
-      <Filter>Header Files\GameObjects</Filter>
-    </ClInclude>
     <ClInclude Include="InvisibleWall.h">
-      <Filter>Header Files\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="JsonUtility.h">
       <Filter>Header Files\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="BigHeart.h">
       <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonUtility.h">
+      <Filter>Header Files\TiledMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Flames.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -179,9 +179,6 @@
     <ClCompile Include="Flame.cpp">
       <Filter>Source Files\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="Flames.cpp">
-      <Filter>Source Files\GameObjects</Filter>
-    </ClCompile>
     <ClCompile Include="InvisibleWall.cpp">
       <Filter>Source Files\GameObjects</Filter>
     </ClCompile>
@@ -190,6 +187,9 @@
     </ClCompile>
     <ClCompile Include="BigHeart.cpp">
       <Filter>Source Files\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Flames.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

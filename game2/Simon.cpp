@@ -28,11 +28,11 @@ CSimon::CSimon()
 // By that, SetState() will be consistent with all the game objects, 
 // only used for set visibile state or invisible state
 /*
-	Use to tell Simon to do something and process the call
+	Use to tell Simon to do something and proceed the call
 */
 void CSimon::SetState(int state)
 {
-	// Game logic: while attacking, Simon stops moving and reject other action
+	// Simon behavior: while attacking, Simon stops moving and reject other action
 	// except finishing jumping
 	if (attacking)
 	{
@@ -40,20 +40,23 @@ void CSimon::SetState(int state)
 			vx = 0;
 	}
 
-	// Game logic: while jumping, simon can only attack
+	// Simon behaviorc: while jumping, simon can only attack
+	// TO-DO: Need more thought on this (jumping)
 	else if (jumping)
 	{
 		if (state == SIMON_STATE_ATTACK && !attacking)
 		{
 			StartToAttack();
-
-			// re-locate Simon to avoid overlapping the ground
+			
 			// because when Simon attacks, it may changes from crouching-height to standing-height
-			y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
+			// so need re-locate Simon to avoid overlapping the ground
+			// divide by 2 to keep the jumping and attacking action smoothly 
+			// and also to make this similar to the origin game
+			y += (SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT) / 2;
 		}
 	}
 
-	// Game logic: while crouching, simon can only change direction or attack
+	// Simon behavior: while crouching, simon can only change direction or attack
 	else if (crouching)
 	{
 		if (state == SIMON_STATE_WALK_RIGHT)

@@ -349,13 +349,13 @@ void LoadResources()
 	ani->AddFrame(99103);
 	animations->Add((int)SimonAniID::WALK_LEFT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(75);
 	ani->AddFrame(99007);
 	ani->AddFrame(99008);
 	ani->AddFrame(99009, 200);
 	animations->Add((int)SimonAniID::ATTACK_RIGHT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(75);
 	ani->AddFrame(99107);
 	ani->AddFrame(99108);
 	ani->AddFrame(99109, 200);
@@ -449,58 +449,58 @@ void LoadResources()
 
 	LPDIRECT3DTEXTURE9 texRope = textures->Get(ID_TEX_ROPE);
 
-	sprites->Add(98011, 420, 2, 452, 60, texRope);		// rope lv1 right side
-	sprites->Add(98012, 358, 12, 390, 50, texRope);		// rope lv1 right side
-	sprites->Add(98013, 262, 16, 318, 34, texRope);		// rope lv1 right side
-	sprites->Add(98111, 2, 4, 34, 62, texRope);			// rope lv1 left side
-	sprites->Add(98112, 63, 14, 95, 52, texRope);		// rope lv1 left side
-	sprites->Add(98113, 135, 18, 191, 36, texRope);		// rope lv1 left side
+	sprites->Add(98011, 420, 0, 452, 64, texRope);		// rope lv1 right side
+	sprites->Add(98012, 358, 3, 390, 52, texRope);		// rope lv1 right side
+	sprites->Add(98013, 262, 18, 318, 36, texRope);		// rope lv1 right side
+	sprites->Add(98111, 2, 0, 34, 64, texRope);			// rope lv1 left side
+	sprites->Add(98112, 63, 5, 95, 54, texRope);		// rope lv1 left side
+	sprites->Add(98113, 135, 20, 191, 38, texRope);		// rope lv1 left side
 
-	sprites->Add(98021, 420, 70, 452, 128, texRope);	// rope lv2 right side
-	sprites->Add(98022, 358, 80, 390, 118, texRope);	// rope lv2 right side
+	sprites->Add(98021, 420, 64, 452, 128, texRope);	// rope lv2 right side
+	sprites->Add(98022, 358, 69, 390, 118, texRope);	// rope lv2 right side
 	sprites->Add(98023, 262, 84, 318, 102, texRope);	// rope lv2 right side
-	sprites->Add(98121, 2, 72, 34, 130, texRope);		// rope lv2 left side
-	sprites->Add(98122, 63, 82, 95, 120, texRope);		// rope lv2 left side
+	sprites->Add(98121, 2, 66, 34, 130, texRope);		// rope lv2 left side
+	sprites->Add(98122, 63, 69, 95, 120, texRope);		// rope lv2 left side
 	sprites->Add(98123, 135, 86, 191, 104, texRope);	// rope lv2 left side
 
-	sprites->Add(98031, 420, 138, 452, 196, texRope);	// rope lv3 right side
-	sprites->Add(98032, 358, 148, 390, 186, texRope);	// rope lv3 right side
+	sprites->Add(98031, 420, 132, 452, 196, texRope);	// rope lv3 right side
+	sprites->Add(98032, 358, 135, 390, 186, texRope);	// rope lv3 right side
 	sprites->Add(98033, 261, 152, 350, 170, texRope);	// rope lv3 right side
-	sprites->Add(98131, 2, 140, 34, 198, texRope);		// rope lv3 left side
-	sprites->Add(98132, 63, 150, 95, 188, texRope);		// rope lv3 left side
+	sprites->Add(98131, 2, 134, 34, 198, texRope);		// rope lv3 left side
+	sprites->Add(98132, 63, 137, 95, 188, texRope);		// rope lv3 left side
 	sprites->Add(98133, 103, 154, 192, 172, texRope);	// rope lv3 left side
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(75);
 	ani->AddFrame(98011);
 	ani->AddFrame(98012);
-	ani->AddFrame(98013, 200); 
+	ani->AddFrame(98013, 200);
 	animations->Add((int)RopeAniID::LEVEL_ONE_RIGHT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(75);
 	ani->AddFrame(98111);
 	ani->AddFrame(98112);
 	ani->AddFrame(98113, 200);
 	animations->Add((int)RopeAniID::LEVEL_ONE_LEFT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(75);
 	ani->AddFrame(98021);
 	ani->AddFrame(98022);
 	ani->AddFrame(98023, 200);
 	animations->Add((int)RopeAniID::LEVEL_TWO_RIGHT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(75);
 	ani->AddFrame(98121);
 	ani->AddFrame(98122);
 	ani->AddFrame(98123, 200);
 	animations->Add((int)RopeAniID::LEVEL_TWO_LEFT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(75);
 	ani->AddFrame(98031);
 	ani->AddFrame(98032);
 	ani->AddFrame(98033, 200);
 	animations->Add((int)RopeAniID::LEVEL_THREE_RIGHT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(75);
 	ani->AddFrame(98131);
 	ani->AddFrame(98132);
 	ani->AddFrame(98133, 200);
@@ -536,11 +536,11 @@ void LoadResources()
 	ani->AddFrame(14000);
 	animations->Add((int)ItemRopeAniID::IDLE, ani);
 
-	// destroying Flame
+	// destroying flame
 	sprites->Add(15000, 156, 7, 172, 37, texMisc);
 	sprites->Add(15001, 198, 7, 214, 37, texMisc);
 	sprites->Add(15002, 113, 7, 129, 37, texMisc);
-	ani = new CAnimation(80);
+	ani = new CAnimation(100);
 	ani->AddFrame(15000);
 	ani->AddFrame(15001);
 	ani->AddFrame(15002);

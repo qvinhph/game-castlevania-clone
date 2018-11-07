@@ -206,7 +206,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"atileset-info.json"
+         "source":"tileset-info.json"
         }],
  "tilewidth":32,
  "type":"map",

@@ -162,6 +162,7 @@ void CRope::UpdateRopePosition(int aniID)
 	CSimon::GetInstance()->GetPosition(xS, yS);
 
 	// get the current rope texture width
+	// because different rope level may has different length
 	int ropeTexWidth;
 	switch (level)
 	{
@@ -198,7 +199,7 @@ void CRope::UpdateRopePosition(int aniID)
 			xS - BACK_ROPE_BBOX_WIDTH :
 			xS + SIMON_IDLE_BBOX_WIDTH;
 
-		y = yS + Y_DISTANCE_BACK_ROPE_AND_SIMON_POS;
+		y = yS;
 	}
 }
 

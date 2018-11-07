@@ -15,8 +15,7 @@
 #define ROPE_LEVEL3						12
 	
 // for adjusting the rope to fit simon hand
-#define Y_DISTANCE_BACK_ROPE_AND_SIMON_POS		4
-#define Y_DISTANCE_FRONT_ROPE_AND_SIMON_POS		12
+#define Y_DISTANCE_FRONT_ROPE_AND_SIMON_POS		14
 
 enum class RopeAniID
 {
