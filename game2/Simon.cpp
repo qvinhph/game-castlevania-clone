@@ -17,124 +17,32 @@ CSimon::CSimon()
 	this->jumping = false;
 	this->crouching = false;
 	this->attackStartTime = 0;
-	this->currentAniID = SIMON_STATE_DIE;
 
 	// ready to be used
 	rope = CRope::GetInstance();
-}
-
-// TODO: Think twice: 
-// Should I use SetAction(Action action) instead of SetState(...) ?
-// By that, SetState() will be consistent with all the game objects, 
-// only used for set visibile state or invisible state
-/*
-	Use to tell Simon to do something and proceed the call
-*/
-void CSimon::SetState(int state)
-{
-	// Simon behavior: while attacking, Simon stops moving and reject other action
-	// except finishing jumping
-	if (attacking)
-	{
-		if (!jumping)
-			vx = 0;
-	}
-
-	// Simon behaviorc: while jumping, simon can only attack
-	// TO-DO: Need more thought on this (jumping)
-	else if (jumping)
-	{
-		if (state == SIMON_STATE_ATTACK && !attacking)
-		{
-			StartToAttack();
-			
-			// because when Simon attacks, it may changes from crouching-height to standing-height
-			// so need re-locate Simon to avoid overlapping the ground
-			// divide by 2 to keep the jumping and attacking action smoothly 
-			// and also to make this similar to the origin game
-			y += (SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT) / 2;
-		}
-	}
-
-	// Simon behavior: while crouching, simon can only change direction or attack
-	else if (crouching)
-	{
-		if (state == SIMON_STATE_WALK_RIGHT)
-			nx = 1;
-
-		else if (state == SIMON_STATE_WALK_LEFT)
-			nx = -1;
-
-		else if (state == SIMON_STATE_ATTACK && !attacking)
-			StartToAttack();
-
-		// stop crouching
-		else if (state == SIMON_STATE_IDLE)
-		{
-			crouching = false;
-			y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
-			CGameObject::SetState(SIMON_STATE_IDLE);
-		}
-	}
-
-	else
-	{
-		CGameObject::SetState(state);
-
-		switch (state)
-		{
-
-		case SIMON_STATE_WALK_RIGHT:
-			nx = 1;
-			vx = SIMON_WALKING_SPEED;
-			break;
-
-		case SIMON_STATE_WALK_LEFT:
-			nx = -1;
-			vx = -SIMON_WALKING_SPEED;
-			break;
-
-		case SIMON_STATE_ATTACK:
-			StartToAttack();
-			break;
-
-		case SIMON_STATE_JUMP:
-			vy = -SIMON_JUMP_SPEED_Y;
-			jumping = true;
-			break;
-
-		case SIMON_STATE_CROUCH:
-			crouching = true;
-			vx = 0;
-			break;
-
-		case SIMON_STATE_IDLE:
-			vx = 0;
-			break;
-		}
-	}
 }
 
 void CSimon::Render()
 {	
 	if (flickering)
 	{
-		if (argb.blue != 0)
-			argb.blue = 0;
+		// When flickering, animation frame will be render with
+		// these 3 color
+
+		if (this->argb.blue != 0)
+			this->argb.blue = 0;
+
 		else if (argb.green != 0)
-			argb.green = 0;
+			this->argb.green = 0;
+
 		else
-			argb = ARGB();
-
-		animations->Get(currentAniID)->Render(x, y, argb);
+			this->argb = ARGB();
 	}
-	else
-		animations->Get(currentAniID)->Render(x, y);
-
-	//RenderBoundingBox();
+	
+	CGameObject::Render();
 }
 
-void CSimon::SetMatchedAnimation(int state)
+void CSimon::SetMatchedAnimation()
 {
 	if (attacking)
 	{
@@ -201,15 +109,18 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Turn off the flickering flag when it'd done
 	if (flickering)
 		if (GetTickCount() - flickerStartTime >= FLICKERING_TIME)
+		{
 			flickering = 0;
+			argb = ARGB();
+		}
 
-	SetMatchedAnimation(state);
+	SetMatchedAnimation();
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	coEvents.clear();
 
 	// Turn off collision when die 
-	if (state != SIMON_STATE_DIE)
+	if (this->action != Action::DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
 
 	// No collision occured, proceed normally
@@ -225,7 +136,6 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 
 	CalibrateCameraPosition();
-
 }
 
 void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
@@ -278,7 +188,7 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			{
 				vy = 0;
 
-				// you are not jumping while your feet on the ground
+				// simon is not jumping while his feet on the ground
 				if (jumping)
 				{
 					jumping = false;
@@ -352,6 +262,89 @@ void CSimon::GetBoundingBox(float & left, float & top, float & right, float & bo
 		right = x + SIMON_IDLE_BBOX_WIDTH;
 		bottom = y + SIMON_IDLE_BBOX_HEIGHT;
 		break;
+	}
+}
+
+void CSimon::SetAction(Action action)
+{
+	// Simon behavior: while attacking, Simon stops moving and reject other action
+	// except finishing jumping
+	if (attacking)
+	{
+		if (!jumping)
+			vx = 0;
+	}
+
+	// Simon behavior: while jumping, simon can only attack
+	// TO-DO: Need more thought on this (jumping)
+	else if (jumping)
+	{
+		if (action == Action::ATTACK && !attacking)
+		{
+			StartToAttack();
+
+			// because when Simon attacks, it may changes from crouching-height to standing-height
+			// so need re-locate Simon to avoid overlapping the ground
+			// divide by 2 to keep the jumping and attacking action smoothly 
+			// and also to make this similar to the origin game
+			y += (SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT) / 2;
+		}
+	}
+
+	// Simon behavior: while crouching, simon can only change direction or attack
+	else if (crouching)
+	{
+		if (action == Action::WALK_RIGHT)
+			nx = 1;
+
+		else if (action == Action::WALK_LEFT)
+			nx = -1;
+
+		else if (action == Action::ATTACK && !attacking)
+			StartToAttack();
+
+		// stop crouching
+		else if (action == Action::IDLE)
+		{
+			crouching = false;
+			y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
+		}
+	}
+
+	else
+	{
+		switch (action)
+		{
+		case Action::WALK_RIGHT:
+			nx = 1;
+			vx = SIMON_WALKING_SPEED;
+			break;
+
+		case Action::WALK_LEFT:
+			nx = -1;
+			vx = -SIMON_WALKING_SPEED;
+			break;
+
+		case Action::ATTACK:
+			StartToAttack();
+			break;
+
+		case Action::JUMP:
+			vy = -SIMON_JUMP_SPEED_Y;
+			jumping = true;
+			break;
+
+		case Action::CROUCH:
+			crouching = true;
+			vx = 0;
+			break;
+
+		case Action::IDLE:
+			vx = 0;
+			break;
+		default:
+			break;
+		}
 	}
 }
 

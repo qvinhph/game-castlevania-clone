@@ -3,6 +3,20 @@
 
 #define WORLD_FALL_SPEED	0.18f
 
+enum class Action
+{
+	IDLE,
+	WALK_RIGHT,
+	WALK_LEFT,
+	CROUCH,
+	JUMP,
+	UPSTAIR,
+	DOWNSTAIR,
+	ATTACK,
+	GO_IN,
+	DIE,
+};
+
 class CMovableObject : public CGameObject
 {
 protected:
@@ -15,6 +29,7 @@ protected:
 
 	int nx;	
 	DWORD dt;
+	Action action;
 
 public:
 
@@ -36,6 +51,7 @@ public:
 	
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
 	virtual void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents);
+	virtual void SetAction(Action action) = 0;
 
 	CMovableObject();
 };

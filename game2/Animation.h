@@ -19,7 +19,7 @@ class CAnimation
 public:
 	CAnimation(int defaultTime);
 	void AddFrame(int spriteID, DWORD time = 0);
-	void Render(float x, float y, ARGB argb = ARGB());
+	void Render(float x, float y, ARGB &argb = ARGB());
 
 	int GetCurrentFrame() { return currentFrame; };
 	void SetCurrentFrame(int index) { this->currentFrame = index; }

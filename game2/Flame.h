@@ -3,8 +3,8 @@
 
 #define BURNING_TIME					300
 
-#define FLAME_BBOX_HEIGHT	30
-#define FLAME_BBOX_WIDTH		16		
+#define FLAME_BBOX_HEIGHT				30
+#define FLAME_BBOX_WIDTH				16		
 
 enum class FlameAniID
 {

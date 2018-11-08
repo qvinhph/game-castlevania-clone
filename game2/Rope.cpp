@@ -109,14 +109,7 @@ void CRope::ProceedCollisions(std::vector<LPCOLLISIONEVENT> &coEvents)
 
 	for (UINT i = 0; i < coEventsResult.size(); i++)
 	{
-		LPCOLLISIONEVENT e = coEvents[i];
-
-		// Collision logic with candles
-		if (dynamic_cast<CBigCandle *>(e->obj))
-		{
-			CBigCandle * candle = dynamic_cast<CBigCandle *>(e->obj);
-			candle->Destroy();
-		}
+		// empty now
 	}
 
 }
@@ -224,16 +217,10 @@ void CRope::SetState(int state)
 {
 	CGameObject::SetState(state);
 
-	// hide the rope
+	// reset the current animation for next usage
 	if (state == STATE_INVISIBLE)
-	{
-		// TODO: NEED CLEANING THIS
-		SetPosition(-100, -100);
-
-		// To rearrange the rope frames
 		if (currentAniID > 0)
 			this->ResetAnimation(currentAniID);
-	}
 }
 
 CRope * CRope::GetInstance()

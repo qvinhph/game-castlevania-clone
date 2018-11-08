@@ -33,37 +33,27 @@ void CGameObject::ResetAnimation(int aniID)
 	animations->Get(aniID)->SetCurrentFrame(-1);
 }
 
-void CGameObject::SetState(int state)
-{
-	this->state = state;
-
-	// Send the object to invisible zone
-	if (state == STATE_INVISIBLE)
-		SetPosition(INSIVIBLE_ZONE_X, INSIVIBLE_ZONE_Y);
-}
-
 void CGameObject::Render()
 {
-	animations->Get(currentAniID)->Render(x, y);
+	if (state == STATE_VISIBLE)
+		animations->Get(currentAniID)->Render(x, y, argb);
 }
 
+/*
+	Add destroying effect 
+*/
 void CGameObject::Destroy()
 {
 	CFlames::GetInstance()->ShowAFlame(this);
-
-	this->x = INSIVIBLE_ZONE_X;
-	this->y = INSIVIBLE_ZONE_Y;
+	this->SetState(STATE_INVISIBLE);
 }
 
 CGameObject::CGameObject()
 {
-	x = INSIVIBLE_ZONE_X;
-	y = INSIVIBLE_ZONE_Y;
-
 	flickering = false;
 	ARGB argb = ARGB();
 
-	state = STATE_INVISIBLE;
+	state = STATE_VISIBLE;
 	currentAniID = -1;
 	animations = CAnimations::GetInstance();
 }

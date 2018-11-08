@@ -19,7 +19,7 @@ void CFlame::Render()
 		}
 		else
 			CGameObject::Render();
-	}
+	}	
 }
 
 void CFlame::StartToBurn()

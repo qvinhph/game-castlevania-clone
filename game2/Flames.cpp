@@ -4,6 +4,7 @@ CFlames * CFlames::__instance;
 
 void CFlames::Add(CFlame * flame)
 {
+	flame->SetState(STATE_INVISIBLE);
 	flames.push_back(flame);
 }
 

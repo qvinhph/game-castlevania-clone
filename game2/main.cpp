@@ -39,32 +39,24 @@ void CInputHandler::OnKeyDown(int keyCode)
 	DebugOut(L"\n[INFO] KeyDown: %d", keyCode);
 	switch (keyCode)
 	{
-	case DIK_RIGHT:
-		CSimon::GetInstance()->SetState(SIMON_STATE_WALK_RIGHT);
-		break;
-
-	case DIK_LEFT:
-		CSimon::GetInstance()->SetState(SIMON_STATE_WALK_LEFT);
-		break;
-
 	case DIK_N:
-		CSimon::GetInstance()->SetState(SIMON_STATE_JUMP);
+		CSimon::GetInstance()->SetAction(Action::JUMP);
 		break;
 
 	case DIK_M:
-		CSimon::GetInstance()->SetState(SIMON_STATE_ATTACK);
+		CSimon::GetInstance()->SetAction(Action::ATTACK);
+		break;
+
+	case DIK_RIGHT:
+		CSimon::GetInstance()->SetAction(Action::WALK_RIGHT);
+		break;
+
+	case DIK_LEFT:
+		CSimon::GetInstance()->SetAction(Action::WALK_LEFT);
 		break;
 
 	case DIK_1:
 		CSimon::GetInstance()->SetPosition(0.0f, 0.0f);
-		break;
-		// TO-DO: CLEAN
-	case DIK_2:
-		//bigCandle->SetPosition(200.0f, 200.0f);
-		break;
-
-	case DIK_3:
-		//itemRope->SetPosition(300.0f, 200.0f);
 		break;
 
 	default:
@@ -78,23 +70,23 @@ void CInputHandler::OnKeyUp(int keyCode)
 	switch (keyCode)
 	{
 	case DIK_DOWN:
-		CSimon::GetInstance()->SetState(SIMON_STATE_IDLE);
+		CSimon::GetInstance()->SetAction(Action::CROUCH);
 	}		
 }
 
 void CInputHandler::KeyState(BYTE *states)
 {
 	if (game->IsKeyDown(DIK_DOWN))
-		CSimon::GetInstance()->SetState(SIMON_STATE_CROUCH);
+		CSimon::GetInstance()->SetAction(Action::CROUCH);
 
 	else if (game->IsKeyDown(DIK_RIGHT))
-		CSimon::GetInstance()->SetState(SIMON_STATE_WALK_RIGHT);
+		CSimon::GetInstance()->SetAction(Action::WALK_RIGHT);
 
 	else if (game->IsKeyDown(DIK_LEFT))
-		CSimon::GetInstance()->SetState(SIMON_STATE_WALK_LEFT);
+		CSimon::GetInstance()->SetAction(Action::WALK_LEFT);
 
 	else
-		CSimon::GetInstance()->SetState(SIMON_STATE_IDLE);
+		CSimon::GetInstance()->SetAction(Action::IDLE);
 }
 
 #pragma endregion
@@ -574,12 +566,14 @@ void Update(DWORD dt)
 	vector<LPGAMEOBJECT> coObjects;
 	for (UINT i = 0; i < objects.size(); i++)
 	{
-		coObjects.push_back(objects[i]);
+		if ( objects.at(i)->GetState() == STATE_VISIBLE)
+			coObjects.push_back(objects[i]);
 	}
 
 	for (UINT i = 0; i < objects.size(); i++)
 	{
-		if (dynamic_cast<CMovableObject *>(objects[i]))
+		if (dynamic_cast<CMovableObject *>(objects[i])
+			&& objects[i]->GetState() == STATE_VISIBLE)
 		{
 			LPMOVABLEOBJECT obj = dynamic_cast<CMovableObject *>(objects[i]);
  			obj->Update(dt, &coObjects);
@@ -609,7 +603,7 @@ void Render()
 		for (UINT i = 0; i < objects.size(); i++)
 		{
 			objects[i]->Render();
-			//objects[i]->RenderBoundingBox();
+			objects[i]->RenderBoundingBox();
 		}
 
 		spriteHandler->End();
