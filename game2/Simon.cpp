@@ -345,6 +345,8 @@ void CSimon::SetAction(Action action)
 		default:
 			break;
 		}
+
+		CMovableObject::SetAction(action);
 	}
 }
 

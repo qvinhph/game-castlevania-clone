@@ -51,7 +51,7 @@ public:
 	
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
 	virtual void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents);
-	virtual void SetAction(Action action) = 0;
+	virtual void SetAction(Action action) { this->action = action; };
 
 	CMovableObject();
 };
