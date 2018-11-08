@@ -1,4 +1,4 @@
-#include "Game.h"
+﻿#include "Game.h"
 #include "debug.h"
 
 CGame * CGame::__instance = NULL;
@@ -57,13 +57,14 @@ void CGame::Init(HWND hWnd)
 */
 void CGame::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, ARGB& argb)
 {
-	// TO-DO: REMOVE THIS HARDCODE
-	if (xCamera < 0)
+	// TO-DO: REMOVE THIS HARD-CODE
+	// Limit the camera position
+	if (xCamera < 0)		// 0 is ORIGIN_X ( gốc tọa độ)
 		xCamera = 0;
 	if (xCamera + viewportWidth > 1536) // 1536 is the map size (pixels) ( 48 tiles x 32 )
 		xCamera = 1536 - viewportWidth;
 
-	// get the viewport position
+	// Get the viewport position
 	float xv = x - xCamera;
 	float yv = y - yCamera;
 

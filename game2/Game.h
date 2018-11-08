@@ -52,6 +52,7 @@ class CGame
 
 public:
 	void SetCameraPosition(float x, float y) { this->xCamera = x; this->yCamera = y; }
+
 	void SetViewportWidth(float viewportWidth) { this->viewportWidth = viewportWidth; }
 	void SetViewportHeight(float viewportHeight) { this->viewportHeight = viewportHeight; }
 	void GetViewportSize(float &height, float &width) { height = this->viewportHeight; width = this->viewportWidth; }

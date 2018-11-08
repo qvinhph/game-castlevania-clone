@@ -1,3 +1,5 @@
+// INIT GIT
+
 #include <Windows.h>
 #include <d3d9.h>
 #include <d3dx9.h>
@@ -10,8 +12,7 @@
 
 #define BACKGROUND_COLOR	D3DCOLOR_XRGB(0, 0, 0)
 
-// TO-DO : ...
-#define SCREEN_WIDTH		528.5f//512
+#define SCREEN_WIDTH		528.5f//512		// DELETE ME: NOTE: ACCEPTABLE
 #define SCREEN_HEIGHT		490.8f//448
 
 #define MAX_FRAME_RATE		120
@@ -57,7 +58,7 @@ void CInputHandler::OnKeyDown(int keyCode)
 	case DIK_1:
 		CSimon::GetInstance()->SetPosition(0.0f, 0.0f);
 		break;
-
+		// TO-DO: CLEAN
 	case DIK_2:
 		//bigCandle->SetPosition(200.0f, 200.0f);
 		break;
