@@ -3,12 +3,14 @@
 #include "MovableObject.h"
 #include "Game.h"
 #include "ItemRope.h"
+#include "InvisibleWall.h"
 
+#define FORCE_PUSH_BACK		0.4f	// Use for separate two objects, avoid overlapping next frame
 
 CMovableObject::CMovableObject()
 {
 	vx = 0;
-	vy = WORLD_FALL_SPEED;
+	vy = GAME_FALL_SPEED;
 	nx = 1;
 }
 
@@ -19,22 +21,28 @@ void CMovableObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	this->dy = vy * dt;
 }
 
-/*
-	Simple collision handling with objects has vertically simply falling movement.
-	Such as items, bigheart, etc.
-*/
+
 void CMovableObject::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 {
 	vector<LPCOLLISIONEVENT> coEventsResult;
 	float min_tx, min_ty, nx, ny;
 	FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
-	// Block when reach the ground
-	if (ny != 0)
+	y += min_ty * dy;
+	x += min_tx * dx;
+
+	for (UINT i = 0; i < coEventsResult.size(); ++i)
 	{
-		vy = 0;
-		y += min_ty * dy + 0.4f * ny;
-	}
+		if (dynamic_cast<CInvisibleWall *>(coEventsResult.at(i)->obj))
+		{
+			// Block when reach the ground
+			if (ny < 0)
+			{
+				vy = 0;
+				y += FORCE_PUSH_BACK * ny;
+			}
+		}
+	}	
 }
 
 /*
@@ -48,13 +56,11 @@ LPCOLLISIONEVENT CMovableObject::SweptAABBEx(LPGAMEOBJECT coO)
 
 	coO->GetBoundingBox(sl, st, sr, sb);
 
-	// deal with moving object: m speed = original m speed - collide object speed
+	// deal with moving object if it is: m speed = original m speed - collide object speed
 	float svx = 0;
 	float svy = 0;
 	if (dynamic_cast<CMovableObject *>(coO))
-	{
 		dynamic_cast<CMovableObject *>(coO)->GetSpeed(svx, svy);
-	}
 
 	float sdx = svx * dt;
 	float sdy = svy * dt;
@@ -115,7 +121,7 @@ void CMovableObject::CalcPotentialCollisions(
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
-
+		
 		if (e->t > 0 && e->t <= 1.0f)
 			coEvents.push_back(e);
 		else

@@ -1,7 +1,7 @@
 #pragma once
 #include "GameObject.h"
 
-#define WORLD_FALL_SPEED	0.18f
+#define GAME_FALL_SPEED	0.18f
 
 enum class Action
 {
@@ -13,8 +13,13 @@ enum class Action
 	UPSTAIR,
 	DOWNSTAIR,
 	ATTACK,
+	SECOND_ATTACK,
 	GO_IN,
 	DIE,
+
+	// FOR THROWABLE THING: DAGGER, BOMB, ...
+	ITEM_FORM,			// without damaging
+	OFFENSIVE_FORM,
 };
 
 class CMovableObject : public CGameObject
@@ -50,6 +55,11 @@ public:
 		float &ny);
 	
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
+
+	/*
+		Simple handling collision: blocking when touch ground (only ground)
+		Generically use for falling-down objects.
+	*/
 	virtual void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents);
 	virtual void SetAction(Action action) { this->action = action; };
 

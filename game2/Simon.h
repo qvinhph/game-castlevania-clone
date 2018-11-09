@@ -11,6 +11,9 @@
 #define SIMON_JUMP_SPEED_Y				0.35f		// DELETE ME: DONT CHANGE
 #define SIMON_JUMP_GRAVITY				0.001f		// DELETE ME: 
 
+#define SIMON_WEAPON_ROPE				1
+#define SIMON_WEAPON_DAGGER				2
+
 #define ATTACKING_TIME					350
 #define FLICKERING_TIME					1000
 
@@ -50,6 +53,7 @@ class CSimon : public CMovableObject
 	DWORD attackStartTime;
 	DWORD flickerStartTime;
 	CRope * rope;
+	Item secondWeapon;
 
 	static CSimon * __instance;
 	CSimon();
@@ -63,7 +67,7 @@ public:
 	void SetAction(Action action) override;
 	
 	void SetMatchedAnimation();
-	void StartToAttack();
+	void StartToAttack(Item secondWeapon = Item::NONE);
 	void StartToFlicker();
 	void CalibrateCameraPosition();		// To keep Simon at center of camera
 

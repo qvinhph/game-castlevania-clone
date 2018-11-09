@@ -36,7 +36,7 @@ CInputHandler * inputHandler;
 
 void CInputHandler::OnKeyDown(int keyCode)
 {
-	DebugOut(L"\n[INFO] KeyDown: %d", keyCode);
+	//DebugOut(L"\n[INFO] KeyDown: %d", keyCode);
 	switch (keyCode)
 	{
 	case DIK_N:
@@ -44,7 +44,10 @@ void CInputHandler::OnKeyDown(int keyCode)
 		break;
 
 	case DIK_M:
-		CSimon::GetInstance()->SetAction(Action::ATTACK);
+		if (game->IsKeyDown(DIK_UP))
+			CSimon::GetInstance()->SetAction(Action::SECOND_ATTACK);
+		else
+			CSimon::GetInstance()->SetAction(Action::ATTACK);
 		break;
 
 	case DIK_RIGHT:
@@ -66,7 +69,7 @@ void CInputHandler::OnKeyDown(int keyCode)
 
 void CInputHandler::OnKeyUp(int keyCode)
 {
-	DebugOut(L"\n[INFO] KeyUp: %d", keyCode);
+	//DebugOut(L"\n[INFO] KeyUp: %d", keyCode);
 	switch (keyCode)
 	{
 	case DIK_DOWN:
@@ -156,59 +159,6 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int Sc
 
 #pragma endregion
 
-
-void InitObjectsForTesting()
-{
-
-	gameObject = CSimon::GetInstance();
-	objects.push_back(gameObject);
-	gameObject->SetPosition(130.0f, -50.0f);
-
-	gameObject = CRope::GetInstance();
-	objects.push_back(gameObject);
-
-	for (int i = 0; i < 30; i++)
-	{
-		gameObject = new CBrick();
-		gameObject->SetPosition(0 + i * 32.0f, 300);
-		objects.push_back(gameObject);
-	}
-
-	for (int i = 0; i < 3; i++)
-	{
-		gameObject = new CBrick();
-		gameObject->SetPosition(100 + i * 32.0f, 50);
-		objects.push_back(gameObject);
-	}
-
-	for (int i = 0; i < 3; i++)
-	{
-		gameObject = new CFlame();
-		CFlames::GetInstance()->Add((CFlame *)gameObject);
-		objects.push_back(gameObject);
-	}
-
-	gameObject = new CBrick();
-	gameObject->SetPosition(132.0f, 240);
-	objects.push_back(gameObject);
-
-	gameObject = new CBigCandle();
-	gameObject->SetPosition(200.0f, 165.0f);
-	objects.push_back(gameObject);
-
-	gameObject = new CItemRope();
-	gameObject->SetPosition(000.0f, 0.0f);
-	objects.push_back(gameObject);
-
-	gameObject = new CItemRope();
-	gameObject->SetPosition(400.0f, 60.0f);
-	objects.push_back(gameObject);
-
-	tileMap = new CTileMap(L"json\\scene_outside_jsonmap.json");
-	tileMap->Init(ID_TEX_TILESET);
-	tileMap->Draw();
-
-}
 
 void TestInit()
 {
@@ -506,13 +456,7 @@ void LoadResources()
 
 	LPDIRECT3DTEXTURE9 texMisc = textures->Get(ID_TEX_MISC);
 	LPDIRECT3DTEXTURE9 texGround = CTextures::GetInstance()->Get(ID_TEX_GROUND);
-
-	// brick
-	sprites->Add(11000, 0, 0, 32, 32, texGround);
-	ani = new CAnimation(100);
-	ani->AddFrame(11000);
-	animations->Add(BrickAniID::IDLE, ani);
-
+	
 	// big candle
 	sprites->Add(12000, 0, 0, 32, 64, texMisc);
 	sprites->Add(12001, 32, 0, 64, 64, texMisc);
@@ -545,6 +489,17 @@ void LoadResources()
 	ani->AddFrame(16000);
 	animations->Add((int)BigHeartAniID::IDLE, ani);
 
+	// heart
+	sprites->Add(17000, 101, 65, 117, 81, texMisc);
+	ani = new CAnimation(100);
+	ani->AddFrame(17000);
+	animations->Add((int)HeartAniID::IDLE, ani);
+
+	// dagger 
+	sprites->Add(18000, 153, 46, 185, 64, texMisc);
+	ani = new CAnimation(100);
+	ani->AddFrame(18000);
+	animations->Add((int)ItemDaggerAniID::IDLE, ani);
 
 #pragma endregion
 

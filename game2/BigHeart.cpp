@@ -3,7 +3,7 @@
 void CBigHeart::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CMovableObject::Update(dt);
-	vy = WORLD_FALL_SPEED;				// simple fall down
+	vy = GAME_FALL_SPEED;				// simple fall down
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	coEvents.clear();
@@ -12,7 +12,7 @@ void CBigHeart::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (coEvents.size() == 0)
 		y += dy;
 	else
-		ProceedCollisions(coEvents);
+		CMovableObject::ProceedCollisions(coEvents);
 }
 
 void CBigHeart::GetBoundingBox(float & left, float & top, float & right, float & bottom)

@@ -26,14 +26,14 @@
                         {
                          "name":"itemholding",
                          "type":"string",
-                         "value":"itemrope"
+                         "value":"heart"
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":176,
-                 "y":320
+                 "x":182,
+                 "y":210
                 }, 
                 {
                  "height":64,
@@ -43,14 +43,14 @@
                         {
                          "name":"itemholding",
                          "type":"string",
-                         "value":"itemrope"
+                         "value":"heart"
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":432,
-                 "y":320
+                 "x":423,
+                 "y":208
                 }, 
                 {
                  "height":64,
@@ -60,7 +60,7 @@
                         {
                          "name":"itemholding",
                          "type":"string",
-                         "value":""
+                         "value":"itemdagger"
                         }],
                  "rotation":0,
                  "type":"",
@@ -77,14 +77,14 @@
                         {
                          "name":"itemholding",
                          "type":"string",
-                         "value":"bigheart"
+                         "value":"heart"
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":687,
-                 "y":320
+                 "x":684,
+                 "y":215
                 }, 
                 {
                  "height":64,
@@ -190,6 +190,28 @@
                  "width":17,
                  "x":1623.5,
                  "y":287
+                }, 
+                {
+                 "height":20,
+                 "id":45,
+                 "name":"heart",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":20,
+                 "x":1572,
+                 "y":339
+                }, 
+                {
+                 "height":22,
+                 "id":50,
+                 "name":"itemdagger",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":22,
+                 "x":1627,
+                 "y":346
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -198,7 +220,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":45,
+ "nextobjectid":53,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.0",

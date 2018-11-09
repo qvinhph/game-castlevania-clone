@@ -15,14 +15,14 @@
 #include "Simon.h"
 #include "Rope.h"
 #include "BigCandle.h"
-#include "Brick.h"
 #include "Flame.h"
 #include "Flames.h"
 #include "ItemRope.h"
 #include "InvisibleWall.h"
 #include "Items.h"
 #include "BigHeart.h"
-
+#include "Heart.h"
+#include "ItemDagger.h"
 
 #define ID_TEX_SIMON		0
 #define ID_TEX_ROPE			1

@@ -5,8 +5,11 @@
 #include "Animations.h"
 #include "BigCandle.h"
 #include "ItemRope.h"
-#include "Brick.h"
 #include "BigHeart.h"
+#include "InvisibleWall.h"
+#include "Heart.h"
+#include "ItemDagger.h"
+
 #include "debug.h"
 
 CSimon * CSimon::__instance = NULL;
@@ -16,7 +19,7 @@ CSimon::CSimon()
 	this->attacking = false;
 	this->jumping = false;
 	this->crouching = false;
-	this->attackStartTime = 0;
+	this->secondWeapon = Item::NONE;
 
 	// ready to be used
 	rope = CRope::GetInstance();
@@ -84,6 +87,26 @@ void CSimon::SetMatchedAnimation()
 	}
 }
 
+void CSimon::StartToAttack(Item secondWeapon)
+{
+	if (!attacking)
+	{
+		attacking = true;
+		attackStartTime = GetTickCount();
+
+		if (secondWeapon == Item::NONE)
+		{
+			rope->SetState(STATE_VISIBLE);
+			rope->SetDirection(nx);
+		}
+		else
+		{
+			// TO-DO
+			// second attack...
+		}
+	}
+}
+
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	// Calculate dx, dy
@@ -93,7 +116,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (jumping)
 		vy += SIMON_JUMP_GRAVITY * dt;
 	else
-		vy = WORLD_FALL_SPEED;
+		vy = GAME_FALL_SPEED;
 
 	// Turn off the attacking flag when it'd done
 	// TO-DO: maybe these codes need to be refactoring -> TryEndAttacking(time) & TryEndFlickering(time)
@@ -145,7 +168,7 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 	float min_tx, min_ty, nx, ny;
 	FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
-	// update x, y to be at the collision position
+	// update x, y to make object be right at the collision position
 	x += min_tx * dx;
 	y += min_ty * dy;
 
@@ -156,21 +179,21 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 		if (dynamic_cast<CBigCandle *>(e->obj))
 		{
 			CBigCandle * bigCandle = dynamic_cast<CBigCandle *>(e->obj);
-			DebugOut(L"\n[INFO] Touch large candle");
+			DebugOut(L"\n[INFO] Touch Large Candle");
 		}
 
 		else if (dynamic_cast<CBigHeart *>(e->obj))
 		{
-			CGameObject * obj = dynamic_cast<CBigHeart *>(e->obj);
-			DebugOut(L"\n[INFO] Touch item heart rope");
+			CBigHeart * obj = dynamic_cast<CBigHeart *>(e->obj);
+			DebugOut(L"\n[INFO] Touch Big Heart");
 
 			obj->SetState(STATE_INVISIBLE);
 		}
 
 		else if (dynamic_cast<CItemRope *>(e->obj))
 		{
-			CGameObject * obj = dynamic_cast<CItemRope *>(e->obj);
-			DebugOut(L"\n[INFO] Touch item rope");
+			CItemRope * obj = dynamic_cast<CItemRope *>(e->obj);
+			DebugOut(L"\n[INFO] Touch Item Rope");
 
 			this->rope->LevelUp();
 			this->StartToFlicker();
@@ -178,8 +201,26 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			obj->SetState(STATE_INVISIBLE);
 		}
 
+		else if (dynamic_cast<CHeart *>(e->obj))
+		{
+			CHeart * obj = dynamic_cast<CHeart *>(e->obj);
+			DebugOut(L"\n[INFO] Touch Heart");
+
+			obj->SetState(STATE_INVISIBLE);
+		}
+
+		else if (dynamic_cast<CItemDagger *>(e->obj))
+		{
+			CItemDagger * obj = dynamic_cast<CItemDagger *>(e->obj);
+			DebugOut(L"\n[INFO] Touch Dagger");
+
+			obj->SetState(STATE_INVISIBLE);
+			obj->SetAction(Action::OFFENSIVE_FORM);
+			secondWeapon = Item::ITEMDAGGER;
+		}
+
 		// block with ground objects
-		else
+		else if (dynamic_cast<CInvisibleWall *>(e->obj))
 		{
 			x += nx * 0.4f;
 			y += ny * 0.4f;
@@ -198,18 +239,6 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 				}
 			}
 		}
-	}
-}
-
-void CSimon::StartToAttack()
-{
-	if (!attacking)
-	{
-		attacking = true;
-		attackStartTime = GetTickCount();
-		
-		rope->SetState(STATE_VISIBLE);
-		rope->SetDirection(nx);
 	}
 }
 
@@ -325,6 +354,10 @@ void CSimon::SetAction(Action action)
 			vx = -SIMON_WALKING_SPEED;
 			break;
 
+		/*case Action::SECOND_ATTACK:
+			StartToAttack();
+			break;*/
+
 		case Action::ATTACK:
 			StartToAttack();
 			break;
@@ -342,8 +375,10 @@ void CSimon::SetAction(Action action)
 		case Action::IDLE:
 			vx = 0;
 			break;
+
 		default:
-			break;
+			DebugOut(L"[ERROR] Simon cannot perform this action (order in enum: &d)", (int)action);
+			return;
 		}
 
 		CMovableObject::SetAction(action);

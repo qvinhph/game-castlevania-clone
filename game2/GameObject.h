@@ -12,12 +12,14 @@ using namespace std;
 #define STATE_VISIBLE		0
 #define STATE_INVISIBLE		-1
 
+// Item or dropable objects ( include heart, bigheart, etc)
 enum class Item
 {
 	NONE,
 	ITEMROPE,
 	HEART,
 	BIGHEART,
+	ITEMDAGGER,
 };
 
 class CGameObject;
@@ -71,11 +73,11 @@ public:
 	int GetState() { return this->state; }
 	
 	void RenderBoundingBox();
+
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
-	
 	virtual void ResetAnimation(int aniID);		
 	virtual void Render();
-	virtual void Destroy();						
+	virtual void Destroy();		
 
 	CGameObject();
 };

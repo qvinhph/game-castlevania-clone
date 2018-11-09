@@ -86,11 +86,11 @@ vector<LPGAMEOBJECT> CTileMap::GetGameObjects()
 	{
 		info = objects.at(i);
 
-		if		(info->name == "bigcandle") obj = new CBigCandle();
+		if		(info->name == "bbigcandle") obj = new CBigCandle();
 		else if (info->name == "rope")		obj = CRope::GetInstance();
 		else if (info->name == "simon")		obj = CSimon::GetInstance();
 
-		// item-type game objects
+		// item-type and dropable game objects
 		else if (info->name == "itemrope")
 		{
 			obj = new CItemRope();
@@ -101,10 +101,15 @@ vector<LPGAMEOBJECT> CTileMap::GetGameObjects()
 			obj = new CBigHeart();
 			itemManager->Add(Item::BIGHEART, obj);
 		}
-		else if (info->name == "insiviblewall")
+		else if (info->name == "heart")
 		{
-			obj = new CInvisibleWall();
-			dynamic_cast<CInvisibleWall *>(obj)->SetSize(info->width, info->height);
+			obj = new CHeart();
+			itemManager->Add(Item::HEART, obj);
+		}
+		else if (info->name == "itemdagger")
+		{
+			obj = new CItemDagger();
+			itemManager->Add(Item::ITEMDAGGER, obj);
 		}
 
 		// destroying flame 
@@ -112,6 +117,13 @@ vector<LPGAMEOBJECT> CTileMap::GetGameObjects()
 		{
 			obj = new CFlame();
 			flameManager->Add((CFlame *)obj);
+		}
+
+		// invisiblewall
+		else if (info->name == "insiviblewall")
+		{
+			obj = new CInvisibleWall();
+			dynamic_cast<CInvisibleWall *>(obj)->SetSize(info->width, info->height);
 		}
 
 		else
@@ -219,8 +231,10 @@ vector<LPOBJECTINFO> CTileMap::GetObjects(json root)
 
 Item CTileMap::GetHoldingItem(string string)
 {
-	if (string == "itemrope") return Item::ITEMROPE;
-	if (string == "bigheart") return Item::BIGHEART;
+	if (string == "itemrope")	return Item::ITEMROPE;
+	if (string == "bigheart")	return Item::BIGHEART;
+	if (string == "heart")		return Item::HEART;
+	if (string == "itemdagger")		return Item::ITEMDAGGER;
 
 	return Item::NONE;
 }

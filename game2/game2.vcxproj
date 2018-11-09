@@ -23,13 +23,14 @@
     <ClInclude Include="AnimationFrame.h" />
     <ClInclude Include="Animations.h" />
     <ClInclude Include="BigHeart.h" />
-    <ClInclude Include="Brick.h" />
     <ClInclude Include="Castlevania.h" />
+    <ClInclude Include="ItemDagger.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="Flame.h" />
     <ClInclude Include="Flames.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Heart.h" />
     <ClInclude Include="InvisibleWall.h" />
     <ClInclude Include="ItemRope.h" />
     <ClInclude Include="Items.h" />
@@ -51,7 +52,8 @@
     <ClCompile Include="AnimationFrame.cpp" />
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="BigHeart.cpp" />
-    <ClCompile Include="Brick.cpp" />
+    <ClCompile Include="ItemDagger.cpp" />
+    <ClCompile Include="Heart.cpp" />
     <ClCompile Include="Items.cpp" />
     <ClCompile Include="Flame.cpp" />
     <ClCompile Include="Flames.cpp" />

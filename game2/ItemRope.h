@@ -10,14 +10,14 @@ enum class ItemRopeAniID
 };
 
 /*
-	The object when Simon eats will upgrade his Rope
+	The object when Simon touch will upgrade his Rope
 */
 class CItemRope : public CMovableObject
 {
 public:
 
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL) override;
-	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
 
 	CItemRope() { this->currentAniID = (int)ItemRopeAniID::IDLE; }
 

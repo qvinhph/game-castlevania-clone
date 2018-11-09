@@ -39,7 +39,6 @@ void CItems::CheckAndDrop(LPGAMEOBJECT object)
 	}	
 }
 
-
 /*
 	Get the item according to the given name and set it the gien position
 */
@@ -49,7 +48,7 @@ void CItems::GetAndSet(Item itemName, float x, float y)
 	
 	if (itemsByName.empty())
 	{
-		DebugOut(L"\n[ERROR] No items with the given name found");
+		DebugOut(L"\n[ERROR] No items with the given name (order in enum: %d) found", (int)itemName);
 		return;
 	}
 
