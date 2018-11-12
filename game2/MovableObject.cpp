@@ -46,6 +46,13 @@ void CMovableObject::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 
+void CMovableObject::SetState(int state)
+{
+	CGameObject::SetState(state);
+	if (state == STATE_INVISIBLE)
+		vx = vy = dx = dy = 0;
+}
+
 /*
 	Extension of original SweptAABB to deal with two moving objects
 */

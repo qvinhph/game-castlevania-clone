@@ -3,6 +3,7 @@
 #include <d3dx9.h>
 
 #include "Castlevania.h"
+#include "Timer.h"
 #include "TileMap.h"
 
 #define WINDOW_CLASS_NAME L"Game"
@@ -59,9 +60,20 @@ void CInputHandler::OnKeyDown(int keyCode)
 		CSimon::GetInstance()->SetAction(Action::WALK_LEFT);
 		break;
 
+		// DEBUGGING
 	case DIK_1:
 		CSimon::GetInstance()->SetPosition(0.0f, 0.0f);
 		break;
+	case DIK_P:
+		for (UINT i = 0; i < objects.size(); ++i)
+		{
+			if (dynamic_cast<CItemRope *>(objects.at(i)))
+			{
+				objects.at(i)->SetState(STATE_VISIBLE);
+				objects.at(i)->SetPosition(200, 200);
+
+			}
+		}
 
 	default:
 		break;
@@ -540,12 +552,15 @@ void Update(DWORD dt)
 	for (UINT i = 0; i < objects.size(); i++)
 	{
 		if (dynamic_cast<CMovableObject *>(objects[i])
-			&& objects[i]->GetState() == STATE_VISIBLE)
+			&& objects[i]->GetState() == STATE_VISIBLE
+			&& objects[i]->GetFreezing() == false)
 		{
 			LPMOVABLEOBJECT obj = dynamic_cast<CMovableObject *>(objects[i]);
  			obj->Update(dt, &coObjects);
 		}
 	}
+
+	CTimer::GetInstance()->Update(dt, &objects);
 }
 
 

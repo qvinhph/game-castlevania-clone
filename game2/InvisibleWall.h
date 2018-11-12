@@ -10,8 +10,11 @@ class CInvisibleWall : public CGameObject
 public:
 
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
-	void Render() override { /* nothing here */	};
 	void SetSize(float width, float height);
 
+	/*
+		NOTES: currentAniID always equals -1
+	*/
+	void Render() override { /* nothing here */ };
 };
 

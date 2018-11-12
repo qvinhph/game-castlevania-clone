@@ -2,7 +2,6 @@
 
 void CItemRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	// TO-DO: FIX BUG: dy sau khi cham dat != 0 nen ko xay ra va cham 
 	CMovableObject::Update(dt);
 	vy += GAME_GRAVITY * dt;				// simple fall down
 

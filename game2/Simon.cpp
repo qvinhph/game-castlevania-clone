@@ -11,6 +11,7 @@
 #include "ItemDagger.h"
 #include "Flame.h"
 #include "Dagger.h"
+#include "Timer.h"
 
 #include "debug.h"
 
@@ -199,6 +200,7 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 
 			this->rope->LevelUp();
 			this->StartToFlicker();
+			CTimer::GetInstance()->Freeze(1000);
 		}
 
 		else if (dynamic_cast<CHeart *>(e->obj))
@@ -267,6 +269,8 @@ void CSimon::CalibrateCameraPosition()
 	// TODO: should this need a more generic code ?
 	yCam = 0;//yCentral - viewportHeight / 2;
 
+	// DEBUGGING
+	DebugOut(L"\n%f - %f", xCam, yCam);
 
 	CGame::GetInstance()->SetCameraPosition(xCam, yCam);
 }
@@ -294,6 +298,9 @@ void CSimon::GetBoundingBox(float & left, float & top, float & right, float & bo
 
 void CSimon::SetAction(Action action)
 {
+	if (freezing)
+		return;
+
 	// Simon behavior: while attacking, Simon stops moving and reject other action
 	// except finishing jumping
 	if (attacking)

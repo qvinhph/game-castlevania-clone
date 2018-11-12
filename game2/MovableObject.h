@@ -17,10 +17,6 @@ enum class Action
 	SECOND_ATTACK,
 	GO_IN,
 	DIE,
-
-	// FOR THROWABLE THING: DAGGER, BOMB, ...
-	ITEM_FORM,			// without damaging
-	OFFENSIVE_FORM,
 };
 
 class CMovableObject : public CGameObject
@@ -63,6 +59,7 @@ public:
 	*/
 	virtual void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents);
 	virtual void SetAction(Action action) { this->action = action; };
+	virtual void SetState(int state) override;
 
 	CMovableObject();
 };

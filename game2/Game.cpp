@@ -57,6 +57,9 @@ void CGame::Init(HWND hWnd)
 */
 void CGame::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, ARGB& argb)
 {
+	// TO-DO: REMOVE THIS HARDCODE
+	// SHOULD: these code should be move to CSimon::CalibrateCamera()
+	// ==> Make the IsInViewport work correctly
 	// Limit the camera position
 	if (xCamera < 0)		// 0 is ORIGIN_X ( gốc tọa độ)
 		xCamera = 0;

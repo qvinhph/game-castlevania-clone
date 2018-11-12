@@ -68,22 +68,27 @@ protected:
 	ARGB argb;
 	Item item;						// the item object holds, drop when destroyed
 
-public:
+	bool freezing;
 
+public:
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
 	void GetPosition(float &x, float &y) { x = this->x, y = this->y; }
 
 	void SetHoldingItem(Item item) { this->item = item; }
 	Item GetHoldingItem() { return this->item; }				// return the item name (enum class)
 
+	void SetFreezing(bool freezing) { this->freezing = freezing; }
+	bool GetFreezing() { return this->freezing; }
+
 	virtual void SetState(int state) { this->state = state; }
 	int GetState() { return this->state; }
 	
 	void RenderBoundingBox();
 	bool IsInViewport();
+	void FreezeAnimation();
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
-	virtual void ResetAnimation(int aniID);		
+	virtual void ResetAnimation(int aniID);
 	virtual void Render();
 	virtual void Destroy();		
 

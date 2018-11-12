@@ -48,6 +48,12 @@ bool CGameObject::IsInViewport()
 	return true;
 }
 
+void CGameObject::FreezeAnimation()
+{
+	if (currentAniID != -1)
+		animations->Get(currentAniID)->ResetFrameStartTime();
+}
+
 /*
 	Rearrange the frames of the given animation.
 */

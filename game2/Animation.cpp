@@ -54,6 +54,7 @@ void CAnimation::Render(float x, float y, ARGB &argb)
 */
 void CAnimation::ResetFrameStartTime()
 {
+	this->frameStartTime = GetTickCount();
 }
 
 

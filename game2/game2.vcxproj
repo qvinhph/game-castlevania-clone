@@ -47,6 +47,7 @@
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileMap.h" />
     <ClInclude Include="Tileset.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="Weapons.h" />
   </ItemGroup>
   <ItemGroup>
@@ -54,6 +55,7 @@
     <ClCompile Include="AnimationFrame.cpp" />
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="BigHeart.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Weapons.cpp" />
     <ClCompile Include="Dagger.cpp" />
     <ClCompile Include="ItemDagger.cpp" />
