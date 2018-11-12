@@ -22,14 +22,12 @@ void CAnimation::AddFrame(int spriteId, DWORD time)
 
 void CAnimation::Render(float x, float y, ARGB &argb)
 {
-
 	DWORD now = GetTickCount();
 	if (currentFrame == -1)
 	{
 		frames[0]->GetSprite()->Draw(x, y, argb);
 		currentFrame = 0;
 		frameStartTime = now;
-
 	}
 	else
 	{
@@ -48,6 +46,14 @@ void CAnimation::Render(float x, float y, ARGB &argb)
 				currentFrame = 0;
 		}
 	}
+}
+
+/*
+	Re-assign the frameStartTime to the current tick count
+	To keep animation remaining at the current animation frame
+*/
+void CAnimation::ResetFrameStartTime()
+{
 }
 
 

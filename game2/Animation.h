@@ -23,6 +23,8 @@ public:
 
 	int GetCurrentFrame() { return currentFrame; };
 	void SetCurrentFrame(int index) { this->currentFrame = index; }
+
+	void ResetFrameStartTime();
 };
 
 typedef CAnimation * LPANIMATION;
