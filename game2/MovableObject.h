@@ -1,7 +1,8 @@
 #pragma once
 #include "GameObject.h"
 
-#define GAME_FALL_SPEED	0.18f
+#define GAME_GRAVITY		0.002
+#define COLLISION_FORCE		0.4f	// Use when two objects collide, avoid overlapping next frame
 
 enum class Action
 {
@@ -32,7 +33,7 @@ protected:
 	float vx;
 	float vy;
 
-	int nx;	
+	int nx;				// direction of the object: > 0 will be face to right-side, otherwise left-side
 	DWORD dt;
 	Action action;
 
@@ -42,7 +43,7 @@ public:
 	void GetSpeed(float &vx, float &vy) { vx = this->vx, vy = this->vy; }
 
 	void SetDirection(int nx) { this->nx = nx; }
-	void GetDirection(int &nx) { nx = this->nx; }
+	int GetDirection() { return this->nx; }
 
 	LPCOLLISIONEVENT SweptAABBEx(LPGAMEOBJECT coO);
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);

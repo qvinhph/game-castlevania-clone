@@ -1,21 +1,21 @@
 #pragma once
 #include "MovableObject.h"
 
-#define FRONT_ROPE_LV1_BBOX_HEIGHT		18.0f
-#define FRONT_ROPE_LV1_BBOX_WIDTH		56.0f
-#define FRONT_ROPE_LV2_BBOX_HEIGHT		18.0f
-#define FRONT_ROPE_LV2_BBOX_WIDTH		56.0f
-#define FRONT_ROPE_LV3_BBOX_HEIGHT		18.0f
-#define FRONT_ROPE_LV3_BBOX_WIDTH		89.0f
+#define FRONT_ROPE_LV1_BBOX_HEIGHT				18.0f
+#define FRONT_ROPE_LV1_BBOX_WIDTH				56.0f
+#define FRONT_ROPE_LV2_BBOX_HEIGHT				18.0f
+#define FRONT_ROPE_LV2_BBOX_WIDTH				56.0f
+#define FRONT_ROPE_LV3_BBOX_HEIGHT				18.0f
+#define FRONT_ROPE_LV3_BBOX_WIDTH				89.0f
 
-#define BACK_ROPE_BBOX_WIDTH			32
+#define BACK_ROPE_BBOX_WIDTH					32
 
-#define ROPE_LEVEL1						10
-#define ROPE_LEVEL2						11
-#define ROPE_LEVEL3						12
+#define ROPE_LEVEL1								10
+#define ROPE_LEVEL2								11
+#define ROPE_LEVEL3								12
 	
 // for adjusting the rope to fit simon hand
-#define Y_DISTANCE_FRONT_ROPE_AND_SIMON_POS		14
+#define Y_DISTANCE_FRONTROPE_LOWER_SIMON		14
 
 enum class RopeAniID
 {

@@ -1,15 +1,16 @@
 #pragma once
 #include "MovableObject.h"
 #include "Rope.h"
+#include "Weapons.h"
 
 #define SIMON_IDLE_BBOX_WIDTH			32.0f
 #define SIMON_IDLE_BBOX_HEIGHT			62.0f
 #define SIMON_CROUCHING_BBOX_WIDTH		32.0f
 #define SIMON_CROUCHING_BBOX_HEIGHT		46.0f
 
-#define SIMON_WALKING_SPEED				0.12f		// DELETE ME: DONT CHANGE
-#define SIMON_JUMP_SPEED_Y				0.35f		// DELETE ME: DONT CHANGE
-#define SIMON_JUMP_GRAVITY				0.001f		// DELETE ME: 
+#define SIMON_WALKING_SPEED				0.12f		
+#define SIMON_JUMP_SPEED_Y				0.35f		
+#define SIMON_JUMP_GRAVITY				0.001f		
 
 #define SIMON_WEAPON_ROPE				1
 #define SIMON_WEAPON_DAGGER				2
@@ -52,8 +53,10 @@ class CSimon : public CMovableObject
 
 	DWORD attackStartTime;
 	DWORD flickerStartTime;
+	Weapon secondWeapon;
+
 	CRope * rope;
-	Item secondWeapon;
+	CWeapons * weapons;
 
 	static CSimon * __instance;
 	CSimon();
@@ -67,7 +70,7 @@ public:
 	void SetAction(Action action) override;
 	
 	void SetMatchedAnimation();
-	void StartToAttack(Item secondWeapon = Item::NONE);
+	void StartToAttack(Weapon secondWeapon = Weapon::NONE);
 	void StartToFlicker();
 	void CalibrateCameraPosition();		// To keep Simon at center of camera
 

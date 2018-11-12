@@ -6,12 +6,15 @@
 #include "TileMap.h"
 
 #define WINDOW_CLASS_NAME L"Game"
-#define MAIN_WINDOW_TITLE L"Castlevania I"
+#define MAIN_WINDOW_TITLE L"Castlevania"
 
 #define BACKGROUND_COLOR	D3DCOLOR_XRGB(0, 0, 0)
 
 #define SCREEN_WIDTH		528.5f//512		// DELETE ME: NOTE: ACCEPTABLE
-#define SCREEN_HEIGHT		490.8f//448
+#define SCREEN_HEIGHT		487.5f//448
+
+#define VIEWPORT_WIDTH		512
+#define VIEWPORT_HEIGHT		448
 
 #define MAX_FRAME_RATE		120
 
@@ -177,8 +180,8 @@ void LoadResources()
 	//
 	//	GET VIEWPORT SIZE
 	//
-	CGame::GetInstance()->SetViewportWidth(SCREEN_WIDTH);
-	CGame::GetInstance()->SetViewportHeight(SCREEN_HEIGHT);
+	CGame::GetInstance()->SetViewportWidth(VIEWPORT_WIDTH);
+	CGame::GetInstance()->SetViewportHeight(VIEWPORT_HEIGHT);
 
 	//
 	// LOAD TEXTURES
@@ -226,7 +229,7 @@ void LoadResources()
 	sprites->Add(99007, 136, 2, 168, 64, texSimon);		// attack right
 	sprites->Add(99008, 75, 2, 107, 64, texSimon);		// attack right
 	sprites->Add(99009, 16, 2, 48, 64, texSimon);		// attack right
-	sprites->Add(99107, 312, 200, 344, 262, texSimon);	// attack left
+	sprites->Add(99107, 312, 200, 360, 262, texSimon);	// attack left
 	sprites->Add(99108, 373, 200, 405, 262, texSimon);	// attack left
 	sprites->Add(99109, 432, 200, 464, 262, texSimon);	// attack left
 	
@@ -466,7 +469,7 @@ void LoadResources()
 	// small candle - spriteID = 13xxx
 
 	// item Rope
-	sprites->Add(14000, 146, 65, 178, 97, texMisc);
+	sprites->Add(14000, 61, 64, 93, 96, texMisc);
 	ani = new CAnimation(100);
 	ani->AddFrame(14000);
 	animations->Add((int)ItemRopeAniID::IDLE, ani);
@@ -482,27 +485,36 @@ void LoadResources()
 	animations->Add((int)FlameAniID::IDLE, ani);
 
 	// big heart
-	sprites->Add(16000, 120, 65, 144, 85, texMisc);
+	sprites->Add(16000, 95, 105, 119, 125, texMisc);
 	ani = new CAnimation(100);
 	ani->AddFrame(16000);
 	animations->Add((int)BigHeartAniID::IDLE, ani);
 
 	// heart
-	sprites->Add(17000, 101, 65, 117, 81, texMisc);
+	sprites->Add(17000, 126, 110, 142, 126, texMisc);
 	ani = new CAnimation(100);
 	ani->AddFrame(17000);
 	animations->Add((int)HeartAniID::IDLE, ani);
 
-	// dagger 
+	// item dagger
 	sprites->Add(18000, 153, 46, 185, 64, texMisc);
 	ani = new CAnimation(100);
 	ani->AddFrame(18000);
 	animations->Add((int)ItemDaggerAniID::IDLE, ani);
 
+	// dagger
+	sprites->Add(18100, 192, 46, 224, 64, texMisc);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(18000);		// use the same sprite as itemdagger
+	animations->Add((int)DaggerAniID::IDLE_RIGHT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(18100);		
+	animations->Add((int)DaggerAniID::IDLE_LEFT, ani);
+
 #pragma endregion
 
-
-	//InitObjectsForTesting();
 	TestInit();
 
 }
@@ -515,11 +527,13 @@ void LoadResources()
 void Update(DWORD dt)
 {
 	// TO-DO: Need an optimized way
-	// only the objects in the camera zone
+	// Only the objects in the viewport and visible is a collidable object
 	vector<LPGAMEOBJECT> coObjects;
 	for (UINT i = 0; i < objects.size(); i++)
 	{
-		if ( objects.at(i)->GetState() == STATE_VISIBLE)
+		if ((objects.at(i)->GetState() == STATE_VISIBLE				 // Invisiblewall objects may wider or higher than  
+			&& objects.at(i)->IsInViewport())						 //	the viewport, so I always consider them as 
+			|| dynamic_cast<CInvisibleWall *>(objects.at(i)))		 // collidable objects ( TO-DO: ... )
 			coObjects.push_back(objects[i]);
 	}
 

@@ -48,7 +48,7 @@ void CItems::GetAndSet(Item itemName, float x, float y)
 	
 	if (itemsByName.empty())
 	{
-		DebugOut(L"\n[ERROR] No items with the given name (order in enum: %d) found", (int)itemName);
+		DebugOut(L"\n[ERROR] No items with the given name (Item enum: %d) found", (int)itemName);
 		return;
 	}
 

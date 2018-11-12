@@ -78,45 +78,53 @@ vector<LPGAMEOBJECT> CTileMap::GetGameObjects()
 	vector<LPGAMEOBJECT> result;
 	LPOBJECTINFO info;
 	LPGAMEOBJECT obj;
-	CItems * itemManager = CItems::GetInstance();		// For adding and managing the item type objects
-	CFlames * flameManager = CFlames::GetInstance();	// For adding and managing the 
-														// destroying flame objects
+	CItems * items = CItems::GetInstance();			// For adding and managing the item-type objects
+	CFlames * flames = CFlames::GetInstance();		// For adding and managing the destroying flames
+	CWeapons * weapons = CWeapons::GetInstance();	// For adding and managing weapon-type objects
+	
 
 	for (UINT i = 0; i < objects.size(); i++)
 	{
 		info = objects.at(i);
 
-		if		(info->name == "bbigcandle") obj = new CBigCandle();
-		else if (info->name == "rope")		obj = CRope::GetInstance();
-		else if (info->name == "simon")		obj = CSimon::GetInstance();
+		if		(info->name == "bigcandle")		obj = new CBigCandle();
+		else if (info->name == "rope")			obj = CRope::GetInstance();
+		else if (info->name == "simon")			obj = CSimon::GetInstance();
 
 		// item-type and dropable game objects
 		else if (info->name == "itemrope")
 		{
 			obj = new CItemRope();
-			itemManager->Add(Item::ITEMROPE, obj);
+			items->Add(Item::ITEMROPE, obj);
 		}
 		else if (info->name == "bigheart")
 		{
 			obj = new CBigHeart();
-			itemManager->Add(Item::BIGHEART, obj);
+			items->Add(Item::BIGHEART, obj);
 		}
 		else if (info->name == "heart")
 		{
 			obj = new CHeart();
-			itemManager->Add(Item::HEART, obj);
+			items->Add(Item::HEART, obj);
 		}
 		else if (info->name == "itemdagger")
 		{
 			obj = new CItemDagger();
-			itemManager->Add(Item::ITEMDAGGER, obj);
+			items->Add(Item::ITEMDAGGER, obj);
+		}
+
+		// weapon-type game objects
+		else if (info->name == "dagger")
+		{
+			obj = new CDagger();
+			weapons->Add(Weapon::DAGGER, obj);
 		}
 
 		// destroying flame 
 		else if (info->name == "flame")
 		{
 			obj = new CFlame();
-			flameManager->Add((CFlame *)obj);
+			flames->Add((CFlame *)obj);
 		}
 
 		// invisiblewall
@@ -129,7 +137,7 @@ vector<LPGAMEOBJECT> CTileMap::GetGameObjects()
 		else
 		{
 			// in case something mismatched
-			DebugOut(L"\n[ERROR] Load Game Objects failed");
+			DebugOut(L"\n[ERROR] Load Game Objects failed. \n Cannot recognize %s", info->name);
 			return vector<LPGAMEOBJECT>();		// return empty vector
 		}
 
@@ -231,9 +239,9 @@ vector<LPOBJECTINFO> CTileMap::GetObjects(json root)
 
 Item CTileMap::GetHoldingItem(string string)
 {
-	if (string == "itemrope")	return Item::ITEMROPE;
-	if (string == "bigheart")	return Item::BIGHEART;
-	if (string == "heart")		return Item::HEART;
+	if (string == "itemrope")		return Item::ITEMROPE;
+	if (string == "bigheart")		return Item::BIGHEART;
+	if (string == "heart")			return Item::HEART;
 	if (string == "itemdagger")		return Item::ITEMDAGGER;
 
 	return Item::NONE;

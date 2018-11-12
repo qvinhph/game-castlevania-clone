@@ -100,6 +100,7 @@ void CRope::SetMatchedAnimation()
 	}
 }
 
+// TO-DO: Consider about this function for Rope object
 void CRope::ProceedCollisions(std::vector<LPCOLLISIONEVENT> &coEvents)
 {
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -154,8 +155,8 @@ void CRope::UpdateRopePosition(int aniID)
 	float xS, yS;
 	CSimon::GetInstance()->GetPosition(xS, yS);
 
-	// get the current rope texture width
-	// because different rope level may has different length
+	// Get the current rope texture width
+	// Because different rope level may has different length
 	int ropeTexWidth;
 	switch (level)
 	{
@@ -184,7 +185,7 @@ void CRope::UpdateRopePosition(int aniID)
 			xS + SIMON_IDLE_BBOX_WIDTH :
 			xS - ropeTexWidth;
 
-		y = yS + Y_DISTANCE_FRONT_ROPE_AND_SIMON_POS;
+		y = yS + Y_DISTANCE_FRONTROPE_LOWER_SIMON;
 	}
 	else
 	{
@@ -216,7 +217,7 @@ void CRope::LevelUp()
 void CRope::SetState(int state)
 {
 	CGameObject::SetState(state);
-
+	
 	// reset the current animation for next usage
 	if (state == STATE_INVISIBLE)
 		if (currentAniID > 0)

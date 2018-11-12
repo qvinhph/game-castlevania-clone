@@ -22,6 +22,13 @@ enum class Item
 	ITEMDAGGER,
 };
 
+// Weapon used for second attacking 
+enum class Weapon
+{
+	NONE,
+	DAGGER,
+};
+
 class CGameObject;
 typedef CGameObject * LPGAMEOBJECT;
 
@@ -73,6 +80,7 @@ public:
 	int GetState() { return this->state; }
 	
 	void RenderBoundingBox();
+	bool IsInViewport();
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
 	virtual void ResetAnimation(int aniID);		

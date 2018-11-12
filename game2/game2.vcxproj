@@ -24,6 +24,7 @@
     <ClInclude Include="Animations.h" />
     <ClInclude Include="BigHeart.h" />
     <ClInclude Include="Castlevania.h" />
+    <ClInclude Include="Dagger.h" />
     <ClInclude Include="ItemDagger.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="Flame.h" />
@@ -46,12 +47,15 @@
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileMap.h" />
     <ClInclude Include="Tileset.h" />
+    <ClInclude Include="Weapons.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationFrame.cpp" />
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="BigHeart.cpp" />
+    <ClCompile Include="Weapons.cpp" />
+    <ClCompile Include="Dagger.cpp" />
     <ClCompile Include="ItemDagger.cpp" />
     <ClCompile Include="Heart.cpp" />
     <ClCompile Include="Items.cpp" />

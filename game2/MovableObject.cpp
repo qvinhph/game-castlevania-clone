@@ -5,12 +5,10 @@
 #include "ItemRope.h"
 #include "InvisibleWall.h"
 
-#define FORCE_PUSH_BACK		0.4f	// Use for separate two objects, avoid overlapping next frame
-
 CMovableObject::CMovableObject()
 {
 	vx = 0;
-	vy = GAME_FALL_SPEED;
+	vy = 0;
 	nx = 1;
 }
 
@@ -39,10 +37,13 @@ void CMovableObject::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 			if (ny < 0)
 			{
 				vy = 0;
-				y += FORCE_PUSH_BACK * ny;
+				y += COLLISION_FORCE * ny;
 			}
 		}
-	}	
+	}
+
+	// clean up collision events
+	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 
 /*

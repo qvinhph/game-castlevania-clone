@@ -29,7 +29,7 @@ void CFlames::ShowAFlame(LPGAMEOBJECT obj)
 			flame->StartToBurn();
 
 			// Pass the item the object is holding to flame, if has
-			// to drop it when flame runs out of burning time
+			// To drop it when flame runs out of burning time
 			flame->SetHoldingItem(obj->GetHoldingItem());		
 
 			// Calibrate the flame position to appear at the central of the objects

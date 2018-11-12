@@ -6,30 +6,26 @@ void CItemDagger::GetBoundingBox(float & left, float & top, float & right, float
 {
 	left = x;
 	top = y;
-	right = left + DAGGER_BBOX_WIDTH;
-	bottom = top + DAGGER_BBOX_HEIGHT;
+	right = left + ITEMDAGGER_BBOX_WIDTH;
+	bottom = top + ITEMDAGGER_BBOX_HEIGHT;
 }
 
 void CItemDagger::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CMovableObject::Update(dt);
 
-	vy = GAME_FALL_SPEED;
+	vy += GAME_GRAVITY * dt;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	coEvents.clear();
 	CalcPotentialCollisions(coObjects, coEvents);
 
 	if (coEvents.size() == 0)
+	{
+		y += dy;
 		x += dx;
+	}
 	else
 		CMovableObject::ProceedCollisions(coEvents);
 
-
-}
-
-CItemDagger::CItemDagger()
-{
-	this->currentAniID = (int)ItemDaggerAniID::IDLE;
-	this->action = Action::ITEM_FORM;
 }

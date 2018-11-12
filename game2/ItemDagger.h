@@ -1,9 +1,8 @@
 #pragma once
 #include "MovableObject.h"
 
-#define DAGGER_BBOX_HEIGHT		18.0f
-#define DAGGER_BBOX_WIDTH		32.0f
-#define DAGGER_SPEED_X			0.5f
+#define ITEMDAGGER_BBOX_HEIGHT		18.0f
+#define ITEMDAGGER_BBOX_WIDTH		32.0f
 
 enum class ItemDaggerAniID
 {

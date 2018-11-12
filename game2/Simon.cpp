@@ -9,6 +9,8 @@
 #include "InvisibleWall.h"
 #include "Heart.h"
 #include "ItemDagger.h"
+#include "Flame.h"
+#include "Dagger.h"
 
 #include "debug.h"
 
@@ -19,10 +21,11 @@ CSimon::CSimon()
 	this->attacking = false;
 	this->jumping = false;
 	this->crouching = false;
-	this->secondWeapon = Item::NONE;
+	this->secondWeapon = Weapon::NONE;
 
 	// ready to be used
 	rope = CRope::GetInstance();
+	weapons = CWeapons::GetInstance();
 }
 
 void CSimon::Render()
@@ -87,22 +90,17 @@ void CSimon::SetMatchedAnimation()
 	}
 }
 
-void CSimon::StartToAttack(Item secondWeapon)
+void CSimon::StartToAttack(Weapon secondWeapon)
 {
 	if (!attacking)
 	{
 		attacking = true;
 		attackStartTime = GetTickCount();
 
-		if (secondWeapon == Item::NONE)
+		if (secondWeapon == Weapon::NONE)
 		{
 			rope->SetState(STATE_VISIBLE);
 			rope->SetDirection(nx);
-		}
-		else
-		{
-			// TO-DO
-			// second attack...
 		}
 	}
 }
@@ -116,17 +114,23 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (jumping)
 		vy += SIMON_JUMP_GRAVITY * dt;
 	else
-		vy = GAME_FALL_SPEED;
+		vy += GAME_GRAVITY * dt;
 
 	// Turn off the attacking flag when it'd done
 	// TO-DO: maybe these codes need to be refactoring -> TryEndAttacking(time) & TryEndFlickering(time)
 	if (attacking)
 		if (GetTickCount() - attackStartTime >= ATTACKING_TIME)
 		{
+			// If used rope to attack
+			if (rope->GetState() == STATE_VISIBLE)
+				rope->SetState(STATE_INVISIBLE);
+			else 
+				weapons->UseWeapon(secondWeapon, this);
+
+
 			// To rearrange attacking frames
 			this->ResetAnimation(currentAniID);
-			attacking = false;
-			rope->SetState(STATE_INVISIBLE);
+			attacking = false;			
 		}
 
 	// Turn off the flickering flag when it'd done
@@ -164,11 +168,11 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 {
 	vector<LPCOLLISIONEVENT> coEventsResult;
-
 	float min_tx, min_ty, nx, ny;
 	FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
 	// update x, y to make object be right at the collision position
+	// for ignoring collision with some kind of objects
 	x += min_tx * dx;
 	y += min_ty * dy;
 
@@ -176,60 +180,54 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 	{
 		LPCOLLISIONEVENT e = coEventsResult[i];
 
-		if (dynamic_cast<CBigCandle *>(e->obj))
-		{
-			CBigCandle * bigCandle = dynamic_cast<CBigCandle *>(e->obj);
-			DebugOut(L"\n[INFO] Touch Large Candle");
-		}
+		// Can remove this
+		if (dynamic_cast<CBigCandle *>(e->obj) ||
+			dynamic_cast<CFlame *>(e->obj) ||
+			dynamic_cast<CDagger *>(e->obj))
+			DebugOut(L"\n[INFO] Touch something but do nothing !!");
 
 		else if (dynamic_cast<CBigHeart *>(e->obj))
 		{
-			CBigHeart * obj = dynamic_cast<CBigHeart *>(e->obj);
 			DebugOut(L"\n[INFO] Touch Big Heart");
-
-			obj->SetState(STATE_INVISIBLE);
+			e->obj->SetState(STATE_INVISIBLE);
 		}
 
 		else if (dynamic_cast<CItemRope *>(e->obj))
 		{
-			CItemRope * obj = dynamic_cast<CItemRope *>(e->obj);
 			DebugOut(L"\n[INFO] Touch Item Rope");
+			e->obj->SetState(STATE_INVISIBLE);
 
 			this->rope->LevelUp();
 			this->StartToFlicker();
-
-			obj->SetState(STATE_INVISIBLE);
 		}
 
 		else if (dynamic_cast<CHeart *>(e->obj))
 		{
-			CHeart * obj = dynamic_cast<CHeart *>(e->obj);
 			DebugOut(L"\n[INFO] Touch Heart");
-
-			obj->SetState(STATE_INVISIBLE);
+			e->obj->SetState(STATE_INVISIBLE);
 		}
 
 		else if (dynamic_cast<CItemDagger *>(e->obj))
 		{
-			CItemDagger * obj = dynamic_cast<CItemDagger *>(e->obj);
 			DebugOut(L"\n[INFO] Touch Dagger");
+			e->obj->SetState(STATE_INVISIBLE);
 
-			obj->SetState(STATE_INVISIBLE);
-			obj->SetAction(Action::OFFENSIVE_FORM);
-			secondWeapon = Item::ITEMDAGGER;
+			secondWeapon = Weapon::DAGGER;
+			weapons->AddToStock(Weapon::DAGGER);
 		}
 
 		// block with ground objects
 		else if (dynamic_cast<CInvisibleWall *>(e->obj))
 		{
-			x += nx * 0.4f;
-			y += ny * 0.4f;
+			// Prevent overlapping next frame
+			x += nx * COLLISION_FORCE;		
+			y += ny * COLLISION_FORCE;
 
 			if (ny < 0)
 			{
 				vy = 0;
 
-				// simon is not jumping while his feet on the ground
+				// Simon is not jumping while his feet on the ground
 				if (jumping)
 				{
 					jumping = false;
@@ -308,16 +306,23 @@ void CSimon::SetAction(Action action)
 	// TO-DO: Need more thought on this (jumping)
 	else if (jumping)
 	{
-		if (action == Action::ATTACK && !attacking)
+		if (!attacking)
 		{
-			StartToAttack();
+			if (action == Action::ATTACK)
+			{
+				StartToAttack();
 
-			// because when Simon attacks, it may changes from crouching-height to standing-height
-			// so need re-locate Simon to avoid overlapping the ground
-			// divide by 2 to keep the jumping and attacking action smoothly 
-			// and also to make this similar to the origin game
-			y += (SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT) / 2;
+				// Divide by 2 to keep the attack while jumping action smoothly 
+				// and also to make this similar to the origin game
+				y += (SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT) / 2;
+			}
+			else if (action == Action::SECOND_ATTACK)
+			{
+				StartToAttack(secondWeapon);
+				y += (SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT) / 2;
+			}
 		}
+		
 	}
 
 	// Simon behavior: while crouching, simon can only change direction or attack
@@ -354,9 +359,9 @@ void CSimon::SetAction(Action action)
 			vx = -SIMON_WALKING_SPEED;
 			break;
 
-		/*case Action::SECOND_ATTACK:
-			StartToAttack();
-			break;*/
+		case Action::SECOND_ATTACK:
+			StartToAttack(secondWeapon);
+			break;
 
 		case Action::ATTACK:
 			StartToAttack();
@@ -377,7 +382,7 @@ void CSimon::SetAction(Action action)
 			break;
 
 		default:
-			DebugOut(L"[ERROR] Simon cannot perform this action (order in enum: &d)", (int)action);
+			DebugOut(L"[ERROR] Simon cannot perform this action (Action enum: %d)", (int)action);
 			return;
 		}
 

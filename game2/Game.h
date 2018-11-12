@@ -34,10 +34,10 @@ class CGame
 	LPDIRECT3DSURFACE9 backBuffer = NULL;
 	LPD3DXSPRITE spriteHandler = NULL;			// Sprite helper library to help us draw 2D image on the screen 
 
-	LPDIRECTINPUT8       di;		// The DirectInput object         
-	LPDIRECTINPUTDEVICE8 didv;		// The keyboard device 
+	LPDIRECTINPUT8       di;					// The DirectInput object         
+	LPDIRECTINPUTDEVICE8 didv;					// The keyboard device 
 
-	BYTE  keyStates[256];			// DirectInput keyboard state buffer 
+	BYTE  keyStates[256];						// DirectInput keyboard state buffer 
 	DIDEVICEOBJECTDATA keyEvents[KEYBOARD_BUFFER_SIZE];		// Buffered keyboard data
 
 	LPKEY_EVENT_HANDLER keyEventHandler;
@@ -48,14 +48,15 @@ class CGame
 	float viewportHeight;
 
 	static CGame * __instance;
-	CGame();
+	CGame() = default;
 
 public:
 	void SetCameraPosition(float x, float y) { this->xCamera = x; this->yCamera = y; }
-
+	void GetCameraPosition(float &x, float &y) { x = this->xCamera; y = this->yCamera; }
+	
 	void SetViewportWidth(float viewportWidth) { this->viewportWidth = viewportWidth; }
 	void SetViewportHeight(float viewportHeight) { this->viewportHeight = viewportHeight; }
-	void GetViewportSize(float &height, float &width) { height = this->viewportHeight; width = this->viewportWidth; }
+	void GetViewportSize(float &width, float &height) { height = this->viewportHeight; width = this->viewportWidth; }
 
 	void InitKeyboard(LPKEY_EVENT_HANDLER handler);
 	void Init(HWND hWnd);

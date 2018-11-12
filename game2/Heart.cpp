@@ -14,10 +14,10 @@ void CHeart::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CMovableObject::Update(dt);
 
-	// simple vertical movement
+	// Simple vertical movement
 	vy = HEART_FALL_SPEED_Y;
 	
-	// horizontal movement
+	// Horizontal movement
 	vx += velocity_x * dt;
 	if (abs(vx) > HEART_MAX_SPEED_X_ALLOWED &&
 		vx * velocity_x > 0)						// and vx is increasing
@@ -44,13 +44,12 @@ void CHeart::SetState(int state)
 	CGameObject::SetState(state);
 
 	// Reset the vx, vy every time the Heart is set to VISIBLE
-	// to keep its unique movement the same
+	// to keep its unique movement the same 
 	if (state == STATE_VISIBLE)
 	{
 		vy = HEART_FALL_SPEED_Y;
 		vx = HEART_MAX_SPEED_X_ALLOWED;
 	}
-
 }
 
 CHeart::CHeart()

@@ -3,14 +3,17 @@
 void CBigHeart::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CMovableObject::Update(dt);
-	vy = GAME_FALL_SPEED;				// simple fall down
+	vy += GAME_GRAVITY * dt;				// simple fall down
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	coEvents.clear();
 	CalcPotentialCollisions(coObjects, coEvents);
 
 	if (coEvents.size() == 0)
+	{
 		y += dy;
+		x += dx;
+	}
 	else
 		CMovableObject::ProceedCollisions(coEvents);
 }

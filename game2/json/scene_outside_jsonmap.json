@@ -26,14 +26,14 @@
                         {
                          "name":"itemholding",
                          "type":"string",
-                         "value":"heart"
+                         "value":"bigheart"
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":182,
-                 "y":210
+                 "x":177,
+                 "y":320
                 }, 
                 {
                  "height":64,
@@ -43,14 +43,14 @@
                         {
                          "name":"itemholding",
                          "type":"string",
-                         "value":"heart"
+                         "value":"itemrope"
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":423,
-                 "y":208
+                 "x":434,
+                 "y":225
                 }, 
                 {
                  "height":64,
@@ -66,7 +66,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":1200,
+                 "x":1193,
                  "y":320
                 }, 
                 {
@@ -77,14 +77,14 @@
                         {
                          "name":"itemholding",
                          "type":"string",
-                         "value":"heart"
+                         "value":"itemrope"
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":684,
-                 "y":215
+                 "x":680,
+                 "y":320
                 }, 
                 {
                  "height":64,
@@ -94,13 +94,13 @@
                         {
                          "name":"itemholding",
                          "type":"string",
-                         "value":""
+                         "value":"bigheart"
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":942,
+                 "x":950,
                  "y":320
                 }, 
                 {
@@ -115,15 +115,15 @@
                  "y":384
                 }, 
                 {
-                 "height":0,
+                 "height":62,
                  "id":23,
                  "name":"simon",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":0,
+                 "width":32,
                  "x":57,
-                 "y":133
+                 "y":320
                 }, 
                 {
                  "height":0,
@@ -212,6 +212,17 @@
                  "width":22,
                  "x":1627,
                  "y":346
+                }, 
+                {
+                 "height":22,
+                 "id":53,
+                 "name":"dagger",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":24,
+                 "x":1678,
+                 "y":261
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -220,7 +231,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":53,
+ "nextobjectid":56,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.0",

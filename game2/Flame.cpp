@@ -3,7 +3,10 @@
 
 void CFlame::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
-	// Empty. We dont need this.
+	left = x;
+	top = y;
+	right = left + FLAME_BBOX_WIDTH;
+	bottom = top + FLAME_BBOX_HEIGHT;
 }
 
 void CFlame::Render()

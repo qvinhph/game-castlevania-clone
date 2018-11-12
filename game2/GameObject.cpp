@@ -4,6 +4,8 @@
 #include "Game.h"
 #include "Flames.h"
 #include "Items.h"
+#include "debug.h"
+
 
 void CGameObject::RenderBoundingBox()
 {
@@ -26,7 +28,28 @@ void CGameObject::RenderBoundingBox()
 }
 
 /*
-	Rearrange the frames of the specified animation.
+	Return true if 100% of the object area in the viewport
+*/
+bool CGameObject::IsInViewport()
+{
+	float xCam, yCam;
+	float viewportWidth, viewportHeight;
+	CGame::GetInstance()->GetCameraPosition(xCam, yCam);
+	CGame::GetInstance()->GetViewportSize(viewportWidth, viewportHeight);
+	
+	float left, top, right, bottom;
+	this->GetBoundingBox(left, top, right, bottom);
+
+	if (xCam > left || yCam > top ||
+		xCam + viewportWidth < right ||
+		yCam + viewportHeight < bottom)
+		return false;
+
+	return true;
+}
+
+/*
+	Rearrange the frames of the given animation.
 */
 void CGameObject::ResetAnimation(int aniID)
 {
@@ -36,7 +59,9 @@ void CGameObject::ResetAnimation(int aniID)
 void CGameObject::Render()
 {
 	if (state == STATE_VISIBLE)
-		animations->Get(currentAniID)->Render(x, y, argb);
+		if (this->IsInViewport())
+			// Similar to the origin game (only render fully-inside-viewport objects)
+			animations->Get(currentAniID)->Render(x, y, argb);
 }
 
 /*
