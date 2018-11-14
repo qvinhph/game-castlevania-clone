@@ -8,8 +8,3 @@ void CBigCandle::GetBoundingBox(float &left, float &top, float &right, float &bo
 	right = x + TORCH_BBOX_WIDTH;
 	bottom = y + TORCH_BBOX_HEIGHT;
 }
-
-CBigCandle::CBigCandle()
-{
-	currentAniID = (int)BigCandleAniID::IDLE;
-}

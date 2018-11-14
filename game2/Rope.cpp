@@ -2,6 +2,7 @@
 #include "Simon.h"
 #include "GameObject.h"
 #include "BigCandle.h"
+#include "Candle.h"
 #include "debug.h"
 
 
@@ -26,7 +27,8 @@ void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		// Check overlapping
 		if (animations->Get(currentAniID)->GetCurrentFrame() == 2)
 			for (UINT i = 0; i < coObjects->size(); i++)
-				if (dynamic_cast<CBigCandle *>(coObjects->at(i))
+				if (dynamic_cast<CBigCandle *>(coObjects->at(i)) ||
+					dynamic_cast<CCandle *>(coObjects->at(i))
 					&& this->IsOverlapping(coObjects->at(i)))
 					coObjects->at(i)->Destroy();
 
@@ -108,11 +110,11 @@ void CRope::ProceedCollisions(std::vector<LPCOLLISIONEVENT> &coEvents)
 	float min_tx, min_ty, nx, ny;
 	FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
+	// TO-DO: ...
 	for (UINT i = 0; i < coEventsResult.size(); i++)
 	{
 		// empty now
 	}
-
 }
 
 void CRope::GetBoundingBox(float & left, float & top, float & right, float & bottom)

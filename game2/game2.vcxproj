@@ -23,6 +23,7 @@
     <ClInclude Include="AnimationFrame.h" />
     <ClInclude Include="Animations.h" />
     <ClInclude Include="BigHeart.h" />
+    <ClInclude Include="Candle.h" />
     <ClInclude Include="Castlevania.h" />
     <ClInclude Include="Dagger.h" />
     <ClInclude Include="ItemDagger.h" />
@@ -49,12 +50,14 @@
     <ClInclude Include="Tileset.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Weapons.h" />
+    <ClInclude Include="Zombie.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationFrame.cpp" />
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="BigHeart.cpp" />
+    <ClCompile Include="Candle.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Weapons.cpp" />
     <ClCompile Include="Dagger.cpp" />
@@ -81,6 +84,7 @@
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileMap.cpp" />
     <ClCompile Include="Tileset.cpp" />
+    <ClCompile Include="Zombie.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\bbox.png" />

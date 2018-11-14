@@ -2,7 +2,7 @@
 #include "GameObject.h"
 
 #define GAME_GRAVITY		0.002
-#define COLLISION_FORCE		0.4f	// Use when two objects collide, avoid overlapping next frame
+#define FORCE_AVOID_OVERLAPPING		0.4f	// Use when two objects collide, avoid overlapping next frame
 
 enum class Action
 {
@@ -16,6 +16,7 @@ enum class Action
 	ATTACK,
 	SECOND_ATTACK,
 	GO_IN,
+	GET_DAMAGED,
 	DIE,
 };
 

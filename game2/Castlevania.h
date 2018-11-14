@@ -23,6 +23,8 @@
 #include "BigHeart.h"
 #include "Heart.h"
 #include "ItemDagger.h"
+#include "Candle.h"
+#include "Zombie.h"
 
 #define ID_TEX_SIMON		0
 #define ID_TEX_ROPE			1

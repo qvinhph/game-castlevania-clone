@@ -37,6 +37,9 @@ void CHeart::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		vx = vy = 0;
 		CMovableObject::ProceedCollisions(coEvents);
 	}
+
+	// clean up collision events
+	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 
 void CHeart::SetState(int state)

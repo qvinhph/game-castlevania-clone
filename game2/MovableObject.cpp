@@ -31,19 +31,16 @@ void CMovableObject::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 
 	for (UINT i = 0; i < coEventsResult.size(); ++i)
 	{
-		if (dynamic_cast<CInvisibleWall *>(coEventsResult.at(i)->obj))
+		if (dynamic_cast<CInvisibleWall *>(coEventsResult[i]->obj))
 		{
 			// Block when reach the ground
 			if (ny < 0)
 			{
 				vy = 0;
-				y += COLLISION_FORCE * ny;
+				y += FORCE_AVOID_OVERLAPPING * ny;
 			}
 		}
 	}
-
-	// clean up collision events
-	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 
 void CMovableObject::SetState(int state)

@@ -28,4 +28,7 @@ void CItemDagger::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	else
 		CMovableObject::ProceedCollisions(coEvents);
 
+	// clean up collision events
+	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+
 }

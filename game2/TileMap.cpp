@@ -63,9 +63,10 @@ void CTileMap::Draw()
 		for (UINT row = 0; row < layers[i]->height; row++)
 			for (UINT column = 0; column < layers[i]->width; column++)
 			{
-				int gridID = layers[i]->data.at(index++);
-				if (gridID < tileset->GetFirstGrid()) continue;			// empty tile
+				int gridID = layers[i]->data[index];
+				index++;
 
+				if (gridID < tileset->GetFirstGrid()) continue;			// empty tile
 				tileset->Get(gridID)->Draw(column * tileset->GetTileWidth(),
 											row * tileset->GetTileHeight());
 			}
@@ -85,11 +86,13 @@ vector<LPGAMEOBJECT> CTileMap::GetGameObjects()
 
 	for (UINT i = 0; i < objects.size(); i++)
 	{
-		info = objects.at(i);
+		info = objects[i];
 
 		if		(info->name == "bigcandle")		obj = new CBigCandle();
+		else if (info->name == "candle")		obj = new CCandle();
 		else if (info->name == "rope")			obj = CRope::GetInstance();
 		else if (info->name == "simon")			obj = CSimon::GetInstance();
+		else if (info->name == "zombie")		obj = new CZombie();
 
 		// item-type and dropable game objects
 		else if (info->name == "itemrope")
@@ -128,7 +131,7 @@ vector<LPGAMEOBJECT> CTileMap::GetGameObjects()
 		}
 
 		// invisiblewall
-		else if (info->name == "insiviblewall")
+		else if (info->name == "invisiblewall")
 		{
 			obj = new CInvisibleWall();
 			dynamic_cast<CInvisibleWall *>(obj)->SetSize(info->width, info->height);

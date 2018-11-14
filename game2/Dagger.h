@@ -7,7 +7,7 @@
 
 enum class DaggerAniID
 {
-	IDLE_LEFT,
+	IDLE_LEFT = 1810,
 	IDLE_RIGHT,
 };
 

@@ -12,6 +12,8 @@
 #include "Flame.h"
 #include "Dagger.h"
 #include "Timer.h"
+#include "Zombie.h"
+#include "Candle.h"
 
 #include "debug.h"
 
@@ -113,7 +115,11 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// Simple fall down
 	if (jumping)
+	{
 		vy += SIMON_JUMP_GRAVITY * dt;
+		if (vy > SIMON_JUMP_GRAVITY * dt * 20)	// TO-DO: REMOVE THIS HARD-CODE
+			jumping = false;
+	}
 	else
 		vy += GAME_GRAVITY * dt;
 
@@ -181,10 +187,10 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 	{
 		LPCOLLISIONEVENT e = coEventsResult[i];
 
-		// Can remove this
 		if (dynamic_cast<CBigCandle *>(e->obj) ||
 			dynamic_cast<CFlame *>(e->obj) ||
-			dynamic_cast<CDagger *>(e->obj))
+			dynamic_cast<CDagger *>(e->obj) ||
+			dynamic_cast<CCandle *>(e->obj))
 			DebugOut(L"\n[INFO] Touch something but do nothing !!");
 
 		else if (dynamic_cast<CBigHeart *>(e->obj))
@@ -218,17 +224,23 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			weapons->AddToStock(Weapon::DAGGER);
 		}
 
+		else if (dynamic_cast<CZombie *>(e->obj))
+		{
+			DebugOut(L"\n[INFO] Touch Zombie");
+			this->nx = -(e->nx);
+		}
+
 		// block with ground objects
 		else if (dynamic_cast<CInvisibleWall *>(e->obj))
 		{
 			// Prevent overlapping next frame
-			x += nx * COLLISION_FORCE;		
-			y += ny * COLLISION_FORCE;
+			if (nx != 0)
+				x += nx * FORCE_AVOID_OVERLAPPING;					
 
 			if (ny < 0)
 			{
 				vy = 0;
-
+				y += ny * FORCE_AVOID_OVERLAPPING;
 				// Simon is not jumping while his feet on the ground
 				if (jumping)
 				{
@@ -251,6 +263,14 @@ void CSimon::StartToFlicker()
 	}
 }
 
+void CSimon::SetAttacking(bool attacking)
+{
+	if (attacking == true)
+		Start
+
+	this->attacking = attacking;
+}
+
 void CSimon::CalibrateCameraPosition()
 {
 	float xCam, yCam;
@@ -268,9 +288,6 @@ void CSimon::CalibrateCameraPosition()
 
 	// TODO: should this need a more generic code ?
 	yCam = 0;//yCentral - viewportHeight / 2;
-
-	// DEBUGGING
-	DebugOut(L"\n%f - %f", xCam, yCam);
 
 	CGame::GetInstance()->SetCameraPosition(xCam, yCam);
 }
@@ -303,7 +320,7 @@ void CSimon::SetAction(Action action)
 
 	// Simon behavior: while attacking, Simon stops moving and reject other action
 	// except finishing jumping
-	if (attacking)
+	else if (attacking)
 	{
 		if (!jumping)
 			vx = 0;

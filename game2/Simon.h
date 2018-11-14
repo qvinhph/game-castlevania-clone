@@ -12,11 +12,13 @@
 #define SIMON_JUMP_SPEED_Y				0.35f		
 #define SIMON_JUMP_GRAVITY				0.001f		
 
-#define SIMON_WEAPON_ROPE				1
-#define SIMON_WEAPON_DAGGER				2
+#define SIMON_DAMAGED_FORCE_X			0.1f
+#define SIMON_DAMAGED_FORCE_Y			0.4f
 
 #define ATTACKING_TIME					350
 #define FLICKERING_TIME					1000
+#define AUTO_CROUCH_TIME				1000
+
 
 enum class SimonAniID
 {
@@ -41,7 +43,9 @@ enum class SimonAniID
 	UP_STAIR_ATTACK_RIGHT,
 	UP_STAIR_ATTACK_LEFT,
 	GO_IN,
-	DIE
+	DIE, 
+	DAMAGING_LEFT,
+	DAMAGING_RIGHT
 };
 
 class CSimon : public CMovableObject
@@ -70,9 +74,13 @@ public:
 	void SetAction(Action action) override;
 	
 	void SetMatchedAnimation();
+	void CalibrateCameraPosition();		// To keep Simon at center of camera
+
 	void StartToAttack(Weapon secondWeapon = Weapon::NONE);
 	void StartToFlicker();
-	void CalibrateCameraPosition();		// To keep Simon at center of camera
+
+	void SetAttacking(bool attacking);
+	bool GetAttacking() { return this->attacking; }
 
 	static CSimon * GetInstance();
 };

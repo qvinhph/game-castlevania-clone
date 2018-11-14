@@ -67,10 +67,10 @@ void CInputHandler::OnKeyDown(int keyCode)
 	case DIK_P:
 		for (UINT i = 0; i < objects.size(); ++i)
 		{
-			if (dynamic_cast<CItemRope *>(objects.at(i)))
+			if (dynamic_cast<CItemRope *>(objects[i]))
 			{
-				objects.at(i)->SetState(STATE_VISIBLE);
-				objects.at(i)->SetPosition(200, 200);
+				objects[i]->SetState(STATE_VISIBLE);
+				objects[i]->SetPosition(200, 200);
 
 			}
 		}
@@ -175,7 +175,7 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int Sc
 
 void TestInit()
 {
-	tileMap = new CTileMap(L"json\\scene_outside_jsonmap.json");
+	tileMap = new CTileMap(L"json\\scene_inside_jsonmap.json");
 	tileMap->Init(ID_TEX_TILESET);
 	tileMap->Draw();
 	objects = tileMap->GetGameObjects();
@@ -221,7 +221,6 @@ void LoadResources()
 	// 99xxx: Simon's sprite ID
 	// xx0xx: sprite face to right side
 	// xx1xx: sprite face to left side
-	//                left, top, right, bottom
 
 	LPDIRECT3DTEXTURE9 texSimon = textures->Get(ID_TEX_SIMON);
 	
@@ -280,6 +279,9 @@ void LoadResources()
 	sprites->Add(99157, 319, 332, 360, 394, texSimon);	// up stair attack left
 	sprites->Add(99158, 379, 332, 411, 394, texSimon);	// up stair attack left
 	sprites->Add(99159, 427, 334, 471, 394, texSimon);	// up stair attack left
+
+	sprites->Add(99099, 10, 270, 42, 328, texSimon);	// damaging right
+	sprites->Add(99199, 438, 72, 470, 130, texSimon);	// damaging left
 
 	sprites->Add(99999, 60, 269, 64, 60, texSimon);	// die
 
@@ -397,6 +399,13 @@ void LoadResources()
 	ani->AddFrame(99999);
 	animations->Add((int)SimonAniID::DIE, ani);
 
+	ani = new CAnimation(100);
+	ani->AddFrame(99099);
+	animations->Add((int)SimonAniID::DAMAGING_RIGHT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(99199);
+	animations->Add((int)SimonAniID::DAMAGING_LEFT, ani);
 
 #pragma endregion
 
@@ -479,6 +488,12 @@ void LoadResources()
 	animations->Add((int)BigCandleAniID::IDLE, ani);
 
 	// small candle - spriteID = 13xxx
+	sprites->Add(13000, 67, 0, 83, 32, texMisc);
+	sprites->Add(13001, 83, 0, 99, 32, texMisc);
+	ani = new CAnimation(100);
+	ani->AddFrame(13000);
+	ani->AddFrame(13001);
+	animations->Add((int)CandleAniID::IDLE, ani);
 
 	// item Rope
 	sprites->Add(14000, 61, 64, 93, 96, texMisc);
@@ -527,6 +542,31 @@ void LoadResources()
 
 #pragma endregion
 
+#pragma region Loading monsters resources
+
+	LPDIRECT3DTEXTURE9 texMonsters = textures->Get(ID_TEX_MONSTERS);
+
+	// Zombie
+	sprites->Add(51000, 0, 0, 32, 64, texMonsters);				// walk_left
+	sprites->Add(51001, 36, 0, 68, 64, texMonsters);			// walk_left
+	sprites->Add(51100, 294, 180, 326, 244, texMonsters);		// walk_right
+	sprites->Add(51101, 258, 180, 290, 244, texMonsters);		// walk_right
+
+	ani = new CAnimation(100);
+	ani->AddFrame(51000);
+	ani->AddFrame(51001);
+	animations->Add((int)ZombieAniID::WALK_LEFT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(51100);
+	ani->AddFrame(51101);
+	animations->Add((int)ZombieAniID::WALK_RIGHT, ani);
+
+
+
+#pragma endregion
+
+
 	TestInit();
 
 }
@@ -543,9 +583,9 @@ void Update(DWORD dt)
 	vector<LPGAMEOBJECT> coObjects;
 	for (UINT i = 0; i < objects.size(); i++)
 	{
-		if ((objects.at(i)->GetState() == STATE_VISIBLE				 // Invisiblewall objects may wider or higher than  
-			&& objects.at(i)->IsInViewport())						 //	the viewport, so I always consider them as 
-			|| dynamic_cast<CInvisibleWall *>(objects.at(i)))		 // collidable objects ( TO-DO: ... )
+		if ((objects[i]->GetState() == STATE_VISIBLE				 // Invisiblewall objects may wider or higher than  
+			&& objects[i]->IsInViewport())						 //	the viewport, so I always consider them as 
+			|| dynamic_cast<CInvisibleWall *>(objects[i]))		 // collidable objects ( TO-DO: ... )
 			coObjects.push_back(objects[i]);
 	}
 
