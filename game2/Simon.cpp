@@ -113,15 +113,23 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Calculate dx, dy
 	CMovableObject::Update(dt);
 
-	// Simple fall down
+	// Fall down
 	if (jumping)
 	{
 		vy += SIMON_JUMP_GRAVITY * dt;
-		if (vy > SIMON_JUMP_GRAVITY * dt * 20)	// TO-DO: REMOVE THIS HARD-CODE
+		if (vy > SIMON_MAX_SPEED_Y_WHILE_JUMP) 	 
+		{
+			// When jumping, Simon will have crouch-posture
+			// When falling, Simon will have stand-posture
+			// Similar to the origin game
+			this->StopCrouching();
+
 			jumping = false;
+			falling = true;
+		}
 	}
 	else
-		vy += GAME_GRAVITY * dt;
+		vy += SIMON_FALL_GRAVITY * dt;
 
 	// Turn off the attacking flag when it'd done
 	// TO-DO: maybe these codes need to be refactoring -> TryEndAttacking(time) & TryEndFlickering(time)
@@ -241,6 +249,7 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			{
 				vy = 0;
 				y += ny * FORCE_AVOID_OVERLAPPING;
+
 				// Simon is not jumping while his feet on the ground
 				if (jumping)
 				{
@@ -249,6 +258,9 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 					// re-locate Simon to avoid overlapping the ground
 					y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
 				}
+
+				if (falling)
+					falling = false;
 			}
 		}
 	}
@@ -263,12 +275,24 @@ void CSimon::StartToFlicker()
 	}
 }
 
-void CSimon::SetAttacking(bool attacking)
+/*
+	The function helps re-locating Simon when change posture from crouch-posture to stand-posture
+	Avoid overlapping
+*/
+void CSimon::StopCrouching()
 {
-	if (attacking == true)
-		Start
-
-	this->attacking = attacking;
+	if (jumping)
+	{
+		// Divide by 2 to keep the animation smooth
+		// Also similar to the origin game
+		y += (SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT) / 2;
+	}		
+	else if (crouching)
+	{
+		crouching = false;
+		y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
+	}
+		
 }
 
 void CSimon::CalibrateCameraPosition()
@@ -328,22 +352,19 @@ void CSimon::SetAction(Action action)
 
 	// Simon behavior: while jumping, simon can only attack
 	// TO-DO: Need more thought on this (jumping)
-	else if (jumping)
+	else if (jumping || falling)
 	{
 		if (!attacking)
 		{
 			if (action == Action::ATTACK)
 			{
 				StartToAttack();
-
-				// Divide by 2 to keep the attack while jumping action smoothly 
-				// and also to make this similar to the origin game
-				y += (SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT) / 2;
+				this->StopCrouching();
 			}
 			else if (action == Action::SECOND_ATTACK)
 			{
 				StartToAttack(secondWeapon);
-				y += (SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT) / 2;
+				this->StopCrouching();
 			}
 		}
 		
@@ -363,10 +384,7 @@ void CSimon::SetAction(Action action)
 
 		// stop crouching
 		else if (action == Action::IDLE)
-		{
-			crouching = false;
-			y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
-		}
+			this->StopCrouching();
 	}
 
 	else

@@ -62,7 +62,7 @@ void CInputHandler::OnKeyDown(int keyCode)
 
 		// DEBUGGING
 	case DIK_1:
-		CSimon::GetInstance()->SetPosition(0.0f, 0.0f);
+		CSimon::GetInstance()->SetPosition(396.0f, 96.0f);
 		break;
 	case DIK_P:
 		for (UINT i = 0; i < objects.size(); ++i)
@@ -175,7 +175,7 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int Sc
 
 void TestInit()
 {
-	tileMap = new CTileMap(L"json\\scene_inside_jsonmap.json");
+	tileMap = new CTileMap(L"json\\maptest_jsonmap.json");
 	tileMap->Init(ID_TEX_TILESET);
 	tileMap->Draw();
 	objects = tileMap->GetGameObjects();

@@ -40,7 +40,6 @@ void CTileset::Init()
 		rows = root[TILESET_KEY_IMAGEHEIGHT].get<int>() / tileHeight;
 		colums = root[TILESET_KEY_IMAGEWIDTH].get<int>() / tileWidth;
 
-
 		LPTILE tile;
 		int gridID = firstGrid;
 		for (UINT i = 0; i < rows; i++)

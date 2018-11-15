@@ -3,21 +3,24 @@
 #include "Rope.h"
 #include "Weapons.h"
 
-#define SIMON_IDLE_BBOX_WIDTH			32.0f
-#define SIMON_IDLE_BBOX_HEIGHT			62.0f
-#define SIMON_CROUCHING_BBOX_WIDTH		32.0f
-#define SIMON_CROUCHING_BBOX_HEIGHT		46.0f
+#define SIMON_IDLE_BBOX_WIDTH				32.0f
+#define SIMON_IDLE_BBOX_HEIGHT				62.0f
+#define SIMON_CROUCHING_BBOX_WIDTH			32.0f
+#define SIMON_CROUCHING_BBOX_HEIGHT			46.0f
 
-#define SIMON_WALKING_SPEED				0.12f		
-#define SIMON_JUMP_SPEED_Y				0.35f		
-#define SIMON_JUMP_GRAVITY				0.001f		
+#define SIMON_WALKING_SPEED					0.12f		
+#define SIMON_JUMP_SPEED_Y					0.35f		
+#define SIMON_JUMP_GRAVITY					0.001f		
+#define SIMON_MAX_SPEED_Y_WHILE_JUMP		0.32f
 
-#define SIMON_DAMAGED_FORCE_X			0.1f
-#define SIMON_DAMAGED_FORCE_Y			0.4f
+#define SIMON_FALL_GRAVITY					0.009f
 
-#define ATTACKING_TIME					350
-#define FLICKERING_TIME					1000
-#define AUTO_CROUCH_TIME				1000
+#define SIMON_DAMAGED_FORCE_X				0.1f
+#define SIMON_DAMAGED_FORCE_Y				0.4f
+
+#define ATTACKING_TIME						350
+#define FLICKERING_TIME						1000
+#define AUTO_CROUCH_TIME					1000
 
 
 enum class SimonAniID
@@ -50,6 +53,8 @@ enum class SimonAniID
 
 class CSimon : public CMovableObject
 {
+	bool falling;
+
 	bool attacking;
 	bool jumping;
 	bool crouching;
@@ -79,8 +84,7 @@ public:
 	void StartToAttack(Weapon secondWeapon = Weapon::NONE);
 	void StartToFlicker();
 
-	void SetAttacking(bool attacking);
-	bool GetAttacking() { return this->attacking; }
+	void StopCrouching();
 
 	static CSimon * GetInstance();
 };
