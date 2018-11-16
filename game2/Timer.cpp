@@ -16,7 +16,8 @@ void CTimer::Update(WORD dt, vector<LPGAMEOBJECT>* objects)
 		}
 		else
 			for (UINT i = 0; i < this->objects->size(); ++i)
-				this->objects->at(i)->FreezeAnimation();
+				if (this->objects->at(i)->GetFreezing() == true)
+					this->objects->at(i)->FreezeAnimation();
 	}
 	else
 		this->objects = objects;			

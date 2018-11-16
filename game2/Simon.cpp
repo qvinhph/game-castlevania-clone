@@ -129,7 +129,18 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vy += SIMON_JUMP_GRAVITY * dt;
 	}
 	else
+	{
+		// vy will always be "!= 0" when Simon is falling
+		// Otherwise, vy's Simon is zero and not zero one by one
+		if (vy != 0)
+			controllable = false;
+
+		if (controllable == false) DebugOut(L"\n...");
+		if (controllable == true) DebugOut(L"\n000");
+
 		vy += SIMON_FALL_GRAVITY * dt;
+	}
+		
 
 	if (vy > SIMON_MAX_SPEED_Y)
 		vy = SIMON_MAX_SPEED_Y;
@@ -170,7 +181,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (GetTickCount() - flickerStartTime >= FLICKERING_TIME)
 		{
 			flickering = 0;
-			argb = ARGB();
+			this->argb = ARGB();
 		}
 
 
@@ -234,7 +245,7 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 
 			this->rope->LevelUp();
 			this->StartToFlicker();
-			CTimer::GetInstance()->Freeze(FREEZING_TIME_TOUCHING_ITEM);
+			CTimer::GetInstance()->Freeze(FREEZING_TIME_TOUCHING_ITEM, this);
 		}
 
 		else if (dynamic_cast<CHeart *>(e->obj))
@@ -482,7 +493,7 @@ void CSimon::SetAction(Action action)
 void CSimon::SetFreezing(bool freezing)
 {
 	CGameObject::SetFreezing(freezing);
-	controllable = (freezing) ? false : true;
+	rope->SetFreezing(freezing);
 }
 
 CSimon * CSimon::GetInstance()
