@@ -21,10 +21,14 @@ CSimon * CSimon::__instance = NULL;
 
 CSimon::CSimon()
 {
-	this->attacking = false;
+	this->controllable = true;
 	this->jumping = false;
 	this->crouching = false;
 	this->secondWeapon = Weapon::NONE;
+
+	autoCrouchStartTime = 0;
+	attackStartTime = 0;
+	flickerStartTime = 0;
 
 	// ready to be used
 	rope = CRope::GetInstance();
@@ -53,7 +57,7 @@ void CSimon::Render()
 
 void CSimon::SetMatchedAnimation()
 {
-	if (attacking)
+	if (attackStartTime != 0)
 	{
 		if (crouching)
 			currentAniID = (nx > 0) ?
@@ -95,9 +99,8 @@ void CSimon::SetMatchedAnimation()
 
 void CSimon::StartToAttack(Weapon secondWeapon)
 {
-	if (!attacking)
+	if (attackStartTime == 0)
 	{
-		attacking = true;
 		attackStartTime = GetTickCount();
 
 		if (secondWeapon == Weapon::NONE)
@@ -113,27 +116,38 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Calculate dx, dy
 	CMovableObject::Update(dt);
 
-	// Fall down
+	// Fallling 
 	if (jumping)
 	{
-		vy += SIMON_JUMP_GRAVITY * dt;
-		if (vy > SIMON_MAX_SPEED_Y_WHILE_JUMP) 	 
+		if (vy > SIMON_MAX_SPEED_BY_JUMP_GRAVITY)
 		{
-			// When jumping, Simon will have crouch-posture
-			// When falling, Simon will have stand-posture
-			// Similar to the origin game
-			this->StopCrouching();
-
 			jumping = false;
-			falling = true;
+			controllable = false;
+			this->StandUp();
 		}
+		else
+			vy += SIMON_JUMP_GRAVITY * dt;
 	}
 	else
 		vy += SIMON_FALL_GRAVITY * dt;
 
-	// Turn off the attacking flag when it'd done
-	// TO-DO: maybe these codes need to be refactoring -> TryEndAttacking(time) & TryEndFlickering(time)
-	if (attacking)
+	if (vy > SIMON_MAX_SPEED_Y)
+		vy = SIMON_MAX_SPEED_Y;
+
+
+	// Auto crouch
+	if (autoCrouchStartTime != 0)
+		if (GetTickCount() - autoCrouchStartTime >= AUTO_CROUCH_TIME)
+		{
+			this->StandUp();
+
+			// Stop counting
+			autoCrouchStartTime = 0;
+		}
+
+
+	// Attacking
+	if (attackStartTime != 0)
 		if (GetTickCount() - attackStartTime >= ATTACKING_TIME)
 		{
 			// If used rope to attack
@@ -145,10 +159,13 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 			// To rearrange attacking frames
 			this->ResetAnimation(currentAniID);
-			attacking = false;			
+
+			// Stop counting
+			attackStartTime = 0;
 		}
 
-	// Turn off the flickering flag when it'd done
+
+	// Flickering
 	if (flickering)
 		if (GetTickCount() - flickerStartTime >= FLICKERING_TIME)
 		{
@@ -156,8 +173,10 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			argb = ARGB();
 		}
 
+
 	SetMatchedAnimation();
 
+	// Collisions
 	vector<LPCOLLISIONEVENT> coEvents;
 	coEvents.clear();
 
@@ -178,6 +197,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 
 	CalibrateCameraPosition();
+	
 }
 
 void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
@@ -214,7 +234,7 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 
 			this->rope->LevelUp();
 			this->StartToFlicker();
-			CTimer::GetInstance()->Freeze(1000);
+			CTimer::GetInstance()->Freeze(FREEZING_TIME_TOUCHING_ITEM);
 		}
 
 		else if (dynamic_cast<CHeart *>(e->obj))
@@ -243,24 +263,28 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 		{
 			// Prevent overlapping next frame
 			if (nx != 0)
-				x += nx * FORCE_AVOID_OVERLAPPING;					
+				x += nx * DEFLECTION_AVOID_OVERLAPPING;					
 
 			if (ny < 0)
 			{
-				vy = 0;
-				y += ny * FORCE_AVOID_OVERLAPPING;
-
 				// Simon is not jumping while his feet on the ground
 				if (jumping)
 				{
+					this->StandUp();
 					jumping = false;
-
-					// re-locate Simon to avoid overlapping the ground
-					y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
 				}
+				// If Simon is falling
+				else
+				{
+					controllable = true;
 
-				if (falling)
-					falling = false;
+					// When Simon falls too fast, he's going to crouch for a while
+					if (vy == SIMON_MAX_SPEED_Y)
+						AutoCrouch();
+				}				
+
+				vy = 0;
+				y += ny * DEFLECTION_AVOID_OVERLAPPING;
 			}
 		}
 	}
@@ -276,23 +300,31 @@ void CSimon::StartToFlicker()
 }
 
 /*
-	The function helps re-locating Simon when change posture from crouch-posture to stand-posture
-	Avoid overlapping
+	The function helps Simon stand up without overlapping 
+	objects by re-locating Simon position
 */
-void CSimon::StopCrouching()
+void CSimon::StandUp()
 {
-	if (jumping)
-	{
-		// Divide by 2 to keep the animation smooth
-		// Also similar to the origin game
-		y += (SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT) / 2;
-	}		
-	else if (crouching)
+	if (crouching)
 	{
 		crouching = false;
 		y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
 	}
-		
+	else if (jumping)
+		y += SIMON_JUMPING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
+}
+
+void CSimon::AutoCrouch()
+{
+	SetAction(Action::CROUCH);
+
+	// If setting action succeeded
+	if (this->action == Action::CROUCH)
+		autoCrouchStartTime = GetTickCount();
+
+	//crouching = true;
+	//y += SIMON_IDLE_BBOX_HEIGHT - SIMON_CROUCHING_BBOX_HEIGHT;
+	//autoCrouchStartTime = GetTickCount();
 }
 
 void CSimon::CalibrateCameraPosition()
@@ -327,9 +359,19 @@ void CSimon::GetBoundingBox(float & left, float & top, float & right, float & bo
 	case (int)SimonAniID::CROUCH_LEFT:
 	case (int)SimonAniID::CROUCH_ATTACK_LEFT:
 	case (int)SimonAniID::CROUCH_ATTACK_RIGHT:
-		right = x + SIMON_CROUCHING_BBOX_WIDTH;
-		bottom = y + SIMON_CROUCHING_BBOX_HEIGHT;
-		break;
+		if (jumping)
+		{
+			// While jumping, Simon will have different bounding box
+			// Even though the animation is the same
+			right = x + SIMON_JUMPING_BBOX_WIDTH;
+			bottom = y + SIMON_JUMPING_BBOX_HEIGHT;
+		}
+		else
+		{
+			right = x + SIMON_CROUCHING_BBOX_WIDTH;
+			bottom = y + SIMON_CROUCHING_BBOX_HEIGHT;
+		}
+		break;		
 	default:
 		right = x + SIMON_IDLE_BBOX_WIDTH;
 		bottom = y + SIMON_IDLE_BBOX_HEIGHT;
@@ -339,12 +381,12 @@ void CSimon::GetBoundingBox(float & left, float & top, float & right, float & bo
 
 void CSimon::SetAction(Action action)
 {
-	if (freezing)
+	if (!controllable)
 		return;
 
 	// Simon behavior: while attacking, Simon stops moving and reject other action
 	// except finishing jumping
-	else if (attacking)
+	else if (attackStartTime != 0)
 	{
 		if (!jumping)
 			vx = 0;
@@ -352,19 +394,19 @@ void CSimon::SetAction(Action action)
 
 	// Simon behavior: while jumping, simon can only attack
 	// TO-DO: Need more thought on this (jumping)
-	else if (jumping || falling)
+	else if (jumping)
 	{
-		if (!attacking)
+		if (attackStartTime == 0)
 		{
 			if (action == Action::ATTACK)
 			{
 				StartToAttack();
-				this->StopCrouching();
+				this->StandUp();
 			}
 			else if (action == Action::SECOND_ATTACK)
 			{
 				StartToAttack(secondWeapon);
-				this->StopCrouching();
+				this->StandUp();
 			}
 		}
 		
@@ -373,18 +415,20 @@ void CSimon::SetAction(Action action)
 	// Simon behavior: while crouching, simon can only change direction or attack
 	else if (crouching)
 	{
-		if (action == Action::WALK_RIGHT)
+		// stop crouching
+		if (action == Action::IDLE && autoCrouchStartTime == 0)
+			this->StandUp();
+
+		else if (action == Action::WALK_RIGHT)
 			nx = 1;
 
 		else if (action == Action::WALK_LEFT)
 			nx = -1;
 
-		else if (action == Action::ATTACK && !attacking)
+		else if (action == Action::SECOND_ATTACK 
+				|| action == Action::ATTACK 
+				&& attackStartTime == 0)
 			StartToAttack();
-
-		// stop crouching
-		else if (action == Action::IDLE)
-			this->StopCrouching();
 	}
 
 	else
@@ -410,13 +454,16 @@ void CSimon::SetAction(Action action)
 			break;
 
 		case Action::JUMP:
-			vy = -SIMON_JUMP_SPEED_Y;
+			vy = -SIMON_JUMP_SPEED;
 			jumping = true;
 			break;
 
 		case Action::CROUCH:
 			crouching = true;
 			vx = 0;
+
+			// Re-locate Simon
+			y += SIMON_IDLE_BBOX_HEIGHT - SIMON_CROUCHING_BBOX_HEIGHT;
 			break;
 
 		case Action::IDLE:
@@ -430,6 +477,12 @@ void CSimon::SetAction(Action action)
 
 		CMovableObject::SetAction(action);
 	}
+}
+
+void CSimon::SetFreezing(bool freezing)
+{
+	CGameObject::SetFreezing(freezing);
+	controllable = (freezing) ? false : true;
 }
 
 CSimon * CSimon::GetInstance()

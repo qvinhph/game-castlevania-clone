@@ -72,6 +72,56 @@
                  "width":64,
                  "x":224,
                  "y":224
+                }, 
+                {
+                 "height":34.6666666666667,
+                 "id":11,
+                 "name":"itemrope",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":48,
+                 "x":496.666666666667,
+                 "y":261.333333333333
+                }, 
+                {
+                 "height":86.6666666666666,
+                 "id":13,
+                 "name":"bigcandle",
+                 "properties":[
+                        {
+                         "name":"itemholding",
+                         "type":"string",
+                         "value":"itemrope"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":50,
+                 "x":572,
+                 "y":262
+                }, 
+                {
+                 "height":0,
+                 "id":15,
+                 "name":"flame",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":690.666666666667,
+                 "y":200.666666666667
+                }, 
+                {
+                 "height":32,
+                 "id":17,
+                 "name":"invisiblewall",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":288,
+                 "y":192
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -80,7 +130,7 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":11,
+ "nextobjectid":18,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.0",

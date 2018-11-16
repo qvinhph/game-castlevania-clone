@@ -20,6 +20,7 @@ class CFlame : public CGameObject
 public:
 
 	void Render() override;
+	void Destroy() override;
 
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
 	void StartToBurn();

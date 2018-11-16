@@ -37,7 +37,7 @@ void CMovableObject::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 			if (ny < 0)
 			{
 				vy = 0;
-				y += FORCE_AVOID_OVERLAPPING * ny;
+				y += DEFLECTION_AVOID_OVERLAPPING * ny;
 			}
 		}
 	}

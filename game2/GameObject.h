@@ -77,7 +77,7 @@ public:
 	void SetHoldingItem(Item item) { this->item = item; }
 	Item GetHoldingItem() { return this->item; }				// return the item name (enum class)
 
-	void SetFreezing(bool freezing) { this->freezing = freezing; }
+	virtual void SetFreezing(bool freezing) { this->freezing = freezing; }
 	bool GetFreezing() { return this->freezing; }
 
 	virtual void SetState(int state) { this->state = state; }

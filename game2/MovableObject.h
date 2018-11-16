@@ -1,8 +1,8 @@
 #pragma once
 #include "GameObject.h"
 
-#define GAME_GRAVITY		0.002
-#define FORCE_AVOID_OVERLAPPING		0.4f	// Use when two objects collide, avoid overlapping next frame
+#define GAME_GRAVITY						0.002
+#define DEFLECTION_AVOID_OVERLAPPING		0.4f	// Use when two objects collide, avoid overlapping next frame
 
 enum class Action
 {

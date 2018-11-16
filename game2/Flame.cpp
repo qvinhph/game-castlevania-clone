@@ -15,14 +15,18 @@ void CFlame::Render()
 	{
 		if (GetTickCount() - burnStartTime > BURNING_TIME)
 		{
-			CItems::GetInstance()->CheckAndDrop(this);
-			SetState(STATE_INVISIBLE);
-
+			this->Destroy();
 			ResetAnimation(currentAniID);
 		}
 		else
 			CGameObject::Render();
 	}	
+}
+
+void CFlame::Destroy()
+{
+	CItems::GetInstance()->CheckAndDrop(this);
+	SetState(STATE_INVISIBLE);
 }
 
 void CFlame::StartToBurn()
