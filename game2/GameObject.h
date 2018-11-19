@@ -60,19 +60,23 @@ protected:
 	float x;
 	float y;
 	int state;
+	int nx;				// direction of the object: > 0 will be face to right-side, otherwise left-side
 
 	CAnimations* animations;		// pointer helping getting the animations
 	int currentAniID;
 
-	bool flickering;				// use for flickerable objects
-	ARGB argb;
+	ARGB argb;						// for changing color of the sprite
 	Item item;						// the item object holds, drop when destroyed
 
-	bool freezing;
+	bool freezing; 
+	DWORD flicker_start;
 
 public:
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
 	void GetPosition(float &x, float &y) { x = this->x, y = this->y; }
+
+	void SetDirection(int nx) { this->nx = nx; }
+	int GetDirection() { return this->nx; }
 
 	void SetHoldingItem(Item item) { this->item = item; }
 	Item GetHoldingItem() { return this->item; }				// return the item name (enum class)

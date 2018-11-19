@@ -37,7 +37,6 @@ public:
 
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL) override;
 
-	// TO-DO: Maybe need to refactoring
 	void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents) override;
 	void Render() override;
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;

@@ -27,10 +27,10 @@ void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		// Check overlapping
 		if (animations->Get(currentAniID)->GetCurrentFrame() == 2)
 			for (UINT i = 0; i < coObjects->size(); i++)
-				if (dynamic_cast<CBigCandle *>(coObjects->at(i)) ||
-					dynamic_cast<CCandle *>(coObjects->at(i))
-					&& this->IsOverlapping(coObjects->at(i)))
-					coObjects->at(i)->Destroy();
+				if (this->IsOverlapping(coObjects->at(i)))
+					if (dynamic_cast<CBigCandle *>(coObjects->at(i)) ||
+						dynamic_cast<CCandle *>(coObjects->at(i)))
+						coObjects->at(i)->Destroy();
 
 		// clean up collision events
 		for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
@@ -58,7 +58,7 @@ void CRope::Render()
 {
 	if (state == STATE_VISIBLE)
 	{
-		if (flickering)
+		if (flicker_start != 0)
 		{
 			if (argb.blue != 0)
 				argb.blue = 0;
@@ -94,7 +94,7 @@ void CRope::SetMatchedAnimation()
 		break;
 
 	default:
-		flickering = true;
+		flicker_start = 1;		
 		currentAniID = (nx > 0) ?
 			(int)RopeAniID::LEVEL_THREE_RIGHT :
 			(int)RopeAniID::LEVEL_THREE_LEFT;

@@ -14,17 +14,19 @@
 #define SIMON_JUMP_SPEED						0.4f
 #define SIMON_FALL_GRAVITY						0.01f
 #define SIMON_JUMP_GRAVITY						0.0012f
-#define SIMON_MAX_SPEED_BY_JUMP_GRAVITY			0.26f		// from crouching to standing
-#define SIMON_MAX_SPEED_Y						1.5f
-
+#define SIMON_MAX_SPEED_BY_JUMP_GRAVITY			0.26f		// max fall down speed can get by jump gravity
+#define SIMON_MAX_SPEED_Y						1.8f
 
 #define SIMON_DAMAGED_DEFLECT_X					0.1f
-#define SIMON_DAMAGED_DEFLECT_Y					0.4f
+#define SIMON_DAMAGED_DEFLECT_Y					-0.4f
 
-#define ATTACKING_TIME							350
+#define ATTACK_TIME								350
 #define FLICKERING_TIME							1000
 #define AUTO_CROUCH_TIME						500
 #define FREEZING_TIME_TOUCHING_ITEM				1000
+
+#define SIMON_ATTACK_BY_ROPE					0
+#define SIMON_ATTACK_BY_ITEM					1
 
 
 enum class SimonAniID
@@ -63,11 +65,10 @@ class CSimon : public CMovableObject
 	bool crouching;
 	bool stairing;
 
-	DWORD attackStartTime;
-	DWORD flickerStartTime;
-	DWORD autoCrouchStartTime;
-	Weapon secondWeapon;
+	DWORD attack_start;					// If this equals 0, Simon is not attacking
+	DWORD auto_crouch_start;			// If this equals 0, Simon is not auto crouching
 
+	Weapon secondWeapon;
 	CRope * rope;
 	CWeapons * weapons;
 
@@ -86,11 +87,18 @@ public:
 	void SetMatchedAnimation();
 	void CalibrateCameraPosition();		// To keep Simon at center of camera
 
-	void StartToAttack(Weapon secondWeapon = Weapon::NONE);
-	void StartToFlicker();
-	
+	void Flicker();
 	void StandUp();
 	void AutoCrouch();
+	void OnGetDamaged(LPCOLLISIONEVENT e);
+
+	void MoveRight();
+	void MoveLeft();
+	void Crouch();
+	void Jump();
+	void Attack(int choice = SIMON_ATTACK_BY_ROPE);
+	void Idle();
+	void UseWeapon();
 
 	static CSimon * GetInstance();
 };

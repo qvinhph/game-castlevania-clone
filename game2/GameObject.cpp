@@ -44,6 +44,10 @@ bool CGameObject::IsInViewport()
 		xCam + viewportWidth < right ||
 		yCam + viewportHeight < bottom)
 		return false;
+	//if (0 > left || 0 > top ||
+	//	viewportWidth < right ||
+	//	viewportHeight < bottom)
+	//	return false;
 
 	return true;
 }
@@ -81,7 +85,7 @@ void CGameObject::Destroy()
 
 CGameObject::CGameObject()
 {
-	flickering = false;
+	flicker_start = 0;
 	ARGB argb = ARGB();
 
 	state = STATE_VISIBLE;

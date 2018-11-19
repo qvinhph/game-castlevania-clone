@@ -38,7 +38,7 @@ CInputHandler * inputHandler;
 
 void CInputHandler::OnKeyDown(int keyCode)
 {
-	//DebugOut(L"\n[INFO] KeyDown: %d", keyCode);
+	DebugOut(L"\n[INFO] KeyDown: %d", keyCode);
 	switch (keyCode)
 	{
 	case DIK_N:
@@ -47,7 +47,7 @@ void CInputHandler::OnKeyDown(int keyCode)
 
 	case DIK_M:
 		if (game->IsKeyDown(DIK_UP))
-			CSimon::GetInstance()->SetAction(Action::SECOND_ATTACK);
+			CSimon::GetInstance()->SetAction(Action::USE_ITEM);
 		else
 			CSimon::GetInstance()->SetAction(Action::ATTACK);
 		break;
@@ -85,8 +85,8 @@ void CInputHandler::OnKeyUp(int keyCode)
 	//DebugOut(L"\n[INFO] KeyUp: %d", keyCode);
 	switch (keyCode)
 	{
-	case DIK_DOWN:
-		CSimon::GetInstance()->SetAction(Action::IDLE);
+	//case DIK_DOWN:
+		//CSimon::GetInstance()->SetAction(Action::IDLE);
 	}		
 }
 

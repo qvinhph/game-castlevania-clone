@@ -10,7 +10,7 @@ CWeapons * CWeapons::__instance = NULL;
 void CWeapons::UseWeapon(Weapon weaponName, LPGAMEOBJECT obj)
 {
 	float left, top, right, bottom;
-	LPMOVABLEOBJECT weapon = dynamic_cast<LPMOVABLEOBJECT>(GetWeapon(weaponName));
+	LPGAMEOBJECT weapon = GetWeapon(weaponName);
 	if (weapon == nullptr)
 	{
 		DebugOut(L"\n[ERROR] Failed to get weapon (Weapon enum: %d)", weaponName);
