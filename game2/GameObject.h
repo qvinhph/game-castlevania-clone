@@ -12,6 +12,7 @@ using namespace std;
 #define STATE_VISIBLE		0
 #define STATE_INVISIBLE		-1
 
+
 // Item or dropable objects ( include heart, bigheart, etc)
 enum class Item
 {

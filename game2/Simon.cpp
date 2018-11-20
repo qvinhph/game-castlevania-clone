@@ -16,6 +16,7 @@
 #include "Candle.h"
 
 #include "debug.h"
+#include <iostream>
 
 CSimon * CSimon::__instance = NULL;
 
@@ -39,17 +40,29 @@ void CSimon::Render()
 {	
 	if (flicker_start != 0)
 	{
-		// When flickering, animation frame will be render with
-		// these 3 color
+		// Flicker by getting damaged.
+		if (untouchable_start != 0)
+		{
+			if (this->argb.alpha != SIMON_UNTOUCHABLE_ALPHA_VALUE)
+				this->argb.alpha = SIMON_UNTOUCHABLE_ALPHA_VALUE;
+			else 
+				this->argb = ARGB();
+		}
 
-		if (this->argb.blue != 0)
-			this->argb.blue = 0;
-
-		else if (argb.green != 0)
-			this->argb.green = 0;
-
+		// Flicker by touching item-rope.
 		else
-			this->argb = ARGB();
+		{
+		// Animation frame will be rendered with
+		// these 3 colors defined by change the argb value
+			if (this->argb.blue != 0)
+				this->argb.blue = 0;
+
+			else if (argb.green != 0)
+				this->argb.green = 0;
+
+			else
+				this->argb = ARGB();
+		}		
 	}
 	
 	CGameObject::Render();
@@ -69,6 +82,11 @@ void CSimon::SetMatchedAnimation()
 				(int)SimonAniID::ATTACK_LEFT;
 	}
 
+	else if (untouchable_start == -1)
+		currentAniID = (nx > 0) ?
+		(int)SimonAniID::DAMAGING_RIGHT :
+		(int)SimonAniID::DAMAGING_LEFT;
+
 	// these two action use the same animation
 	else if (crouching || jumping)
 	{
@@ -79,13 +97,11 @@ void CSimon::SetMatchedAnimation()
 
 	else if (vx > 0)
 	{
-		nx = 1;
 		currentAniID = (int)SimonAniID::WALK_RIGHT;
 	}
 
 	else if (vx < 0)
 	{
-		nx = -1;
 		currentAniID = (int)SimonAniID::WALK_LEFT;
 	}
 
@@ -96,20 +112,6 @@ void CSimon::SetMatchedAnimation()
 			(int)SimonAniID::IDLE_LEFT;
 	}
 }
-
-//void CSimon::StartToAttack(Weapon secondWeapon)
-//{
-//	if (attack_start == 0)
-//	{
-//		attack_start = GetTickCount();
-//
-//		if (secondWeapon == Weapon::NONE)
-//		{
-//			rope->SetState(STATE_VISIBLE);
-//			rope->SetDirection(nx);
-//		}
-//	}
-//}
 
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -122,10 +124,8 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		if (vy > SIMON_MAX_SPEED_BY_JUMP_GRAVITY)
 		{
-			jumping = false;
-			controllable = false;
-
 			this->StandUp();
+			controllable = false;
 		}
 		else
 			vy += SIMON_JUMP_GRAVITY * dt;
@@ -149,7 +149,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		vy = SIMON_MAX_SPEED_Y;
 
 	// Auto crouch
-	if (auto_crouch_start != 0)
+	if (auto_crouch_start > 0)
 		if (GetTickCount() - auto_crouch_start >= AUTO_CROUCH_TIME)
 		{
 			this->StandUp();
@@ -159,7 +159,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 
 	// Attacking
-	if (attack_start != 0)
+	if (attack_start > 0)
 		if (GetTickCount() - attack_start > ATTACK_TIME)
 		{
 			// If attacking by rope
@@ -172,8 +172,20 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			attack_start = 0;
 		}
 
+	// Being Untouchable
+	if (untouchable_start != -1 &&
+		untouchable_start != 0)
+		if (GetTickCount() - untouchable_start > UNTOUCHABLE_TIME)
+		{
+			// Stop flickering effect
+			this->argb = ARGB();
+			flicker_start = 0;
+
+			untouchable_start = 0;
+		}
+
 	// Flickering
-	if (flicker_start != 0)
+	if (flicker_start > 0)
 		if (GetTickCount() - flicker_start >= FLICKERING_TIME)
 		{
 			this->argb = ARGB();
@@ -203,7 +215,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 
 	CalibrateCameraPosition();
-	
+
 }
 
 void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
@@ -261,9 +273,8 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 		else if (dynamic_cast<CZombie *>(e->obj))
 		{
 			DebugOut(L"\n[INFO] Touch Zombie");
-			//this->OnGetDamaged(e);
-			SetAction(Action::GET_DAMAGED);
-			return;
+			if (this->OnGetDamaged(e))
+				return;
 		}
 
 		// block with ground objects
@@ -275,12 +286,21 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 
 			if (ny < 0)
 			{
-				if (jumping)	this->StandUp();		
-				else			controllable = true;	// Regain the control after falling
+
+				if (jumping)	
+					this->StandUp();		
+				else			
+					// Regain the control after falling
+					controllable = true;	
 
 				// When falls from too high place
-				if (vy == SIMON_MAX_SPEED_Y)
+				if (vy == SIMON_MAX_SPEED_Y || untouchable_start == -1)
+				{
 					AutoCrouch();
+
+					if (untouchable_start == -1)
+						this->BeUntouchable();
+				}
 
 				y += ny * DEFLECTION_AVOID_OVERLAPPING;
 				vy = 0;				
@@ -325,8 +345,29 @@ void CSimon::AutoCrouch()
 		auto_crouch_start = GetTickCount();
 }
 
-void CSimon::OnGetDamaged(LPCOLLISIONEVENT e)
+/*
+	Use this to start an untouchable state with soon ending.
+*/
+void CSimon::BeUntouchable()
 {
+	if (untouchable_start == 0 ||
+		untouchable_start == -1)
+	{
+		untouchable_start = GetTickCount();
+		this->Flicker();
+	}
+}
+
+/*
+	Tell Simon to be get damaged.
+	Return 1 if he obeys.
+	Otherwise, return 0.
+*/
+int CSimon::OnGetDamaged(LPCOLLISIONEVENT e)
+{
+	if (untouchable_start != 0)
+		return 0;
+
 	this->nx = (e->nx != 0) ?
 		-(e->nx) :
 		-(e->obj->GetDirection());
@@ -337,6 +378,11 @@ void CSimon::OnGetDamaged(LPCOLLISIONEVENT e)
 	this->vy = SIMON_DAMAGED_DEFLECT_Y;
 	jumping = true;
 	controllable = false;
+
+	// Simon is being untouchable but not going to stop being untouchable
+	untouchable_start = -1;
+
+	return 1;
 }
 
 void CSimon::MoveRight()
@@ -480,105 +526,6 @@ void CSimon::GetBoundingBox(float & left, float & top, float & right, float & bo
 	}
 }
 
-////void CSimon::SetAction(Action action)
-//{
-//	if (!controllable)
-//		return;
-//
-//	// Simon behavior: while attacking, Simon stops moving and reject other action
-//	// except finishing jumping
-//	else if (attackStartTime != 0)
-//	{
-//		if (!jumping)
-//			vx = 0;
-//	}
-//
-//	// Simon behavior: while jumping, simon can only attack
-//	// TO-DO: Need more thought on this (jumping)
-//	else if (jumping)
-//	{
-//		if (attackStartTime == 0)
-//		{
-//			if (action == Action::ATTACK)
-//			{
-//				StartToAttack();
-//				this->StandUp();
-//			}
-//			else if (action == Action::SECOND_ATTACK)
-//			{
-//				StartToAttack(secondWeapon);
-//				this->StandUp();
-//			}
-//		}
-//		
-//	}
-//
-//	// Simon behavior: while crouching, simon can only change direction or attack
-//	else if (crouching)
-//	{
-//		// stop crouching
-//		if (action == Action::IDLE && autoCrouchStartTime == 0)
-//			this->StandUp();
-//
-//		else if (action == Action::WALK_RIGHT)
-//			nx = 1;
-//
-//		else if (action == Action::WALK_LEFT)
-//			nx = -1;
-//
-//		else if (action == Action::SECOND_ATTACK 
-//				|| action == Action::ATTACK 
-//				&& attackStartTime == 0)
-//			StartToAttack();
-//	}
-//
-//	else
-//	{
-//		switch (action)
-//		{
-//		case Action::WALK_RIGHT:
-//			nx = 1;
-//			vx = SIMON_WALKING_SPEED;
-//			break;
-//
-//		case Action::WALK_LEFT:
-//			nx = -1;
-//			vx = -SIMON_WALKING_SPEED;
-//			break;
-//
-//		case Action::SECOND_ATTACK:
-//			StartToAttack(secondWeapon);
-//			break;
-//
-//		case Action::ATTACK:
-//			StartToAttack();
-//			break;
-//
-//		case Action::JUMP:
-//			vy = -SIMON_JUMP_SPEED;
-//			jumping = true;
-//			break;
-//
-//		case Action::CROUCH:
-//			crouching = true;
-//			vx = 0;
-//
-//			// Re-locate Simon
-//			y += SIMON_IDLE_BBOX_HEIGHT - SIMON_CROUCHING_BBOX_HEIGHT;
-//			break;
-//
-//		case Action::IDLE:
-//			vx = 0;
-//			break;
-//
-//		default:
-//			DebugOut(L"[ERROR] Simon cannot perform this action (Action enum: %d)", (int)action);
-//			return;
-//		}
-//
-//		CMovableObject::SetAction(action);
-//	}
-//}
 
 void CSimon::SetAction(Action action)
 {
@@ -603,8 +550,6 @@ void CSimon::SetAction(Action action)
 			break;
 		case Action::USE_ITEM:
 			this->UseWeapon();
-			break;
-		case Action::GET_DAMAGED:
 			break;
 		case Action::IDLE:
 			this->Idle();

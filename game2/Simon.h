@@ -21,12 +21,16 @@
 #define SIMON_DAMAGED_DEFLECT_Y					-0.4f
 
 #define ATTACK_TIME								350
-#define FLICKERING_TIME							1000
 #define AUTO_CROUCH_TIME						500
 #define FREEZING_TIME_TOUCHING_ITEM				1000
+#define FLICKERING_TIME							1000
+#define UNTOUCHABLE_TIME						1000
 
 #define SIMON_ATTACK_BY_ROPE					0
 #define SIMON_ATTACK_BY_ITEM					1
+
+// For flickering while being untouchable.
+#define SIMON_UNTOUCHABLE_ALPHA_VALUE			100	
 
 
 enum class SimonAniID
@@ -67,6 +71,13 @@ class CSimon : public CMovableObject
 
 	DWORD attack_start;					// If this equals 0, Simon is not attacking
 	DWORD auto_crouch_start;			// If this equals 0, Simon is not auto crouching
+	
+	/*
+		If this equals 0, Simon is not being untouchable
+		Else if equals -1, Simon is being untouchable, 
+		but this won't be use as a counter to stop being untouchable.
+	*/
+	DWORD untouchable_start;	
 
 	Weapon secondWeapon;
 	CRope * rope;
@@ -90,7 +101,8 @@ public:
 	void Flicker();
 	void StandUp();
 	void AutoCrouch();
-	void OnGetDamaged(LPCOLLISIONEVENT e);
+	void BeUntouchable();
+	int OnGetDamaged(LPCOLLISIONEVENT e);
 
 	void MoveRight();
 	void MoveLeft();

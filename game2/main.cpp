@@ -67,7 +67,7 @@ void CInputHandler::OnKeyDown(int keyCode)
 	case DIK_P:
 		for (UINT i = 0; i < objects.size(); ++i)
 		{
-			if (dynamic_cast<CItemRope *>(objects[i]))
+			if (dynamic_cast<CZombie *>(objects[i]))
 			{
 				objects[i]->SetState(STATE_VISIBLE);
 				objects[i]->SetPosition(200, 200);
@@ -175,8 +175,8 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int Sc
 
 void TestInit()
 {
-	//tileMap = new CTileMap(L"json\\maptest_jsonmap.json");
-	tileMap = new CTileMap(L"json\\scene_outside_jsonmap.json");
+	tileMap = new CTileMap(L"json\\maptest_jsonmap.json");
+	//tileMap = new CTileMap(L"json\\scene_outside_jsonmap.json");
 	tileMap->Init(ID_TEX_TILESET);
 	objects = tileMap->GetGameObjects();
 }
