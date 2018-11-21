@@ -93,6 +93,11 @@ void CSimon::SetMatchedAnimation()
 		currentAniID = (nx > 0) ?
 			(int)SimonAniID::CROUCH_RIGHT :
 			(int)SimonAniID::CROUCH_LEFT;
+
+		if (jumping && !crouching)
+			currentAniID = (nx > 0) ?
+			(int)SimonAniID::IDLE_RIGHT :
+			(int)SimonAniID::IDLE_LEFT;
 	}
 
 	else if (vx > 0)
@@ -122,27 +127,24 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// While jumping and falling
 	if (jumping)
 	{
-		if (vy > SIMON_MAX_SPEED_BY_JUMP_GRAVITY)
+		if (vy > SIMON_SPEED_CHANGE_POSTURE_WHILE_FALLING && crouching == true)
 		{
-			this->StandUp();
-			controllable = false;
+			vy += SIMON_FALL_GRAVITY * dt;
+
+			if (crouching == true)
+				this->StandUp();
+
 		}
 		else
 			vy += SIMON_JUMP_GRAVITY * dt;
 	}
 	else
 	{
-		// If not jumping:
-		// vy will always be "!= 0" when Simon is falling
-		// Otherwise, vy's Simon is zero and not zero one by one
-		// Because of collision with the ground
+		// If falling
 		if (vy != 0)
 			controllable = false;
 
 		vy += SIMON_FALL_GRAVITY * dt;
-
-		//if (controllable == false) DebugOut(L"\n...");
-		//if (controllable == true) DebugOut(L"\n000");
 	}
 
 	if (vy > SIMON_MAX_SPEED_Y)
@@ -224,8 +226,7 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 	float min_tx, min_ty, nx, ny;
 	FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
-	// update x, y to make object be right at the collision position
-	// for ignoring collision with some kind of objects
+	// Set the object's position right to the point occured collision
 	x += min_tx * dx;
 	y += min_ty * dy;
 
@@ -237,19 +238,26 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			dynamic_cast<CFlame *>(e->obj) ||
 			dynamic_cast<CDagger *>(e->obj) ||
 			dynamic_cast<CCandle *>(e->obj))
+		{
 			DebugOut(L"\n[INFO] Touch something but do nothing !!");
+
+			// Ignore other collisions by completing the rest of dx / dy without blocked.
+			if (e->nx != 0)	x += (1 - min_tx) * dx;
+			if (e->ny != 0)	y += (1 - min_ty) * dy;
+		}
 
 		else if (dynamic_cast<CBigHeart *>(e->obj))
 		{
 			DebugOut(L"\n[INFO] Touch Big Heart");
+
 			e->obj->SetState(STATE_INVISIBLE);
 		}
 
 		else if (dynamic_cast<CItemRope *>(e->obj))
 		{
 			DebugOut(L"\n[INFO] Touch Item Rope");
-			e->obj->SetState(STATE_INVISIBLE);
 
+			e->obj->SetState(STATE_INVISIBLE);
 			this->rope->LevelUp();
 			this->Flicker();
 			CTimer::GetInstance()->Freeze(FREEZING_TIME_TOUCHING_ITEM);
@@ -258,14 +266,15 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 		else if (dynamic_cast<CHeart *>(e->obj))
 		{
 			DebugOut(L"\n[INFO] Touch Heart");
+
 			e->obj->SetState(STATE_INVISIBLE);
 		}
 
 		else if (dynamic_cast<CItemDagger *>(e->obj))
 		{
 			DebugOut(L"\n[INFO] Touch Dagger");
-			e->obj->SetState(STATE_INVISIBLE);
 
+			e->obj->SetState(STATE_INVISIBLE);
 			secondWeapon = Weapon::DAGGER;
 			weapons->AddToStock(Weapon::DAGGER);
 		}
@@ -273,37 +282,58 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 		else if (dynamic_cast<CZombie *>(e->obj))
 		{
 			DebugOut(L"\n[INFO] Touch Zombie");
-			if (this->OnGetDamaged(e))
+
+			if (untouchable_start == 0)
+			{
+				this->OnGetDamaged(e);
 				return;
+			}
+			
+			else
+			{
+				// Ignore the collision by completing the rest of dx/dy
+				if (e->nx != 0) x += (1 - min_tx) * dx;
+				if (e->ny != 0) y += (1 - min_ty) * dy;
+			}
 		}
 
 		// block with ground objects
 		else if (dynamic_cast<CInvisibleWall *>(e->obj))
 		{
-			// Prevent overlapping next frame
-			if (nx != 0)
-				x += nx * DEFLECTION_AVOID_OVERLAPPING;					
-
-			if (ny < 0)
+			if (e->nx != 0)
 			{
+				// Prevent overlapping next frame
+				x += nx * DEFLECTION_AVOID_OVERLAPPING;
+			}
+
+			if (e->ny < 0)
+			{
+				// Regain the control
+				// In case Simon is falling or getting damaged
+				controllable = true;
+
 
 				if (jumping)	
-					this->StandUp();		
-				else			
-					// Regain the control after falling
-					controllable = true;	
+				{
+					this->StandUp();
+					jumping = false;
+				}
 
-				// When falls from too high place
-				if (vy == SIMON_MAX_SPEED_Y || untouchable_start == -1)
+
+				// When falls from too high place or gets damaged
+				if (vy == SIMON_MAX_SPEED_Y || 
+					untouchable_start == TIMER_STANDBY)
 				{
 					AutoCrouch();
 
-					if (untouchable_start == -1)
+					if (untouchable_start == TIMER_STANDBY)
 						this->BeUntouchable();
 				}
 
+
+				// Prevent overlapping next frame
 				y += ny * DEFLECTION_AVOID_OVERLAPPING;
-				vy = 0;				
+				vy = 0;
 			}
 		}
 	}
@@ -321,18 +351,17 @@ void CSimon::Flicker()
 */
 void CSimon::StandUp()
 {
-	if (crouching)
+	if (jumping && crouching)
+	{
+		crouching = false;
+		y += SIMON_JUMPING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
+	}
+	else if (crouching)
 	{
 		crouching = false;
 		y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
 	}
-	else if (jumping)
-	{
-		if (attack_start == 0)
-			jumping = false;
 
-		y += SIMON_JUMPING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
-	}
 		
 }
 
@@ -363,11 +392,8 @@ void CSimon::BeUntouchable()
 	Return 1 if he obeys.
 	Otherwise, return 0.
 */
-int CSimon::OnGetDamaged(LPCOLLISIONEVENT e)
+void CSimon::OnGetDamaged(LPCOLLISIONEVENT e)
 {
-	if (untouchable_start != 0)
-		return 0;
-
 	this->nx = (e->nx != 0) ?
 		-(e->nx) :
 		-(e->obj->GetDirection());
@@ -381,8 +407,6 @@ int CSimon::OnGetDamaged(LPCOLLISIONEVENT e)
 
 	// Simon is being untouchable but not going to stop being untouchable
 	untouchable_start = -1;
-
-	return 1;
 }
 
 void CSimon::MoveRight()
@@ -446,9 +470,10 @@ void CSimon::UseWeapon()
 
 void CSimon::Jump()
 {
-	if (!jumping)
+	if (!jumping && !crouching)
 	{
 		this->jumping = true;
+		this->crouching = true;
 		this->vy = -SIMON_JUMP_SPEED;		
 	}
 }

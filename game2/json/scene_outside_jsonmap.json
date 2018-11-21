@@ -104,17 +104,6 @@
                  "y":320
                 }, 
                 {
-                 "height":32,
-                 "id":11,
-                 "name":"invisiblewall",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":1536,
-                 "x":0,
-                 "y":384
-                }, 
-                {
                  "height":62,
                  "id":23,
                  "name":"simon",
@@ -124,6 +113,17 @@
                  "width":32,
                  "x":57,
                  "y":320
+                }, 
+                {
+                 "height":32,
+                 "id":11,
+                 "name":"invisiblewall",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1536,
+                 "x":0,
+                 "y":384
                 }, 
                 {
                  "height":0,
@@ -223,6 +223,17 @@
                  "width":24,
                  "x":1678,
                  "y":261
+                }, 
+                {
+                 "height":29,
+                 "id":56,
+                 "name":"zombie",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":20,
+                 "x":206,
+                 "y":99
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -231,7 +242,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":56,
+ "nextobjectid":59,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.0",

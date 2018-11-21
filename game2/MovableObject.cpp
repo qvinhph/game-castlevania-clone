@@ -4,6 +4,10 @@
 #include "Game.h"
 #include "ItemRope.h"
 #include "InvisibleWall.h"
+#include "debug.h"
+
+#include "Simon.h"
+#include "Zombie.h"
 
 CMovableObject::CMovableObject()
 {
@@ -19,27 +23,40 @@ void CMovableObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	this->dy = vy * dt;
 }
 
-
+/*
+	Proceed the collisions
+	Generically use to handle with the ground (INVISIBLEWALL) while falling.
+	(Items, Heart,...)
+*/
 void CMovableObject::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 {
 	vector<LPCOLLISIONEVENT> coEventsResult;
 	float min_tx, min_ty, nx, ny;
 	FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
-	y += min_ty * dy;
+	// Set the object's position right to the point occured collision
 	x += min_tx * dx;
+	y += min_ty * dy;
 
 	for (UINT i = 0; i < coEventsResult.size(); ++i)
 	{
-		if (dynamic_cast<CInvisibleWall *>(coEventsResult[i]->obj))
+		LPCOLLISIONEVENT e = coEventsResult[i];
+
+		if (dynamic_cast<CInvisibleWall *>(e->obj))
 		{
 			// Block when reach the ground
-			if (ny < 0)
+			if (e->ny < 0)
 			{
+				y += DEFLECTION_AVOID_OVERLAPPING * e->ny;
 				vy = 0;
-				y += DEFLECTION_AVOID_OVERLAPPING * ny;
 			}
-		}
+
+			if (e->nx != 0)
+			{
+				x += DEFLECTION_AVOID_OVERLAPPING * e->nx;
+				vx = 0;
+			}
+		}		
 	}
 }
 
@@ -123,9 +140,20 @@ void CMovableObject::CalcPotentialCollisions(
 	vector<LPGAMEOBJECT> *coObjects,
 	vector<LPCOLLISIONEVENT> &coEvents)
 {
+	
+
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
+
+		if (dynamic_cast<CZombie *>(this))
+		{
+			if (dynamic_cast<CSimon *>(e->obj))
+			{
+				if (CSimon::GetInstance()->dx == 0)
+					DebugOut(L"\nasdasd");
+			}
+		}
 		
 		if (e->t > 0 && e->t <= 1.0f)
 			coEvents.push_back(e);

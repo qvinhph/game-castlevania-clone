@@ -85,8 +85,8 @@ void CInputHandler::OnKeyUp(int keyCode)
 	//DebugOut(L"\n[INFO] KeyUp: %d", keyCode);
 	switch (keyCode)
 	{
-	//case DIK_DOWN:
-		//CSimon::GetInstance()->SetAction(Action::IDLE);
+	case DIK_DOWN:
+		CSimon::GetInstance()->SetAction(Action::IDLE);
 	}		
 }
 
@@ -176,7 +176,7 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int Sc
 void TestInit()
 {
 	tileMap = new CTileMap(L"json\\maptest_jsonmap.json");
-	//tileMap = new CTileMap(L"json\\scene_outside_jsonmap.json");
+	tileMap = new CTileMap(L"json\\scene_outside_jsonmap.json");
 	tileMap->Init(ID_TEX_TILESET);
 	objects = tileMap->GetGameObjects();
 }

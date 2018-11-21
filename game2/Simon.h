@@ -12,16 +12,16 @@
 
 #define SIMON_WALKING_SPEED						0.12f		
 #define SIMON_JUMP_SPEED						0.4f
-#define SIMON_FALL_GRAVITY						0.01f
 #define SIMON_JUMP_GRAVITY						0.0012f
-#define SIMON_MAX_SPEED_BY_JUMP_GRAVITY			0.26f		// max fall down speed can get by jump gravity
+#define SIMON_FALL_GRAVITY						0.01f
+#define SIMON_SPEED_CHANGE_POSTURE_WHILE_FALLING			0.26f		// max fall down speed can get by jump gravity
 #define SIMON_MAX_SPEED_Y						1.8f
 
 #define SIMON_DAMAGED_DEFLECT_X					0.1f
 #define SIMON_DAMAGED_DEFLECT_Y					-0.4f
 
 #define ATTACK_TIME								350
-#define AUTO_CROUCH_TIME						500
+#define AUTO_CROUCH_TIME						300
 #define FREEZING_TIME_TOUCHING_ITEM				1000
 #define FLICKERING_TIME							1000
 #define UNTOUCHABLE_TIME						1000
@@ -102,7 +102,7 @@ public:
 	void StandUp();
 	void AutoCrouch();
 	void BeUntouchable();
-	int OnGetDamaged(LPCOLLISIONEVENT e);
+	void OnGetDamaged(LPCOLLISIONEVENT e);
 
 	void MoveRight();
 	void MoveLeft();

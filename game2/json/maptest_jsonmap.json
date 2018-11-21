@@ -48,7 +48,7 @@
                  "type":"",
                  "visible":true,
                  "width":64,
-                 "x":128,
+                 "x":127,
                  "y":288
                 }, 
                 {
@@ -133,6 +133,17 @@
                  "width":0,
                  "x":214,
                  "y":272
+                }, 
+                {
+                 "height":170,
+                 "id":21,
+                 "name":"invisiblewall",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":214,
+                 "x":578,
+                 "y":184
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -141,7 +152,7 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":21,
+ "nextobjectid":22,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.0",

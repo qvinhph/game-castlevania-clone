@@ -53,10 +53,9 @@ void CDagger::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 	float nx, ny, min_tx, min_ty;
 	FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
-	// update x, y to make object be right at the collision position
-	// for ignoring collision with some kind of objects
-	x += min_tx * dx;
-	y += min_ty * dy;
+	// If there is no collision
+	if (min_tx == 1) x += dx;
+	if (min_ty == 1) y += dy;
 
 	for (UINT i = 0; i < coEventsResult.size(); i++)
 	{
