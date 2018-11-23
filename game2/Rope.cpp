@@ -37,22 +37,6 @@ void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 }
 
-bool CRope::IsOverlapping(LPGAMEOBJECT obj)
-{
-	bool result = false;
-
-	float left, top, right, bottom;
-	float leftObj, topObj, rightObj, bottomObj;
-
-	obj->GetBoundingBox(leftObj, topObj, rightObj, bottomObj);
-	GetBoundingBox(left, top, right, bottom);
-
-	if (left < rightObj && right > leftObj &&
-		top < bottomObj && bottom > topObj)
-		result = true;
-
-	return result;
-}
 
 void CRope::Render()
 {
@@ -223,7 +207,7 @@ void CRope::SetState(int state)
 	// reset the current animation for next usage
 	if (state == STATE_INVISIBLE)
 		if (currentAniID > 0)
-			this->ResetAnimation(currentAniID);
+			this->ResetAnimationTimer(currentAniID);
 }
 
 CRope * CRope::GetInstance()

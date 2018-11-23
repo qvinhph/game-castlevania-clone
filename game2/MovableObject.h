@@ -11,8 +11,8 @@ enum class Action
 	WALK_LEFT,
 	CROUCH,
 	JUMP,
-	UPSTAIR,
-	DOWNSTAIR,
+	UPSTAIRS,
+	DOWNSTAIRS,
 	ATTACK,
 	USE_ITEM,
 	GO_IN,
@@ -31,7 +31,6 @@ protected:
 	float vy;
 
 	DWORD dt;
-	Action action;
 
 public:
 
@@ -56,7 +55,6 @@ public:
 		Generically use for falling-down objects.
 	*/
 	virtual void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents);
-	virtual void SetAction(Action action) { this->action = action; };
 	virtual void SetState(int state) override;
 
 	CMovableObject();

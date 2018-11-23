@@ -234,6 +234,17 @@
                  "width":20,
                  "x":206,
                  "y":99
+                }, 
+                {
+                 "height":87,
+                 "id":59,
+                 "name":"stairs_start",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":91,
+                 "x":825,
+                 "y":280
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -242,7 +253,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":59,
+ "nextobjectid":60,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.0",

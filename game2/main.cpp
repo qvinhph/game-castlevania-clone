@@ -1,5 +1,3 @@
-// STAIRING-FUNCTION
-
 #include <Windows.h>
 #include <d3d9.h>
 #include <d3dx9.h>
@@ -62,6 +60,14 @@ void CInputHandler::OnKeyDown(int keyCode)
 		CSimon::GetInstance()->SetAction(Action::WALK_LEFT);
 		break;
 
+	//case DIK_UP:
+	//	CSimon::GetInstance()->SetAction(Action::UPSTAIRS);
+	//	break;
+	//
+	//case DIK_DOWN:
+	//	CSimon::GetInstance()->SetAction(Action::DOWNSTAIRS);
+	//	break;
+
 		// DEBUGGING
 	case DIK_1:
 		CSimon::GetInstance()->SetPosition(396.0f, 96.0f);
@@ -76,6 +82,10 @@ void CInputHandler::OnKeyDown(int keyCode)
 
 			}
 		}
+		break;
+	case DIK_O:
+		CSimon::GetInstance()->RemoveOnStairs();
+		break;
 
 	default:
 		break;
@@ -95,13 +105,22 @@ void CInputHandler::OnKeyUp(int keyCode)
 void CInputHandler::KeyState(BYTE *states)
 {
 	if (game->IsKeyDown(DIK_DOWN))
+	{
+		CSimon::GetInstance()->SetAction(Action::DOWNSTAIRS);
 		CSimon::GetInstance()->SetAction(Action::CROUCH);
+	}
 
 	else if (game->IsKeyDown(DIK_RIGHT))
 		CSimon::GetInstance()->SetAction(Action::WALK_RIGHT);
 
 	else if (game->IsKeyDown(DIK_LEFT))
 		CSimon::GetInstance()->SetAction(Action::WALK_LEFT);
+
+	else if (game->IsKeyDown(DIK_UP))
+		CSimon::GetInstance()->SetAction(Action::UPSTAIRS);
+
+	else if (game->IsKeyDown(DIK_DOWN))
+		CSimon::GetInstance()->SetAction(Action::DOWNSTAIRS);
 
 	else
 		CSimon::GetInstance()->SetAction(Action::IDLE);
@@ -178,7 +197,7 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int Sc
 void TestInit()
 {
 	tileMap = new CTileMap(L"json\\maptest_jsonmap.json");
-	tileMap = new CTileMap(L"json\\scene_outside_jsonmap.json");
+	//tileMap = new CTileMap(L"json\\scene_outside_jsonmap.json");
 	tileMap->Init(ID_TEX_TILESET);
 	objects = tileMap->GetGameObjects();
 }
@@ -251,15 +270,13 @@ void LoadResources()
 	sprites->Add(99021, 10, 270, 42, 328, texSimon);	// pushed back right
 	sprites->Add(99121, 438, 72, 470, 130, texSimon);	// pushed back left
 
-	sprites->Add(99022, 318, 68, 350, 130, texSimon);	// down stair right
-	sprites->Add(99023, 266, 68, 290, 130, texSimon);	// down stair right
-	sprites->Add(99122, 130, 266, 162, 328, texSimon);	// down stair left
-	sprites->Add(99123, 190, 266, 214, 328, texSimon);	// down stair left
+	sprites->Add(99022, 263, 68, 293, 130, texSimon);	// climbing right
+	sprites->Add(99023, 191, 68, 221, 130, texSimon);	// upstairs right
+	sprites->Add(99024, 319, 68, 349, 130, texSimon);	// downstairs right
 
-	sprites->Add(99024, 191, 68, 222, 130, texSimon);	// up stair right
-	sprites->Add(99025, 134, 68, 158, 130, texSimon);	// up stair right
-	sprites->Add(99124, 259, 266, 289, 328, texSimon);	// up stair left
-	sprites->Add(99125, 322, 266, 346, 328, texSimon);	// up stair left
+	sprites->Add(99122, 187, 266, 217, 328, texSimon);	// climbing left
+	sprites->Add(99123, 259, 266, 289, 328, texSimon);	// upstairs left
+	sprites->Add(99124, 131, 266, 161, 328, texSimon);	// downstairs left
 	
 	sprites->Add(99037, 16, 67, 48, 113, texSimon);		// crouch attack right
 	sprites->Add(99038, 437, 133, 469, 179, texSimon);	// crouch attack right
@@ -296,17 +313,17 @@ void LoadResources()
 	animations->Add((int)SimonAniID::IDLE_LEFT, ani);
 
 	ani = new CAnimation(100);
-	ani->AddFrame(99000);
 	ani->AddFrame(99001);
 	ani->AddFrame(99002);
 	ani->AddFrame(99003);
+	ani->AddFrame(99000);
 	animations->Add((int)SimonAniID::WALK_RIGHT, ani);
 
 	ani = new CAnimation(100);
-	ani->AddFrame(99100);
 	ani->AddFrame(99101);
 	ani->AddFrame(99102);
 	ani->AddFrame(99103);
+	ani->AddFrame(99100);
 	animations->Add((int)SimonAniID::WALK_LEFT, ani);
 
 	ani = new CAnimation(75);
@@ -341,25 +358,41 @@ void LoadResources()
 	ani->AddFrame(99121);
 	animations->Add((int)SimonAniID::PUSHED_BACK_LEFT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(150);
 	ani->AddFrame(99022);
 	ani->AddFrame(99023);
-	animations->Add((int)SimonAniID::DOWN_STAIR_RIGHT, ani);
+	animations->Add((int)SimonAniID::WALK_UPSTAIRS_RIGHT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(150);
+	ani->AddFrame(99022);
+	ani->AddFrame(99024);
+	animations->Add((int)SimonAniID::WALK_DOWNSTAIRS_RIGHT, ani);
+	
+	ani = new CAnimation(150);
 	ani->AddFrame(99122);
 	ani->AddFrame(99123);
-	animations->Add((int)SimonAniID::DOWN_STAIR_LEFT, ani);
+	animations->Add((int)SimonAniID::WALK_UPSTAIRS_LEFT, ani);	
+
+	ani = new CAnimation(150);
+	ani->AddFrame(99122);
+	ani->AddFrame(99124);
+	animations->Add((int)SimonAniID::WALK_DOWNSTAIRS_LEFT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(99023);
+	animations->Add((int)SimonAniID::IDLE_UPSTAIRS_RIGHT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99024);
-	ani->AddFrame(99025);
-	animations->Add((int)SimonAniID::UP_STAIR_RIGHT, ani);
+	animations->Add((int)SimonAniID::IDLE_DOWNSTAIRS_RIGHT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(99123);
+	animations->Add((int)SimonAniID::IDLE_UPSTAIRS_LEFT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99124);
-	ani->AddFrame(99125);
-	animations->Add((int)SimonAniID::UP_STAIR_LEFT, ani);
+	animations->Add((int)SimonAniID::IDLE_DOWNSTAIRS_LEFT, ani);
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99037);

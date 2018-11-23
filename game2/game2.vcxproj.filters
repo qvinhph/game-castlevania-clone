@@ -129,6 +129,12 @@
     <ClInclude Include="Zombie.h">
       <Filter>Header Files\GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="StairsUp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StairsDown.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Rope.cpp">
@@ -226,6 +232,12 @@
     </ClCompile>
     <ClCompile Include="Zombie.cpp">
       <Filter>Source Files\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="StairsUp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StairsDown.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

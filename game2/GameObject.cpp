@@ -52,6 +52,27 @@ bool CGameObject::IsInViewport()
 	return true;
 }
 
+bool CGameObject::IsOverlapping(LPGAMEOBJECT obj)
+{
+	float left, top, right, bottom;
+	float leftObj, topObj, rightObj, bottomObj;
+
+	obj->GetBoundingBox(leftObj, topObj, rightObj, bottomObj);
+	GetBoundingBox(left, top, right, bottom);
+
+	if (left < rightObj && right > leftObj &&
+		top < bottomObj && bottom > topObj)
+		return true;
+
+	return false;
+}
+
+void CGameObject::ReDirect(float x)
+{
+	if (this->x - x == 0) return;
+	nx = ((this->x - x) > 0) ? -1 : 1;
+}
+
 void CGameObject::FreezeAnimation()
 {
 	if (currentAniID != -1)
@@ -61,13 +82,21 @@ void CGameObject::FreezeAnimation()
 /*
 	Rearrange the frames of the given animation.
 */
-void CGameObject::ResetAnimation(int aniID)
+void CGameObject::ResetAnimationTimer(int aniID)
 {
 	animations->Get(aniID)->SetCurrentFrame(-1);
 }
 
 void CGameObject::Render()
 {
+	// Check if stop using an animation
+	// If yes, put the frames of the animation in order (again)
+	if (currentAniID != lastAniID)
+		if (lastAniID != -1)
+			this->ResetAnimationTimer(lastAniID);
+
+	lastAniID = currentAniID;
+
 	if (state == STATE_VISIBLE)
 		if (this->IsInViewport())
 			// Similar to the origin game (only render fully-inside-viewport objects)

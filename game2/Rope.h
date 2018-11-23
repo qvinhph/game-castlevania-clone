@@ -45,7 +45,6 @@ public:
 	void UpdateRopePosition(int aniID);
 	void SetMatchedAnimation();
 	void LevelUp();
-	bool IsOverlapping(LPGAMEOBJECT obj);
 
 	static CRope * GetInstance();
 };

@@ -12,8 +12,7 @@ using namespace std;
 #define STATE_VISIBLE		0
 #define STATE_INVISIBLE		-1
 
-#define TIMER_STANDBY		-1
-#define TIMER_IDLE			0
+
 
 
 // Item or dropable objects ( include heart, bigheart, etc)
@@ -68,6 +67,7 @@ protected:
 
 	CAnimations* animations;		// pointer helping getting the animations
 	int currentAniID;
+	int lastAniID = -1;
 
 	ARGB argb;						// for changing color of the sprite
 	Item item;						// the item object holds, drop when destroyed
@@ -92,11 +92,13 @@ public:
 	int GetState() { return this->state; }
 	
 	void RenderBoundingBox();
-	bool IsInViewport();
 	void FreezeAnimation();
+	bool IsInViewport();
+	bool IsOverlapping(LPGAMEOBJECT obj);
+	void ReDirect(float x);
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
-	virtual void ResetAnimation(int aniID);
+	virtual void ResetAnimationTimer(int aniID);
 	virtual void Render();
 	virtual void Destroy();		
 

@@ -145,15 +145,6 @@ void CMovableObject::CalcPotentialCollisions(
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
-
-		if (dynamic_cast<CZombie *>(this))
-		{
-			if (dynamic_cast<CSimon *>(e->obj))
-			{
-				if (CSimon::GetInstance()->dx == 0)
-					DebugOut(L"\nasdasd");
-			}
-		}
 		
 		if (e->t > 0 && e->t <= 1.0f)
 			coEvents.push_back(e);

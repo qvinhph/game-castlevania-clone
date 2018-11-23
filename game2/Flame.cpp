@@ -16,7 +16,7 @@ void CFlame::Render()
 		if (GetTickCount() - burnStartTime > BURNING_TIME)
 		{
 			this->Destroy();
-			ResetAnimation(currentAniID);
+			ResetAnimationTimer(currentAniID);
 		}
 		else
 			CGameObject::Render();

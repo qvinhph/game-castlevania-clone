@@ -14,9 +14,10 @@
 #include "Timer.h"
 #include "Zombie.h"
 #include "Candle.h"
+#include "StairsUp.h"
+#include "StairsDown.h"
 
 #include "debug.h"
-#include <iostream>
 
 CSimon * CSimon::__instance = NULL;
 
@@ -25,11 +26,14 @@ CSimon::CSimon()
 	this->controllable = true;
 	this->jumping = false;
 	this->crouching = false;
+	this->autoMove = false;
 	this->secondWeapon = Weapon::NONE;
 
-	auto_crouch_start = 0;
-	attack_start = 0;
-	flicker_start = 0;
+	this->auto_crouch_start = 0;
+	this->attack_start = 0;
+	this->flicker_start = 0;
+	this->auto_start = 0;
+	this->onStairs = 0;
 
 	// ready to be used
 	rope = CRope::GetInstance();
@@ -76,10 +80,47 @@ void CSimon::SetMatchedAnimation()
 			currentAniID = (nx > 0) ?
 				(int)SimonAniID::CROUCH_ATTACK_RIGHT :
 				(int)SimonAniID::CROUCH_ATTACK_LEFT;
+
+		else if (onStairs == 1)
+			currentAniID = (nx > 0) ?
+				(int)SimonAniID::UP_STAIR_ATTACK_RIGHT :
+				(int)SimonAniID::UP_STAIR_ATTACK_LEFT;
+
+		else if (onStairs == -1)
+			currentAniID = (nx > 0) ?
+				(int)SimonAniID::DOWN_STAIR_ATTACK_RIGHT :
+				(int)SimonAniID::DOWN_STAIR_ATTACK_LEFT;
+
 		else
 			currentAniID = (nx > 0) ?
 				(int)SimonAniID::ATTACK_RIGHT :
 				(int)SimonAniID::ATTACK_LEFT;
+	}
+
+	else if (onStairs == 1)
+	{
+		if (vx != 0)
+			currentAniID = (nx > 0) ?
+				(int)SimonAniID::WALK_UPSTAIRS_RIGHT :
+				(int)SimonAniID::WALK_UPSTAIRS_LEFT;
+
+		else
+			currentAniID = (nx > 0) ?
+				(int)SimonAniID::IDLE_UPSTAIRS_RIGHT :
+				(int)SimonAniID::IDLE_UPSTAIRS_LEFT;
+
+	}
+
+	else if (onStairs == -1)
+	{
+		if (vx != 0)
+			currentAniID = (nx > 0) ?
+				(int)SimonAniID::WALK_DOWNSTAIRS_RIGHT :
+				(int)SimonAniID::WALK_DOWNSTAIRS_LEFT;
+		else
+			currentAniID = (nx > 0) ?
+				(int)SimonAniID::IDLE_DOWNSTAIRS_RIGHT :
+				(int)SimonAniID::IDLE_DOWNSTAIRS_LEFT;
 	}
 
 	else if (untouchable_start == -1)
@@ -126,82 +167,63 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// While jumping and falling
 	if (jumping)
-	{
-		if (vy > SIMON_SPEED_CHANGE_POSTURE_WHILE_FALLING && crouching == true)
-		{
-			vy += SIMON_FALL_GRAVITY * dt;
-
-			if (crouching == true)
-				this->StandUp();
-
-		}
-		else
-			vy += SIMON_JUMP_GRAVITY * dt;
-	}
+		ProceedJumping();
 	else
-	{
-		// If falling
-		if (vy != 0)
-			controllable = false;
+		if (onStairs == 0)
+			ProceedGravity();
 
-		vy += SIMON_FALL_GRAVITY * dt;
-	}
 
+	// Keep vy not to be too high
 	if (vy > SIMON_MAX_SPEED_Y)
 		vy = SIMON_MAX_SPEED_Y;
 
-	// Auto crouch
-	if (auto_crouch_start > 0)
-		if (GetTickCount() - auto_crouch_start >= AUTO_CROUCH_TIME)
-		{
-			this->StandUp();
 
-			// Stop counting
-			auto_crouch_start = 0;
-		}
+	// Auto Crouch
+	if (auto_crouch_start != TIMER_IDLE)
+		ProceedAutoCrouching();
+
 
 	// Attacking
-	if (attack_start > 0)
-		if (GetTickCount() - attack_start > ATTACK_TIME)
-		{
-			// If attacking by rope
-			if (this->rope->GetState() == STATE_VISIBLE)
-				this->rope->SetState(STATE_INVISIBLE);
-			else
-				weapons->UseWeapon(secondWeapon, this);
+	if (attack_start != TIMER_IDLE)
+		ProceedAttacking();
 
-			this->ResetAnimation(currentAniID);
-			attack_start = 0;
-		}
 
 	// Being Untouchable
-	if (untouchable_start != -1 &&
-		untouchable_start != 0)
-		if (GetTickCount() - untouchable_start > UNTOUCHABLE_TIME)
-		{
-			// Stop flickering effect
-			this->argb = ARGB();
-			flicker_start = 0;
+	if (untouchable_start != TIMER_IDLE &&
+		untouchable_start != TIMER_ETERNAL)
+		ProceedBeingUntouchable();
 
-			untouchable_start = 0;
-		}
 
 	// Flickering
-	if (flicker_start > 0)
-		if (GetTickCount() - flicker_start >= FLICKERING_TIME)
-		{
-			this->argb = ARGB();
-			flicker_start = 0;
-		}
+	if (flicker_start != TIMER_IDLE)
+		ProceedFlickering();
+
+
+	// Auto Move: this will re-calculate the dx, dy
+	if (autoMove)
+		ProceedAutoMove();
+
+
+	// Being On Stairs
+	if (onStairs != 0)
+		ProceedOnStairs();
+
 
 	SetMatchedAnimation();
+
+
+	// Overlapping
+	ovObjects.clear();
+	for (UINT i = 0; i < coObjects->size(); ++i)
+		if (this->IsOverlapping(coObjects->at(i)))
+			ovObjects.push_back(coObjects->at(i));
+
 
 	// Collisions
 	vector<LPCOLLISIONEVENT> coEvents;
 	coEvents.clear();
 
-	// Turn off collision when die 
-	if (this->action != Action::DIE)
+	if (true) // TO-DO: if not dead
 		CalcPotentialCollisions(coObjects, coEvents);
 
 	// No collision occured, proceed normally
@@ -215,9 +237,191 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+	
 
 	CalibrateCameraPosition();
+}
 
+void CSimon::ProceedFlickering()
+{
+	if (GetTickCount() - flicker_start >= FLICKERING_TIME)
+	{
+		this->argb = ARGB();
+		flicker_start = TIMER_IDLE;
+	}
+}
+
+void CSimon::ProceedBeingUntouchable()
+{
+	if (GetTickCount() - untouchable_start > UNTOUCHABLE_TIME)
+	{
+		// Stop flickering effect
+		this->argb = ARGB();
+		flicker_start = TIMER_IDLE;
+
+		untouchable_start = TIMER_IDLE;
+	}
+}
+
+void CSimon::ProceedAttacking()
+{
+	if (GetTickCount() - attack_start > ATTACK_TIME)
+	{
+		// If attacking by rope
+		if (this->rope->GetState() == STATE_VISIBLE)
+			this->rope->SetState(STATE_INVISIBLE);
+		else
+			weapons->UseWeapon(secondWeapon, this);
+
+		// Stop timer
+		attack_start = TIMER_IDLE;
+	}
+	else 
+		// While attacking, Simon can't move horizontally, except finish jumping
+		if (!jumping)
+			vx = 0;
+}
+
+void CSimon::ProceedAutoCrouching()
+{
+	if (GetTickCount() - auto_crouch_start >= AUTO_CROUCH_TIME)
+	{
+		this->StandUp();
+
+		// Stop counting
+		auto_crouch_start = TIMER_IDLE;
+	}
+}
+
+void CSimon::ProceedJumping()
+{
+	// When reach this speed, Simon will stand up and fall faster.
+	if (vy > SIMON_MAX_SPEED_WITH_JUMP_GRAVITY)
+	{
+		vy += SIMON_FALL_GRAVITY * this->dt;
+
+		if (crouching == true)
+			this->StandUp();
+
+	}
+	else
+		vy += SIMON_JUMP_GRAVITY * this->dt;
+}
+
+void CSimon::ProceedGravity()
+{
+	// If falling
+	if (vy != 0)
+		controllable = false;
+
+	vy += SIMON_FALL_GRAVITY * this->dt;
+}
+
+void CSimon::ProceedOnStairs()
+{
+	// Try getting out the stairs
+	LPGAMEOBJECT stairs = NULL;
+	
+	if (onStairs == 1)
+	{
+		for (UINT i = 0; i < ovObjects.size(); ++i)
+			stairs = dynamic_cast<CStairsDown *>(ovObjects[i]);
+		if (stairs == NULL) return;
+
+		float xS, yS;
+		stairs->GetPosition(xS, yS);
+
+		// Has reached the stairs exit
+		if (y < yS)
+		{
+			y = yS - DEFLECTION_AVOID_OVERLAPPING;
+			onStairs = 0;
+
+			autoMove = false;
+			vx = vy = 0;
+		}
+	}
+	else if (onStairs == -1)
+	{
+		for (UINT i = 0; i < ovObjects.size(); ++i)
+			stairs = dynamic_cast<CStairsUp *>(ovObjects[i]);
+		if (stairs == NULL) return;
+
+		float xS, yS;
+		stairs->GetPosition(xS, yS);
+
+		// Has reached the stairs exit
+		if (y > yS)
+		{
+			y = yS - DEFLECTION_AVOID_OVERLAPPING;
+			onStairs = 0;
+
+			autoMove = false;
+			vx = vy = 0;
+		}
+	}
+}
+
+void CSimon::ProceedAutoMove()
+{
+	// Auto move and stop when reach destination
+	if (auto_start == TIMER_IDLE)
+	{
+		if (autoInfo.vx != 0 &&
+			autoInfo.xDes != x)
+		{
+			ReDirect(autoInfo.xDes);
+			vx = nx * autoInfo.vx;
+			dx = vx * dt;
+
+			// Calibrate the dx if object is moving far away from the destination
+			if (dx > 0)
+			{
+				if (x + dx > autoInfo.xDes)
+					dx = autoInfo.xDes - x;
+			}
+			else
+			{
+				if (x + dx < autoInfo.xDes)
+					dx = autoInfo.xDes - x;
+			}
+		}
+		else
+		{
+			autoMove = false;
+			controllable = true;
+			dx = dy = vx = vy = 0;
+		}
+	}
+
+	// Auto move and stop when reach the time
+	else
+	{
+		if (GetTickCount() - auto_start > autoInfo.autoTimeLast)
+		{
+			auto_start = TIMER_IDLE;
+			autoMove = false;
+			controllable = true;
+			dx = dy = vx = vy = 0;
+		}
+		else
+		{
+			vx = autoInfo.vx;
+			vy = autoInfo.vy;
+			dx = vx * dt;
+			dy = vy * dt;
+		}
+	}
+
+	/*if (autoMove == false)
+	{
+
+		this->ResetAnimationTimer(currentAniID);
+		DebugOut(L"\nAfter reset: ");
+		DebugOut(L"\nAni ID: %d", currentAniID);
+		DebugOut(L"\nCurrent frame: %d", animations->Get(currentAniID)->GetCurrentFrame());
+
+	}*/
 }
 
 void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
@@ -300,6 +504,10 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 		// block with ground objects
 		else if (dynamic_cast<CInvisibleWall *>(e->obj))
 		{
+			// Simon ignores the ground while on stairs
+			if (onStairs != 0)
+				continue;
+
 			if (e->nx != 0)
 			{
 				// Prevent overlapping next frame
@@ -309,8 +517,9 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			if (e->ny < 0)
 			{
 				// Regain the control
-				// In case Simon is falling or getting damaged
-				controllable = true;
+				// In case Simon is not "auto move"
+				if (!autoMove)
+					controllable = true;
 
 
 				if (jumping)	
@@ -322,11 +531,11 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 
 				// When falls from too high place or gets damaged
 				if (vy == SIMON_MAX_SPEED_Y || 
-					untouchable_start == TIMER_STANDBY)
+					untouchable_start == TIMER_ETERNAL)
 				{
 					AutoCrouch();
 
-					if (untouchable_start == TIMER_STANDBY)
+					if (untouchable_start == TIMER_ETERNAL)
 						this->BeUntouchable();
 				}
 
@@ -341,7 +550,7 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 
 void CSimon::Flicker()
 {
-	if (flicker_start == 0)
+	if (flicker_start == TIMER_IDLE)
 		flicker_start = GetTickCount();
 }
 
@@ -375,71 +584,113 @@ void CSimon::AutoCrouch()
 }
 
 /*
-	Use this to start an untouchable state with soon ending.
+	Use this to start the untouchable_start timer
 */
 void CSimon::BeUntouchable()
 {
-	if (untouchable_start == 0 ||
-		untouchable_start == -1)
+	if (untouchable_start == TIMER_IDLE ||
+		untouchable_start == TIMER_ETERNAL)
 	{
 		untouchable_start = GetTickCount();
 		this->Flicker();
 	}
 }
 
-/*
-	Tell Simon to be get damaged.
-	Return 1 if he obeys.
-	Otherwise, return 0.
-*/
 void CSimon::OnGetDamaged(LPCOLLISIONEVENT e)
 {
-	this->nx = (e->nx != 0) ?
-		-(e->nx) :
-		-(e->obj->GetDirection());
+	if (onStairs == 0)
+	{
+		this->nx = (e->nx != 0) ?
+			-(e->nx) :
+			-(e->obj->GetDirection());
 
-	vx = vy = dx = dy = 0;
+		vx = vy = dx = dy = 0;
 
-	this->vx = (-this->nx) * SIMON_DAMAGED_DEFLECT_X;
-	this->vy = SIMON_DAMAGED_DEFLECT_Y;
-	jumping = true;
-	controllable = false;
+		this->vx = (-this->nx) * SIMON_DAMAGED_DEFLECT_X;
+		this->vy = SIMON_DAMAGED_DEFLECT_Y;
 
-	// Simon is being untouchable but not going to stop being untouchable
-	untouchable_start = -1;
+		// Set jumping = true to re-use the SIMON_JUMP_GRAVITY
+		jumping = true;
+		controllable = false;
+
+		// Simon is being untouchable but not going to stop being untouchable
+		untouchable_start = TIMER_ETERNAL;
+	}
+	else
+	{
+		untouchable_start = GetTickCount();
+		flicker_start = GetTickCount();
+	}	
 }
 
 void CSimon::MoveRight()
 {
-	if (attack_start == 0 &&	// While attacking, Simon cannot move
-		!jumping)				// While jumping, Simon cannot move
+	if (onStairs == 0)
 	{
-		this->nx = 1;
-		if (!crouching)
-			this->vx = SIMON_WALKING_SPEED * this->nx;
+		if (attack_start == 0 &&	// While attacking, Simon cannot move
+			!jumping)				// While jumping, Simon cannot move
+		{
+			this->nx = 1;
+			if (!crouching)
+				this->vx = SIMON_WALKING_SPEED * this->nx;
+		}
+	}	
+	else
+	{
+		if (onStairs == 1)
+			if (nx == 1)
+				Upstairs();
+			else
+				Downstairs();
+
+		else if (onStairs == -1)
+			if (nx == 1)
+				Downstairs();
+			else
+				Upstairs();
 	}
 }
 
 void CSimon::MoveLeft()
 {
-	if (attack_start == 0 &&	// While attacking, Simon cannot move
-		!jumping)				// While jumping, Simon cannot move
+	if (onStairs == 0)
 	{
-		this->nx = -1;
-		if (!crouching)
-			this->vx = SIMON_WALKING_SPEED * this->nx;
+		if (attack_start == TIMER_IDLE &&	// While attacking, Simon cannot move
+			!jumping)						// While jumping, Simon cannot move
+		{
+			this->nx = -1;
+
+			// Can only change direction while crouching
+			if (!crouching)
+				this->vx = SIMON_WALKING_SPEED * this->nx;
+		}
 	}
+	else
+	{
+		if (onStairs == 1)
+			if (nx == 1)
+				Downstairs();
+			else
+				Upstairs();
+
+		else if (onStairs == -1)
+			if (nx == 1)
+				Upstairs();
+			else
+				Downstairs();
+	}	
 }
 
 void CSimon::Crouch()
 {
 	if (!crouching && 
+		onStairs == 0 &&
 		attack_start == 0)
 	{
 		this->crouching = true;
 		this->vx = 0;
 
-		// Re-locate Simon
+		// Re-locate Simon to avoid overlapping
 		this->y += SIMON_IDLE_BBOX_HEIGHT - SIMON_CROUCHING_BBOX_HEIGHT;
 	}	
 }
@@ -450,7 +701,7 @@ void CSimon::Idle()
 	{
 		this->vx = 0;
 
-		if (crouching && auto_crouch_start == 0)
+		if (crouching && auto_crouch_start == TIMER_IDLE)
 			this->StandUp();
 	}
 }
@@ -466,11 +717,125 @@ void CSimon::UseWeapon()
 	else if (secondWeapon == Weapon::DAGGER)
 		this->Attack(SIMON_ATTACK_BY_ITEM);
 }
+
+void CSimon::Upstairs()
+{
+	// Check if Simon is on stairs
+	// If not, try to get into the stair
+	if (onStairs == 0)
+	{
+		LPGAMEOBJECT stairs = NULL;
+
+		// Check if Simon is on a stairs-start
+		for (UINT i = 0; i < ovObjects.size(); ++i)
+			stairs = dynamic_cast<CStairsUp *>(ovObjects[i]);
+
+		// Do nothing if there is no stairs overlapped
+		if (stairs == NULL) return;
+
+		// Try to reach the right point of stairs
+		float xS, yS;
+		stairs->GetPosition(xS, yS);
+		if (x != xS)
+			StartAutoMove(SIMON_WALKING_SPEED, xS);
+		else
+		{
+			nx = stairs->GetDirection();
+			StartAutoMove(nx * SIMON_STAIR_SPEED_X, -SIMON_STAIR_SPEED_Y, SIMON_AUTO_STAIR_TIME);
+			onStairs = 1;
+		}
+	}
 	
+	else
+	{
+		// Simon is going downstairs and wanting to climb back
+		if (onStairs == -1)
+		{
+			this->nx = -nx;
+			onStairs = 1;
+		}
+
+		StartAutoMove(nx * SIMON_STAIR_SPEED_X, -SIMON_STAIR_SPEED_Y, SIMON_AUTO_STAIR_TIME);
+	}
+}
+
+void CSimon::Downstairs()
+{
+	// Check if Simon is onStairs
+	// If not, try to get into the stairs
+	if (onStairs == 0)
+	{
+		// Check if Simon is on a stairs-start
+		LPGAMEOBJECT stairs = NULL;
+		for (UINT i = 0; i < ovObjects.size(); ++i)
+			stairs = dynamic_cast<CStairsDown *>(ovObjects[i]);
+
+		// Do nothing if there is no stairs overlapped
+		if (stairs == NULL) return;
+
+		// Try to reach the right point of stairs
+		float xS, yS;
+		stairs->GetPosition(xS, yS);
+		if (x != xS)
+			StartAutoMove(SIMON_WALKING_SPEED, xS);
+		else
+		{
+			nx = stairs->GetDirection();
+			StartAutoMove(nx * SIMON_STAIR_SPEED_X, SIMON_STAIR_SPEED_Y, SIMON_AUTO_STAIR_TIME);
+			onStairs = -1;
+		}
+	}
+
+	else
+	{
+		// Simon is going upstairs and wanting to go back
+		if (onStairs == 1)
+		{
+			nx = -nx;
+			onStairs = -1;
+		}
+
+		StartAutoMove(nx * SIMON_STAIR_SPEED_X, SIMON_STAIR_SPEED_Y, SIMON_AUTO_STAIR_TIME);
+	}
+
+}
+
+/*
+	Move automatically to the given position (x-axis) with the given speed.
+	Move horizontally only.
+*/
+void CSimon::StartAutoMove(float vx, float xDestination)
+{
+	if (!autoMove)
+	{
+		autoInfo.xDes = xDestination;
+		autoInfo.vx = vx;
+
+		autoMove = true;
+		controllable = false;
+	}
+}
+
+void CSimon::StartAutoMove(float vx, float vy, DWORD time)
+{
+	// Can only perform one auto-move at a time
+	if (!autoMove)
+	{
+		autoInfo.vx = vx;
+		autoInfo.vy = vy;
+		autoInfo.autoTimeLast = time;
+
+		autoMove = true;
+		auto_start = GetTickCount();
+		controllable = false;
+	}
+}
 
 void CSimon::Jump()
 {
-	if (!jumping && !crouching)
+	if (!jumping && !crouching
+		&& attack_start == TIMER_IDLE 
+		&& onStairs == 0)
 	{
 		this->jumping = true;
 		this->crouching = true;
@@ -487,8 +852,8 @@ void CSimon::Attack(int choice)
 		// Simon behaviors
 		if (jumping)
 			this->StandUp();
-		else 
-			vx = 0;
+		//else 
+		//	vx = 0;
 
 		if (choice == SIMON_ATTACK_BY_ROPE)
 		{
@@ -552,6 +917,9 @@ void CSimon::GetBoundingBox(float & left, float & top, float & right, float & bo
 }
 
 
+/*
+	Tell Simon to do something, if in control
+*/
 void CSimon::SetAction(Action action)
 {
 	if (controllable)
@@ -575,6 +943,12 @@ void CSimon::SetAction(Action action)
 			break;
 		case Action::USE_ITEM:
 			this->UseWeapon();
+			break;
+		case Action::UPSTAIRS:
+			this->Upstairs();
+			break;
+		case Action::DOWNSTAIRS:
+			this->Downstairs();
 			break;
 		case Action::IDLE:
 			this->Idle();

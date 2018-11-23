@@ -88,11 +88,22 @@ vector<LPGAMEOBJECT> CTileMap::GetGameObjects()
 	{
 		info = objects[i];
 
-		if		(info->name == "bigcandle")		obj = new CBigCandle();
-		else if (info->name == "candle")		obj = new CCandle();
-		else if (info->name == "rope")			obj = CRope::GetInstance();
-		else if (info->name == "simon")			obj = CSimon::GetInstance();
-		else if (info->name == "zombie")		obj = new CZombie();
+		if		(info->name == "bigcandle")			obj = new CBigCandle();
+		else if (info->name == "candle")			obj = new CCandle();
+		else if (info->name == "rope")				obj = CRope::GetInstance();
+		else if (info->name == "simon")				obj = CSimon::GetInstance();
+		else if (info->name == "zombie")			obj = new CZombie();
+		else if (info->name == "stairs_up")		
+		{
+			obj = new CStairsUp();
+			obj->SetDirection(info->nx);
+		}
+
+		else if (info->name == "stairs_down")
+		{
+			obj = new CStairsDown();
+			obj->SetDirection(info->nx);
+		}
 
 		// item-type and dropable game objects
 		else if (info->name == "itemrope")
@@ -160,7 +171,7 @@ vector<LPLAYERINFO> CTileMap::GetTileLayers(json root)
 
 	json layersArray = JSONUtility::GetObjectArray(root, TILEMAP_KEY_LAYERS);
 	if (layersArray.size() == 0)
-		DebugOut(L"Load map layers failed");
+		DebugOut(L"\n[ERROR] Load map layers failed");
 	
 	else
 	{
@@ -201,7 +212,7 @@ vector<LPOBJECTINFO> CTileMap::GetObjects(json root)
 
 	json layers = JSONUtility::GetObjectArray(root, TILEMAP_KEY_LAYERS);
 	if (layers.size() == 0)
-		DebugOut(L"Load map layers failed");
+		DebugOut(L"\n[ERROR] Load map layers failed");
 	
 	else 
 	{
@@ -210,25 +221,37 @@ vector<LPOBJECTINFO> CTileMap::GetObjects(json root)
 			if ((*layer)[TILEMAP_KEY_TYPE] == "objectgroup")
 			{
 				json objects = JSONUtility::GetObjectArray(*layer, TILEMAP_KEY_OBJECTS);
-
+				
 				for (json::iterator obj = objects.begin(); obj != objects.end(); ++obj)
 				{
+
 					Item item = Item::NONE;
+					int nx = 0;
 
 					// To get dropable item of the object, if has 
 					json properties = JSONUtility::GetObjectArray(*obj, "properties");
 					if (properties.is_array())
 						for (json::iterator prop = properties.begin(); prop != properties.end(); ++prop)
+						{
 							if ((*prop)[TILEMAP_KEY_NAME] == "itemholding")
 								item = ((*prop)[TILEMAP_KEY_VALUE].is_null()) ?
-										Item::NONE :
-										GetHoldingItem((*prop)[TILEMAP_KEY_VALUE]);
+								Item::NONE :
+								GetHoldingItem((*prop)[TILEMAP_KEY_VALUE]);
+
+							else if ((*prop)[TILEMAP_KEY_NAME] == "Direction")
+								nx = (*prop)[TILEMAP_KEY_VALUE].get<int>();
+
+							else
+								DebugOut(L"\n[ERROR] Can't read this property from JSON Tile Map");
+						}
+							
 
 					result.push_back(
 						new CObjectInfo(
 						(*obj)[TILEMAP_KEY_NAME].get<string>(),
 							(*obj)[TILEMAP_KEY_X_POSITION].get<float>(),
 							(*obj)[TILEMAP_KEY_Y_POSITION].get<float>(),
+							nx,
 							(*obj)[TILEMAP_KEY_WIDTH].get<float>(),
 							(*obj)[TILEMAP_KEY_HEIGHT].get<float>(),
 							item));
