@@ -124,7 +124,7 @@ public:
 	void SetAction(Action action);
 	void SetFreezing(bool freezing) override;
 	
-	void SetMatchedAnimation();
+	void PickAnimation();
 	void CalibrateCameraPosition();		// To keep Simon at center of camera
 
 	void Flicker();

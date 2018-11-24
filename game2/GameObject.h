@@ -95,10 +95,10 @@ public:
 	void FreezeAnimation();
 	bool IsInViewport();
 	bool IsOverlapping(LPGAMEOBJECT obj);
-	void ReDirect(float x);
+	void ReDirect(float posisionX);
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
-	virtual void ResetAnimationTimer(int aniID);
+	void ResetAnimationTimer(int aniID);
 	virtual void Render();
 	virtual void Destroy();		
 

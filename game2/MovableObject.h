@@ -48,12 +48,7 @@ public:
 		float &nx,
 		float &ny);
 	
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
-
-	/*
-		Simple handling collision: blocking when touch ground (only ground)
-		Generically use for falling-down objects.
-	*/
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);	
 	virtual void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents);
 	virtual void SetState(int state) override;
 

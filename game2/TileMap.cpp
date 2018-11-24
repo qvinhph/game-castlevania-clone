@@ -92,7 +92,6 @@ vector<LPGAMEOBJECT> CTileMap::GetGameObjects()
 		else if (info->name == "candle")			obj = new CCandle();
 		else if (info->name == "rope")				obj = CRope::GetInstance();
 		else if (info->name == "simon")				obj = CSimon::GetInstance();
-		else if (info->name == "zombie")			obj = new CZombie();
 		else if (info->name == "stairs_up")		
 		{
 			obj = new CStairsUp();
@@ -105,7 +104,13 @@ vector<LPGAMEOBJECT> CTileMap::GetGameObjects()
 			obj->SetDirection(info->nx);
 		}
 
-		// item-type and dropable game objects
+
+		// Monsters
+		else if (info->name == "zombie")			obj = new CZombie();
+		else if (info->name == "panther")			obj = new CPanther();
+
+
+		// Item-type and dropable game objects
 		else if (info->name == "itemrope")
 		{
 			obj = new CItemRope();
@@ -127,21 +132,24 @@ vector<LPGAMEOBJECT> CTileMap::GetGameObjects()
 			items->Add(Item::ITEMDAGGER, obj);
 		}
 
-		// weapon-type game objects
+
+		// Weapon-type game objects
 		else if (info->name == "dagger")
 		{
 			obj = new CDagger();
 			weapons->Add(Weapon::DAGGER, obj);
 		}
 
-		// destroying flame 
+
+		// Destroying flame 
 		else if (info->name == "flame")
 		{
 			obj = new CFlame();
 			flames->Add((CFlame *)obj);
 		}
 
-		// invisiblewall
+
+		// Invisiblewall
 		else if (info->name == "invisiblewall")
 		{
 			obj = new CInvisibleWall();
@@ -150,8 +158,8 @@ vector<LPGAMEOBJECT> CTileMap::GetGameObjects()
 
 		else
 		{
-			// in case something mismatched
-			DebugOut(L"\n[ERROR] Load Game Objects failed. \n Cannot recognize %s", info->name);
+			// In case something mismatched
+			DebugOut(L"\n[ERROR] Load Game Objects failed. \n Cannot recognize something !!");
 			return vector<LPGAMEOBJECT>();		// return empty vector
 		}
 

@@ -72,7 +72,7 @@ void CSimon::Render()
 	CGameObject::Render();
 }
 
-void CSimon::SetMatchedAnimation()
+void CSimon::PickAnimation()
 {
 	if (attack_start != 0)
 	{
@@ -209,7 +209,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		ProceedOnStairs();
 
 
-	SetMatchedAnimation();
+	PickAnimation();
 
 
 	// Overlapping

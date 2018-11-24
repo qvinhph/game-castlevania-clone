@@ -75,10 +75,10 @@ void CInputHandler::OnKeyDown(int keyCode)
 	case DIK_P:
 		for (UINT i = 0; i < objects.size(); ++i)
 		{
-			if (dynamic_cast<CZombie *>(objects[i]))
+			if (dynamic_cast<CPanther *>(objects[i]))
 			{
 				objects[i]->SetState(STATE_VISIBLE);
-				objects[i]->SetPosition(200, 200);
+				objects[i]->SetPosition(234, 191);
 
 			}
 		}
@@ -597,7 +597,44 @@ void LoadResources()
 	ani->AddFrame(51101);
 	animations->Add((int)ZombieAniID::WALK_RIGHT, ani);
 
+	// Panther
+	sprites->Add(52000, 201, 212, 249, 244, texMonsters);		// idle right
+	sprites->Add(52001, 134, 212, 198, 244, texMonsters);		// run right
+	sprites->Add(52002, 68, 212, 132, 244, texMonsters);		// run right
+	sprites->Add(52003, 2, 212, 66, 244, texMonsters);			// run right / jumping right
 
+	sprites->Add(52100, 77, 32, 125, 64, texMonsters);			// idle left
+	sprites->Add(52101, 128, 32, 192, 64, texMonsters);			// run left
+	sprites->Add(52102, 194, 32, 258, 64, texMonsters);			// run left
+	sprites->Add(52103, 260, 32, 324, 64, texMonsters);			// run left / jumping left
+
+	ani = new CAnimation(100);
+	ani->AddFrame(52000);
+	animations->Add((int)PantherAniID::IDLE_RIGHT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(52100);
+	animations->Add((int)PantherAniID::IDLE_LEFT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(52001);
+	ani->AddFrame(52002);
+	ani->AddFrame(52003);
+	animations->Add((int)PantherAniID::RUN_RIGHT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(52101);
+	ani->AddFrame(52102);
+	ani->AddFrame(52103);
+	animations->Add((int)PantherAniID::RUN_LEFT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(52003);
+	animations->Add((int)PantherAniID::JUMP_RIGHT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(52103);
+	animations->Add((int)PantherAniID::JUMP_LEFT, ani);
 
 #pragma endregion
 
@@ -618,9 +655,9 @@ void Update(DWORD dt)
 	vector<LPGAMEOBJECT> coObjects;
 	for (UINT i = 0; i < objects.size(); i++)
 	{
-		if ((objects[i]->GetState() == STATE_VISIBLE				 // Invisiblewall objects may wider or higher than  
-			&& objects[i]->IsInViewport())						 //	the viewport, so I always consider them as 
-			|| dynamic_cast<CInvisibleWall *>(objects[i]))		 // collidable objects ( TO-DO: ... )
+		if ((objects[i]->GetState() == STATE_VISIBLE				// Invisiblewall objects may wider or higher than  
+			&& objects[i]->IsInViewport())							//	the viewport, so I always consider them as 
+			|| dynamic_cast<CInvisibleWall *>(objects[i]))			// collidable objects ( TO-DO: ... )
 			coObjects.push_back(objects[i]);
 	}
 

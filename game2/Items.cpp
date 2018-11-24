@@ -23,7 +23,7 @@ void CItems::CheckAndDrop(LPGAMEOBJECT object)
 	{
 		float x, y;
 		object->GetPosition(x, y);
-		GetAndSet(item, x, y);
+		GetAndShowItem(item, x, y);
 
 		
 		// These code may useful for choosing what to drop
@@ -42,7 +42,7 @@ void CItems::CheckAndDrop(LPGAMEOBJECT object)
 /*
 	Get the item according to the given name and set it the gien position
 */
-void CItems::GetAndSet(Item itemName, float x, float y)
+void CItems::GetAndShowItem(Item itemName, float x, float y)
 {
 	vector<LPGAMEOBJECT> itemsByName = items[itemName];
 	

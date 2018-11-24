@@ -67,10 +67,11 @@ bool CGameObject::IsOverlapping(LPGAMEOBJECT obj)
 	return false;
 }
 
-void CGameObject::ReDirect(float x)
+void CGameObject::ReDirect(float positionX)
 {
-	if (this->x - x == 0) return;
-	nx = ((this->x - x) > 0) ? -1 : 1;
+	if		(positionX - x== 0) { /* Do nothing. */}
+	else if (positionX - x < 0) nx = -1;
+	else	nx = 1;
 }
 
 void CGameObject::FreezeAnimation()

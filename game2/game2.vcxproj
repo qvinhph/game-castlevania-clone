@@ -26,6 +26,7 @@
     <ClInclude Include="Candle.h" />
     <ClInclude Include="Castlevania.h" />
     <ClInclude Include="Dagger.h" />
+    <ClInclude Include="Panther.h" />
     <ClInclude Include="StairsDown.h" />
     <ClInclude Include="StairsUp.h" />
     <ClInclude Include="ItemDagger.h" />
@@ -60,6 +61,7 @@
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="BigHeart.cpp" />
     <ClCompile Include="Candle.cpp" />
+    <ClCompile Include="Panther.cpp" />
     <ClCompile Include="StairsDown.cpp" />
     <ClCompile Include="StairsUp.cpp" />
     <ClCompile Include="Timer.cpp" />

@@ -27,6 +27,7 @@
 #include "Zombie.h"
 #include "StairsUp.h"
 #include "StairsDown.h"
+#include "Panther.h"
 
 #define ID_TEX_SIMON		0
 #define ID_TEX_ROPE			1

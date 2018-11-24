@@ -20,9 +20,9 @@ void CFlames::ShowAFlame(LPGAMEOBJECT obj)
 
 	CFlame* flame;
 
-	for (auto it = flames.begin(); it != flames.end(); ++it)
+	for (UINT i = 0; i < flames.size(); ++i)
 	{
-		flame = *it;
+		flame = flames[i];
 		if (flame->GetState() == STATE_INVISIBLE)
 		{
 			flame->SetState(STATE_VISIBLE);

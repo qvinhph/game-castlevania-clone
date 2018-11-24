@@ -15,7 +15,7 @@ public:
 	
 	void Add(Item itemName, LPGAMEOBJECT item);			
 	void CheckAndDrop(LPGAMEOBJECT gameObject);
-	void GetAndSet(Item iteamName, float x, float y);	
+	void GetAndShowItem(Item iteamName, float x, float y);	
 
 	static CItems * GetInstance();
 };

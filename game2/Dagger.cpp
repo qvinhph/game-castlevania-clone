@@ -41,10 +41,6 @@ void CDagger::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// Clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
-
-	// Only care about the dagger object when it is in viewport
-	if (state == STATE_VISIBLE && IsInViewport() == false)
-		SetState(STATE_INVISIBLE);
 }
 
 void CDagger::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)

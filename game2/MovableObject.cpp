@@ -24,8 +24,8 @@ void CMovableObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 }
 
 /*
-	Proceed the collisions
-	Generically use to handle with the ground (INVISIBLEWALL) while falling.
+	Proceed the collisions with the ground (INVISIBLEWALL) while falling.
+	Generically use for simple falling-down objects.
 	(Items, Heart,...)
 */
 void CMovableObject::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
