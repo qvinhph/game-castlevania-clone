@@ -11,12 +11,12 @@ using json = nlohmann::json;
 struct CLayerInfo
 {
 	std::string name;
-	int width;
-	int height;
+	int columns;
+	int rows;
 	vector<int> data;
 
-	CLayerInfo(string name, int width, int height, vector<int> data)
-		: name(name), width(width), height(height), data(data) {}
+	CLayerInfo(string name, int columns, int rows, vector<int> data)
+		: name(name), columns(columns), rows(rows), data(data) {}
 };
 typedef CLayerInfo * LPLAYERINFO;
 
@@ -26,7 +26,7 @@ struct CObjectInfo
 	std::string name;
 	float x;
 	float y;
-	int nx;
+	int nx;		// Direction of the object
 	float width;
 	float height;
 	Item dropableItem;
@@ -41,15 +41,14 @@ typedef CObjectInfo * LPOBJECTINFO;
 
 class CTileMap
 {
-
-	int width;												// map width by tiles
-	int height;												// map height by tiles
+	int width;								// map width by tiles
+	int height;								// map height by tiles
 
 	CTileset* tileset;
-	LPCWSTR jsonFilePath;									// dir to json file contains the tileset information
+	LPCWSTR jsonFilePath;					// dir to json file contains the tileset information
 
-	vector<LPLAYERINFO> layers;								// a vector of layers we should load to map
-	vector<LPOBJECTINFO> objects;							// a vector of game objects
+	vector<LPLAYERINFO> layers;				// a vector of layers we should load to map
+	vector<LPGAMEOBJECT> gameObjects;		// a vector of game objects in the tile map
 
 public:
 
@@ -57,11 +56,14 @@ public:
 
 	void Init(int tilesetTextureID);
 	void Draw();
+	void GetMapSize(int &width, int &height);
+	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+	void GetGameObjects(vector<LPGAMEOBJECT> * &objects) { objects = &this->gameObjects; }
 
-	vector<LPGAMEOBJECT> GetGameObjects();					// return a vector of game objects in the map
-	static vector<LPLAYERINFO> GetTileLayers(json root);	// return a vector of layers in the json tilemap if has
-	static vector<LPOBJECTINFO> GetObjects(json root);		// return a vector of objects in the json tilemap if has
-	static Item GetHoldingItem(string string);				// return DropableItem value by string given.
+	void CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo);		// create game objects from the given info
+	vector<LPLAYERINFO> GetTileLayers(json root);					// return a vector of layers in the json tilemap if has
+	vector<LPOBJECTINFO> GetObjects(json root);						// return a vector of objects in the json tilemap if has
+	Item GetHoldingItem(string string);								// return DropableItem value by string given.
 
 };
 

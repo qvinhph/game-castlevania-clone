@@ -126,105 +126,6 @@
                  "y":384
                 }, 
                 {
-                 "height":0,
-                 "id":38,
-                 "name":"rope",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":1592.5,
-                 "y":176
-                }, 
-                {
-                 "height":0,
-                 "id":39,
-                 "name":"itemrope",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":1652.5,
-                 "y":174
-                }, 
-                {
-                 "height":16,
-                 "id":40,
-                 "name":"bigheart",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
-                 "x":1576.5,
-                 "y":239
-                }, 
-                {
-                 "height":16,
-                 "id":41,
-                 "name":"flame",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":17,
-                 "x":1632.5,
-                 "y":234
-                }, 
-                {
-                 "height":16,
-                 "id":42,
-                 "name":"flame",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":17,
-                 "x":1578.5,
-                 "y":297
-                }, 
-                {
-                 "height":16,
-                 "id":43,
-                 "name":"flame",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":17,
-                 "x":1623.5,
-                 "y":287
-                }, 
-                {
-                 "height":20,
-                 "id":45,
-                 "name":"heart",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":20,
-                 "x":1572,
-                 "y":339
-                }, 
-                {
-                 "height":22,
-                 "id":50,
-                 "name":"itemdagger",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":22,
-                 "x":1627,
-                 "y":346
-                }, 
-                {
-                 "height":22,
-                 "id":53,
-                 "name":"dagger",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":24,
-                 "x":1678,
-                 "y":261
-                }, 
-                {
                  "height":29,
                  "id":56,
                  "name":"zombie",
@@ -234,17 +135,6 @@
                  "width":20,
                  "x":206,
                  "y":99
-                }, 
-                {
-                 "height":87,
-                 "id":59,
-                 "name":"stairs_start",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":91,
-                 "x":825,
-                 "y":280
                 }],
          "opacity":1,
          "type":"objectgroup",

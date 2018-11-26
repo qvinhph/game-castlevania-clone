@@ -4,7 +4,7 @@
 
 #include "Tile.h"
 
-#define TILESET_DIR		"json\\"
+#define TILESET_CONTAINER_DIR		"json\\"
 
 using namespace std;
 

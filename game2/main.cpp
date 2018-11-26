@@ -7,6 +7,7 @@
 #include "Castlevania.h"
 #include "Timer.h"
 #include "TileMap.h"
+#include "Cells.h"
 
 #define WINDOW_CLASS_NAME L"Game"
 #define MAIN_WINDOW_TITLE L"Castlevania"
@@ -16,6 +17,9 @@
 #define SCREEN_WIDTH		528.5f//512		// DELETE ME: NOTE: ACCEPTABLE
 #define SCREEN_HEIGHT		487.5f//448
 
+#define CELL_WIDTH			256
+#define CELL_HEIGHT			224
+
 #define VIEWPORT_WIDTH		512
 #define VIEWPORT_HEIGHT		448
 
@@ -23,9 +27,11 @@
 
 CTileMap *tileMap;
 CGame *game;
-CGameObject *gameObject;
+LPGAMEOBJECT gameObject;
+CCells *cells;
 
-vector<LPGAMEOBJECT> objects;
+vector<LPGAMEOBJECT> cellsObjects;			// The objects containing in cells (have camera area)
+vector<LPGAMEOBJECT> defaultObjects;		// Always need be Updated objects
 
 #pragma region Player input
 
@@ -75,12 +81,12 @@ void CInputHandler::OnKeyDown(int keyCode)
 		CSimon::GetInstance()->SetPosition(396.0f, 96.0f);
 		break;
 	case DIK_P:
-		for (UINT i = 0; i < objects.size(); ++i)
+		for (UINT i = 0; i < cellsObjects.size(); ++i)
 		{
-			if (dynamic_cast<CPanther *>(objects[i]))
+			if (dynamic_cast<CPanther *>(cellsObjects[i]))
 			{
-				objects[i]->SetState(STATE_VISIBLE);
-				objects[i]->SetPosition(234, 191);
+				cellsObjects[i]->SetState(STATE_VISIBLE);
+				cellsObjects[i]->SetPosition(234, 191);
 
 			}
 		}
@@ -198,10 +204,45 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int Sc
 
 void TestInit()
 {
-	tileMap = new CTileMap(L"json\\maptest_jsonmap.json");
-	//tileMap = new CTileMap(L"json\\scene_outside_jsonmap.json");
+	tileMap = new CTileMap(L"json\\scene_outside_jsonmap.json");
 	tileMap->Init(ID_TEX_TILESET);
-	objects = tileMap->GetGameObjects();
+	cells = new CCells();
+	cells->Init(tileMap, CELL_WIDTH, CELL_HEIGHT);
+}
+
+void InitDefaultObjects()
+{
+	CItems * items = CItems::GetInstance();			// For adding and managing the item-type objects
+	CFlames * flames = CFlames::GetInstance();		
+	CWeapons * weapons = CWeapons::GetInstance();
+
+	gameObject = CSimon::GetInstance();
+	defaultObjects.push_back(gameObject);
+
+	gameObject = CRope::GetInstance();
+	defaultObjects.push_back(gameObject);
+
+	gameObject = new CItemRope();
+	defaultObjects.push_back(gameObject);
+	items->Add(Item::ITEMROPE, gameObject);
+
+	gameObject = new CItemDagger();
+	defaultObjects.push_back(gameObject);
+	items->Add(Item::ITEMDAGGER, gameObject);
+	
+	for (int i = 0; i < NUMBER_OF_FLAME; ++i)
+	{
+		gameObject = new CFlame();
+		defaultObjects.push_back(gameObject);
+		CFlames::GetInstance()->Add((CFlame *)gameObject);
+	}
+
+	for (int i = 0; i < NUMBER_OF_DAGGER; ++i)
+	{
+		gameObject = new CDagger();
+		defaultObjects.push_back(gameObject);
+		CWeapons::GetInstance()->Add(Weapon::DAGGER, gameObject);
+	}
 }
 
 /*
@@ -642,6 +683,7 @@ void LoadResources()
 
 
 	TestInit();
+	InitDefaultObjects();
 
 }
 
@@ -655,26 +697,47 @@ void Update(DWORD dt)
 	// TO-DO: Need an optimized way
 	// Only the objects in the viewport and visible is a collidable object
 	vector<LPGAMEOBJECT> coObjects;
-	for (UINT i = 0; i < objects.size(); i++)
+	cellsObjects.clear();
+
+	// Get the bounding box of viewport
+	float left, top, right, bottom;
+	float width, height;
+	game->GetCameraPosition(left, top);
+	game->GetViewportSize(width, height);
+	right = left + width;
+	bottom = top + height;
+
+	// Get objects in the cells
+	cells->GetObjectsByRec(left, top, right, bottom, cellsObjects);
+
+
+	// Add the default objects
+	for (UINT i = 0; i < defaultObjects.size(); ++i)
 	{
-		if ((objects[i]->GetState() == STATE_VISIBLE				// Invisiblewall objects may wider or higher than  
-			&& objects[i]->IsInViewport())							//	the viewport, so I always consider them as 
-			|| dynamic_cast<CInvisibleWall *>(objects[i]))			// collidable objects ( TO-DO: ... )
-			coObjects.push_back(objects[i]);
+		if (defaultObjects[i]->GetState() == STATE_VISIBLE)
+			cellsObjects.insert(cellsObjects.end(), defaultObjects[i]);
 	}
 
-	for (UINT i = 0; i < objects.size(); i++)
+
+	// Get collide-able objects
+	for (UINT i = 0; i < cellsObjects.size(); i++)
 	{
-		if (dynamic_cast<CMovableObject *>(objects[i])
-			&& objects[i]->GetState() == STATE_VISIBLE
-			&& objects[i]->GetFreezing() == false)
-		{
-			LPMOVABLEOBJECT obj = dynamic_cast<CMovableObject *>(objects[i]);
- 			obj->Update(dt, &coObjects);
-		}
+		if (cellsObjects[i]->GetState() == STATE_VISIBLE)
+			coObjects.push_back(cellsObjects[i]);
 	}
 
-	CTimer::GetInstance()->Update(dt, &objects);
+
+	// Call Update function of each objects
+	for (UINT i = 0; i < cellsObjects.size(); i++)
+	{
+		if (dynamic_cast<CMovableObject *>(cellsObjects[i])
+			&& cellsObjects[i]->GetState() == STATE_VISIBLE)
+			dynamic_cast<CMovableObject *>(cellsObjects[i])->Update(dt, &coObjects);
+	}		
+
+
+	// Help freezing time in game
+	CTimer::GetInstance()->Update(dt, &cellsObjects);
 }
 
 
@@ -696,10 +759,10 @@ void Render()
 
 		tileMap->Draw();
 
-		for (UINT i = 0; i < objects.size(); i++)
+		for (UINT i = 0; i < cellsObjects.size(); i++)
 		{
-			objects[i]->Render();
-			objects[i]->RenderBoundingBox();
+			cellsObjects[i]->Render();
+			cellsObjects[i]->RenderBoundingBox();
 		}
 
 		spriteHandler->End();

@@ -37,20 +37,25 @@ void CTileMap::Init(int tilesetTextureID)
 
 	else
 	{
-		height = root[TILEMAP_KEY_HEIGHT].get<int>();
-		width = root[TILEMAP_KEY_WIDTH].get<int>();
+		this->height = root[TILEMAP_KEY_HEIGHT].get<int>();
+		this->width = root[TILEMAP_KEY_WIDTH].get<int>();
 
 		string tilesetPath;
 		int firstGrid;
 
 		json tilesetInfo = *root[TILEMAP_KEY_TILESETS].begin();	
 		firstGrid = tilesetInfo[TILEMAP_KEY_FIRSTGRID].get<int>();
-		tilesetPath = TILESET_DIR + tilesetInfo[TILEMAP_KEY_SOURCE].get<string>();
+		tilesetPath = TILESET_CONTAINER_DIR + tilesetInfo[TILEMAP_KEY_SOURCE].get<string>();
 
-		tileset = new CTileset(tilesetTextureID, tilesetPath, firstGrid);
-		tileset->Init();
-		layers = GetTileLayers(root);
-		objects = GetObjects(root);
+		this->tileset = new CTileset(tilesetTextureID, tilesetPath, firstGrid);
+		this->tileset->Init();
+
+		// Get the layers
+		this->layers = GetTileLayers(root);
+
+		// Create the game objects from the objects' information.
+		vector<LPOBJECTINFO> objectsInfo = GetObjects(root);
+		this->CreateGameObjects(&objectsInfo);
 	}
 }
 
@@ -60,13 +65,14 @@ void CTileMap::Draw()
 	{
 		int index = 0;		// the index in data array
 
-		for (UINT row = 0; row < layers[i]->height; row++)
-			for (UINT column = 0; column < layers[i]->width; column++)
+		for (UINT row = 0; row < layers[i]->rows; row++)
+			for (UINT column = 0; column < layers[i]->columns; column++)
 			{
 				int gridID = layers[i]->data[index];
 				index++;
 
 				if (gridID < tileset->GetFirstGrid()) continue;			// empty tile
+
 				tileset->Get(gridID)->Draw(column * tileset->GetTileWidth(),
 											row * tileset->GetTileHeight());
 			}
@@ -74,79 +80,44 @@ void CTileMap::Draw()
 	}
 }
 
-vector<LPGAMEOBJECT> CTileMap::GetGameObjects()
+void CTileMap::GetMapSize(int & width, int & height)
 {
-	vector<LPGAMEOBJECT> result;
+	width = this->width * tileset->GetTileWidth();
+	height = this->height * tileset->GetTileHeight();
+}
+
+void CTileMap::GetBoundingBox(float & left, float & top, float & right, float & bottom)
+{
+	int mapWidth, mapHeight;
+	this->GetMapSize(mapWidth, mapHeight);
+
+	left = 0;
+	top = 0;
+	right = left + mapWidth;
+	bottom = top + mapHeight;
+}
+
+void CTileMap::CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo)
+{
+
 	LPOBJECTINFO info;
 	LPGAMEOBJECT obj;
-	CItems * items = CItems::GetInstance();			// For adding and managing the item-type objects
-	CFlames * flames = CFlames::GetInstance();		// For adding and managing the destroying flames
-	CWeapons * weapons = CWeapons::GetInstance();	// For adding and managing weapon-type objects
-	
 
-	for (UINT i = 0; i < objects.size(); i++)
+
+	for (UINT i = 0; i < objectsInfo->size(); i++)
 	{
-		info = objects[i];
+		info = objectsInfo->at(i);
 
-		if		(info->name == "bigcandle")			obj = new CBigCandle();
+		// Static objects
+		if (info->name == "bigcandle")				obj = new CBigCandle();
 		else if (info->name == "candle")			obj = new CCandle();
-		else if (info->name == "rope")				obj = CRope::GetInstance();
-		else if (info->name == "simon")				obj = CSimon::GetInstance();
-		else if (info->name == "stairs_up")		
-		{
-			obj = new CStairsUp();
-			obj->SetDirection(info->nx);
-		}
-
-		else if (info->name == "stairs_down")
-		{
-			obj = new CStairsDown();
-			obj->SetDirection(info->nx);
-		}
+		else if (info->name == "stairs_up")			obj = new CStairsUp();
+		else if (info->name == "stairs_down")		obj = new CStairsDown();
 
 
 		// Monsters
 		else if (info->name == "zombie")			obj = new CZombie();
 		else if (info->name == "panther")			obj = new CPanther();
-
-
-		// Item-type and dropable game objects
-		else if (info->name == "itemrope")
-		{
-			obj = new CItemRope();
-			items->Add(Item::ITEMROPE, obj);
-		}
-		else if (info->name == "bigheart")
-		{
-			obj = new CBigHeart();
-			items->Add(Item::BIGHEART, obj);
-		}
-		else if (info->name == "heart")
-		{
-			obj = new CHeart();
-			items->Add(Item::HEART, obj);
-		}
-		else if (info->name == "itemdagger")
-		{
-			obj = new CItemDagger();
-			items->Add(Item::ITEMDAGGER, obj);
-		}
-
-
-		// Weapon-type game objects
-		else if (info->name == "dagger")
-		{
-			obj = new CDagger();
-			weapons->Add(Weapon::DAGGER, obj);
-		}
-
-
-		// Destroying flame 
-		else if (info->name == "flame")
-		{
-			obj = new CFlame();
-			flames->Add((CFlame *)obj);
-		}
 
 
 		// Invisiblewall
@@ -156,21 +127,32 @@ vector<LPGAMEOBJECT> CTileMap::GetGameObjects()
 			dynamic_cast<CInvisibleWall *>(obj)->SetSize(info->width, info->height);
 		}
 
+
+		// Simon
+		else if (info->name == "simon")
+		{
+			obj = CSimon::GetInstance();
+			obj->SetPosition(info->x, info->y);
+			continue;
+		}
+
+
 		else
 		{
 			// In case something mismatched
 			DebugOut(L"\n[ERROR] Load Game Objects failed. \n Cannot recognize something !!");
-			return vector<LPGAMEOBJECT>();		// return empty vector
+			this->gameObjects.clear();
+			break;
 		}
 
-		float x = info->x;
-		float y = info->y;
-		obj->SetPosition(x, y);
+		obj->SetPosition(info->x, info->y);
 		obj->SetHoldingItem(info->dropableItem);
-		result.push_back(obj);
-	}
 
-	return result;
+		if (info->nx != 0)
+			obj->SetDirection(info->nx);
+
+		this->gameObjects.push_back(obj);
+	}
 }
 
 vector<LPLAYERINFO> CTileMap::GetTileLayers(json root)
@@ -183,15 +165,15 @@ vector<LPLAYERINFO> CTileMap::GetTileLayers(json root)
 	
 	else
 	{
-		json jsonObj;
+		json layer;
 		for (json::iterator it = layersArray.begin(); it != layersArray.end(); ++it)
 		{
-			jsonObj = *it;
+			layer = *it;
 
-			if (jsonObj[TILEMAP_KEY_TYPE] == "tilelayer")
+			if (layer[TILEMAP_KEY_TYPE] == "tilelayer")
 			{
 				vector<int> data;
-				json dataArray = JSONUtility::GetObjectArray(jsonObj, TILEMAP_KEY_DATA);
+				json dataArray = JSONUtility::GetObjectArray(layer, TILEMAP_KEY_DATA);
 				for (auto it = dataArray.begin(); it != dataArray.end(); ++it)
 					if ((*it).is_number_integer())
 						data.push_back(*it);
@@ -203,9 +185,9 @@ vector<LPLAYERINFO> CTileMap::GetTileLayers(json root)
 
 				result.push_back(
 					new CLayerInfo(
-						jsonObj[TILEMAP_KEY_NAME].get<string>(),
-						jsonObj[TILEMAP_KEY_WIDTH].get<int>(),
-						jsonObj[TILEMAP_KEY_HEIGHT].get<int>(),
+						layer[TILEMAP_KEY_NAME].get<string>(),
+						layer[TILEMAP_KEY_WIDTH].get<int>(),
+						layer[TILEMAP_KEY_HEIGHT].get<int>(),
 						dataArray));
 			}
 		}

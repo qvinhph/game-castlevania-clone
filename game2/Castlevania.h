@@ -35,3 +35,6 @@
 #define ID_TEX_MISC			3
 #define ID_TEX_MONSTERS		4
 #define ID_TEX_TILESET		5
+
+#define NUMBER_OF_FLAME		6
+#define NUMBER_OF_DAGGER	2

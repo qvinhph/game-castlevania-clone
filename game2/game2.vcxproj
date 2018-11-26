@@ -25,6 +25,8 @@
     <ClInclude Include="BigHeart.h" />
     <ClInclude Include="Candle.h" />
     <ClInclude Include="Castlevania.h" />
+    <ClInclude Include="Cell.h" />
+    <ClInclude Include="Cells.h" />
     <ClInclude Include="Dagger.h" />
     <ClInclude Include="Panther.h" />
     <ClInclude Include="StairsDown.h" />
@@ -61,6 +63,8 @@
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="BigHeart.cpp" />
     <ClCompile Include="Candle.cpp" />
+    <ClCompile Include="Cell.cpp" />
+    <ClCompile Include="Cells.cpp" />
     <ClCompile Include="Panther.cpp" />
     <ClCompile Include="StairsDown.cpp" />
     <ClCompile Include="StairsUp.cpp" />
