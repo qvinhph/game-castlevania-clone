@@ -1,7 +1,7 @@
 #pragma once
 #include "MovableObject.h"
 
-#define ZOMBIE_WALKING_SPEED	0.05f	
+#define ZOMBIE_WALKING_SPEED	0.1f	
 #define ZOMBIE_BBOX_HEIGHT		64.0f
 #define ZOMBIE_BBOX_WIDTH		32.0f
 
@@ -11,7 +11,7 @@ enum class ZombieAniID
 	WALK_RIGHT,
 };
 
-class CZombie : public CMovableObject
+class CZombie : public CActiveObject
 {
 
 public:

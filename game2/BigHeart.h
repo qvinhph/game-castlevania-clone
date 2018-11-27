@@ -9,7 +9,7 @@ enum class BigHeartAniID
 	IDLE = 1600
 };
 
-class CBigHeart : public CMovableObject
+class CBigHeart : public CActiveObject
 {
 public:
 

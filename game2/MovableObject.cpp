@@ -9,14 +9,14 @@
 #include "Simon.h"
 #include "Zombie.h"
 
-CMovableObject::CMovableObject()
+CActiveObject::CActiveObject()
 {
 	vx = 0;
 	vy = 0;
 	nx = 1;
 }
 
-void CMovableObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void CActiveObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	this->dt = dt;
 	this->dx = vx * dt;
@@ -28,7 +28,7 @@ void CMovableObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	Generically use for simple falling-down objects.
 	(Items, Heart,...)
 */
-void CMovableObject::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
+void CActiveObject::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 {
 	vector<LPCOLLISIONEVENT> coEventsResult;
 	float min_tx, min_ty, nx, ny;
@@ -60,7 +60,7 @@ void CMovableObject::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 	}
 }
 
-void CMovableObject::SetState(int state)
+void CActiveObject::SetState(int state)
 {
 	CGameObject::SetState(state);
 	if (state == STATE_INVISIBLE)
@@ -70,7 +70,7 @@ void CMovableObject::SetState(int state)
 /*
 	Extension of original SweptAABB to deal with two moving objects
 */
-LPCOLLISIONEVENT CMovableObject::SweptAABBEx(LPGAMEOBJECT coO)
+LPCOLLISIONEVENT CActiveObject::SweptAABBEx(LPGAMEOBJECT coO)
 {
 	float sl, st, sr, sb;		// static object bbox
 	float ml, mt, mr, mb;		// moving object bbox
@@ -81,8 +81,8 @@ LPCOLLISIONEVENT CMovableObject::SweptAABBEx(LPGAMEOBJECT coO)
 	// deal with moving object if it is: m speed = original m speed - collide object speed
 	float svx = 0;
 	float svy = 0;
-	if (dynamic_cast<CMovableObject *>(coO))
-		dynamic_cast<CMovableObject *>(coO)->GetSpeed(svx, svy);
+	if (dynamic_cast<CActiveObject *>(coO))
+		dynamic_cast<CActiveObject *>(coO)->GetSpeed(svx, svy);
 
 	float sdx = svx * dt;
 	float sdy = svy * dt;
@@ -103,7 +103,7 @@ LPCOLLISIONEVENT CMovableObject::SweptAABBEx(LPGAMEOBJECT coO)
 	return e;
 }
 
-void CMovableObject::FilterCollision(
+void CActiveObject::FilterCollision(
 	vector<LPCOLLISIONEVENT> &coEvents,
 	vector<LPCOLLISIONEVENT> &coEventsResult,
 	float &min_tx, float &min_ty,
@@ -136,7 +136,7 @@ void CMovableObject::FilterCollision(
 	if (min_iy >= 0) coEventsResult.push_back(coEvents[min_iy]);
 }
 
-void CMovableObject::CalcPotentialCollisions(
+void CActiveObject::CalcPotentialCollisions(
 	vector<LPGAMEOBJECT> *coObjects,
 	vector<LPCOLLISIONEVENT> &coEvents)
 {

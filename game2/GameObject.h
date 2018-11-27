@@ -15,7 +15,7 @@ using namespace std;
 
 
 
-// Item or dropable objects ( include heart, bigheart, etc)
+// Item or dropable objects' name
 enum class Item
 {
 	NONE,
@@ -25,12 +25,19 @@ enum class Item
 	ITEMDAGGER,
 };
 
-// Weapon used for second attacking 
+// Weapon name used for second attacking 
 enum class Weapon
 {
 	NONE,
 	DAGGER,
 };
+
+// Monsters' name
+enum class Monsters
+{
+	ZOMBIE,
+};
+
 
 class CGameObject;
 typedef CGameObject * LPGAMEOBJECT;
@@ -94,11 +101,11 @@ public:
 	void RenderBoundingBox();
 	void FreezeAnimation();
 	bool IsInViewport();
-	bool IsOverlapping(LPGAMEOBJECT obj);
 	void ReDirect(float posisionX);
-
-	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
 	void ResetAnimationTimer(int aniID);
+
+	virtual bool IsOverlapping(LPGAMEOBJECT obj);
+	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
 	virtual void Render();
 	virtual void Destroy();		
 

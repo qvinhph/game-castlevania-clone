@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "Flames.h"
 #include "Items.h"
+#include "Rope.h"
 #include "debug.h"
 
 
@@ -44,10 +45,6 @@ bool CGameObject::IsInViewport()
 		xCam + viewportWidth < right ||
 		yCam + viewportHeight < bottom)
 		return false;
-	//if (0 > left || 0 > top ||
-	//	viewportWidth < right ||
-	//	viewportHeight < bottom)
-	//	return false;
 
 	return true;
 }
@@ -100,8 +97,10 @@ void CGameObject::Render()
 
 	if (state == STATE_VISIBLE)
 		if (this->IsInViewport())
+		{
 			// Similar to the origin game (only render fully-inside-viewport objects)
 			animations->Get(currentAniID)->Render(x, y, argb);
+		}	
 }
 
 /*

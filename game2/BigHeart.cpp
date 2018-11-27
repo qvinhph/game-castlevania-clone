@@ -2,7 +2,7 @@
 
 void CBigHeart::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	CMovableObject::Update(dt);
+	CActiveObject::Update(dt);
 	vy += GAME_GRAVITY * dt;				// simple fall down
 
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -15,7 +15,7 @@ void CBigHeart::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		x += dx;
 	}
 	else
-		CMovableObject::ProceedCollisions(coEvents);
+		CActiveObject::ProceedCollisions(coEvents);
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];

@@ -15,7 +15,7 @@ void CZombie::GetBoundingBox(float & left, float & top, float & right, float & b
 
 void CZombie::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	CMovableObject::Update(dt);
+	CActiveObject::Update(dt);
 
 	// Simple fall down
 	vy += GAME_GRAVITY * dt;
@@ -46,8 +46,13 @@ void CZombie::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	else ProceedCollisions(coEvents);
 
 
-	// clean up collision events
+	// Clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+
+
+	// When go out of viewport
+	if (this->IsInViewport() == false)
+		SetState(STATE_INVISIBLE);
 }
 
 void CZombie::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)

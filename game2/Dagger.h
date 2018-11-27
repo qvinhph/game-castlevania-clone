@@ -11,7 +11,7 @@ enum class DaggerAniID
 	IDLE_RIGHT,
 };
 
-class CDagger: public CMovableObject
+class CDagger: public CActiveObject
 {
 public:
 

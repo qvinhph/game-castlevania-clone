@@ -9,7 +9,7 @@ enum class ItemDaggerAniID
 	IDLE = 1800
 };
 
-class CItemDagger : public CMovableObject
+class CItemDagger : public CActiveObject
 {
 
 public:

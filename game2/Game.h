@@ -57,6 +57,7 @@ public:
 	void SetViewportWidth(float viewportWidth) { this->viewportWidth = viewportWidth; }
 	void SetViewportHeight(float viewportHeight) { this->viewportHeight = viewportHeight; }
 	void GetViewportSize(float &width, float &height) { height = this->viewportHeight; width = this->viewportWidth; }
+	void GetViewportBoundingBox(float &left, float &top, float &right, float &bottom);
 
 	void InitKeyboard(LPKEY_EVENT_HANDLER handler);
 	void Init(HWND hWnd);

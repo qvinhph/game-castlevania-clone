@@ -28,7 +28,9 @@
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Cells.h" />
     <ClInclude Include="Dagger.h" />
+    <ClInclude Include="Monsters.h" />
     <ClInclude Include="Panther.h" />
+    <ClInclude Include="SpawnerZombie.h" />
     <ClInclude Include="StairsDown.h" />
     <ClInclude Include="StairsUp.h" />
     <ClInclude Include="ItemDagger.h" />
@@ -65,7 +67,9 @@
     <ClCompile Include="Candle.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="Cells.cpp" />
+    <ClCompile Include="Monsters.cpp" />
     <ClCompile Include="Panther.cpp" />
+    <ClCompile Include="SpawnerZombie.cpp" />
     <ClCompile Include="StairsDown.cpp" />
     <ClCompile Include="StairsUp.cpp" />
     <ClCompile Include="Timer.cpp" />

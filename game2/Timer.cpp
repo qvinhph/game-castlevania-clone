@@ -7,6 +7,7 @@ void CTimer::Update(WORD dt, vector<LPGAMEOBJECT>* objects)
 {
 	if (freezing)
 	{
+		// If run out of freezing time
 		if (GetTickCount() - startFreezeTime > freezeTime)
 		{
 			for (UINT i = 0; i < this->objects->size(); ++i)
@@ -14,6 +15,8 @@ void CTimer::Update(WORD dt, vector<LPGAMEOBJECT>* objects)
 
 			this->freezing = false;
 		}
+
+		// Else, keep freezing the objects' animation
 		else
 			for (UINT i = 0; i < this->objects->size(); ++i)
 				if (this->objects->at(i)->GetFreezing() == true)

@@ -9,6 +9,7 @@
 #define FRONT_ROPE_LV3_BBOX_WIDTH				89.0f
 
 #define BACK_ROPE_BBOX_WIDTH					32
+#define BACK_ROPE_BBOX_HEIGHT					38
 
 #define ROPE_LEVEL1								10
 #define ROPE_LEVEL2								11
@@ -24,10 +25,10 @@ enum class RopeAniID
 	LEVEL_TWO_RIGHT,
 	LEVEL_TWO_LEFT,
 	LEVEL_THREE_RIGHT,
-	LEVEL_THREE_LEFT
+	LEVEL_THREE_LEFT,
 };
 
-class CRope: public CMovableObject
+class CRope: public CActiveObject
 {
 	static CRope * __instance;
 	CRope();
@@ -41,6 +42,7 @@ public:
 	void Render() override;
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
 	void SetState(int state) override;
+	bool IsOverlapping(LPGAMEOBJECT obj) override;
 
 	void UpdateRopePosition(int aniID);
 	void SetMatchedAnimation();

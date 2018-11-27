@@ -20,7 +20,11 @@ enum class Action
 	DIE,
 };
 
-class CMovableObject : public CGameObject
+
+/*
+	The object that need be updated every frame.
+*/
+class CActiveObject : public CGameObject
 {
 protected:
 
@@ -52,8 +56,8 @@ public:
 	virtual void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents);
 	virtual void SetState(int state) override;
 
-	CMovableObject();
+	CActiveObject();
 };
 
-typedef CMovableObject * LPMOVABLEOBJECT;
+typedef CActiveObject * LPACTIVEOBJECT;
 

@@ -19,10 +19,10 @@ public:
 	void Init(CTileMap *tileMap, int cellWidth, int cellHeight);
 	void Classify(LPGAMEOBJECT obj);
 	void GetCellsContainRectangle(float &left, float &top, float &right, float &bottom,
-									int &beginCellColumn, int &beginCellRow,
-									int &endCellColumn, int &endCellRow);
+									int &firstCellColumn, int &firstCellRow,
+									int &lastCellColumn, int &lastCellRow);
 
 	// Get all the objects in cells that containing the given rectangle
-	void GetObjectsByRec(float &left, float &top, float &right, float &bottom, vector<LPGAMEOBJECT> &objects);
+	void GetObjectsInRectangle(float &left, float &top, float &right, float &bottom, vector<LPGAMEOBJECT> &objects);
 };
 

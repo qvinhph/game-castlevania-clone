@@ -24,10 +24,11 @@
 #include "Heart.h"
 #include "ItemDagger.h"
 #include "Candle.h"
-#include "Zombie.h"
 #include "StairsUp.h"
 #include "StairsDown.h"
 #include "Panther.h"
+#include "Zombie.h"
+#include "SpawnerZombie.h"
 
 #define ID_TEX_SIMON		0
 #define ID_TEX_ROPE			1

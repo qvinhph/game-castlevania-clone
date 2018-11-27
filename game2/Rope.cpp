@@ -3,6 +3,8 @@
 #include "GameObject.h"
 #include "BigCandle.h"
 #include "Candle.h"
+#include "Zombie.h"
+#include "Panther.h"
 #include "debug.h"
 
 
@@ -12,7 +14,7 @@ void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	if (state == STATE_VISIBLE)
 	{
-		CMovableObject::Update(dt);
+		CActiveObject::Update(dt);
 
 		SetMatchedAnimation();
 		UpdateRopePosition(currentAniID);
@@ -24,12 +26,14 @@ void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (coEvents.size() != 0)
 			ProceedCollisions(coEvents);
 
+		// TO-DO:...
 		// Check overlapping
 		if (animations->Get(currentAniID)->GetCurrentFrame() == 2)
 			for (UINT i = 0; i < coObjects->size(); i++)
 				if (this->IsOverlapping(coObjects->at(i)))
 					if (dynamic_cast<CBigCandle *>(coObjects->at(i)) ||
-						dynamic_cast<CCandle *>(coObjects->at(i)))
+						dynamic_cast<CCandle *>(coObjects->at(i)) || 
+						dynamic_cast<CZombie *>(coObjects->at(i)))
 						coObjects->at(i)->Destroy();
 
 		// clean up collision events
@@ -40,22 +44,17 @@ void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CRope::Render()
 {
-	if (state == STATE_VISIBLE)
+	if (flicker_start != 0)
 	{
-		if (flicker_start != 0)
-		{
-			if (argb.blue != 0)
-				argb.blue = 0;
-			else if (argb.green != 0)
-				argb.green = 0;
-			else
-				argb = ARGB();
-
-			animations->Get(currentAniID)->Render(x, y, argb);
-		}
+		if (argb.blue != 0)
+			argb.blue = 0;
+		else if (argb.green != 0)
+			argb.green = 0;
 		else
-			animations->Get(currentAniID)->Render(x, y);
+			argb = ARGB();
 	}
+
+	CGameObject::Render();
 }
 
 /*
@@ -106,7 +105,10 @@ void CRope::GetBoundingBox(float & left, float & top, float & right, float & bot
 	float xS, yS;
 	CSimon::GetInstance()->GetPosition(xS, yS);
 
-	// Just get the only rope in the front of simon
+	left = x;
+	top = y;
+
+	// When the rope is in front of Simon.
 	if ((nx > 0 && x > xS) || (nx < 0 && x < xS))
 	{
 		switch (level)
@@ -126,9 +128,11 @@ void CRope::GetBoundingBox(float & left, float & top, float & right, float & bot
 			bottom = y + FRONT_ROPE_LV3_BBOX_HEIGHT;
 			break;
 		}
-
-		left = x;
-		top = y;
+	}
+	else
+	{
+		right = x + BACK_ROPE_BBOX_WIDTH;
+		bottom = y + BACK_ROPE_BBOX_HEIGHT;
 	}
 }
 
@@ -208,6 +212,18 @@ void CRope::SetState(int state)
 	if (state == STATE_INVISIBLE)
 		if (currentAniID > 0)
 			this->ResetAnimationTimer(currentAniID);
+}
+
+bool CRope::IsOverlapping(LPGAMEOBJECT obj)
+{
+	float xS, yS;
+	CSimon::GetInstance()->GetPosition(xS, yS);
+
+	// When the rope is at the back of Simon, ignore it
+	if ((nx > 0 && x < xS) || (nx < 0 && x > xS))
+		return false;
+
+	return CGameObject::IsOverlapping(obj);;
 }
 
 CRope * CRope::GetInstance()

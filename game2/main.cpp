@@ -5,9 +5,12 @@
 #include <d3dx9.h>
 
 #include "Castlevania.h"
-#include "Timer.h"
 #include "TileMap.h"
+
 #include "Cells.h"
+#include "Timer.h"
+#include "Monsters.h"
+
 
 #define WINDOW_CLASS_NAME L"Game"
 #define MAIN_WINDOW_TITLE L"Castlevania"
@@ -30,7 +33,7 @@ CGame *game;
 LPGAMEOBJECT gameObject;
 CCells *cells;
 
-vector<LPGAMEOBJECT> cellsObjects;			// The objects containing in cells (have camera area)
+vector<LPGAMEOBJECT> updateObjects;			// The objects need be updated
 vector<LPGAMEOBJECT> defaultObjects;		// Always need be Updated objects
 
 #pragma region Player input
@@ -81,12 +84,12 @@ void CInputHandler::OnKeyDown(int keyCode)
 		CSimon::GetInstance()->SetPosition(396.0f, 96.0f);
 		break;
 	case DIK_P:
-		for (UINT i = 0; i < cellsObjects.size(); ++i)
+		for (UINT i = 0; i < updateObjects.size(); ++i)
 		{
-			if (dynamic_cast<CPanther *>(cellsObjects[i]))
+			if (dynamic_cast<CPanther *>(updateObjects[i]))
 			{
-				cellsObjects[i]->SetState(STATE_VISIBLE);
-				cellsObjects[i]->SetPosition(234, 191);
+				updateObjects[i]->SetState(STATE_VISIBLE);
+				updateObjects[i]->SetPosition(234, 191);
 
 			}
 		}
@@ -204,7 +207,7 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int Sc
 
 void TestInit()
 {
-	tileMap = new CTileMap(L"json\\scene_outside_jsonmap.json");
+	tileMap = new CTileMap(L"json\\scene_inside_jsonmap.json");
 	tileMap->Init(ID_TEX_TILESET);
 	cells = new CCells();
 	cells->Init(tileMap, CELL_WIDTH, CELL_HEIGHT);
@@ -242,6 +245,13 @@ void InitDefaultObjects()
 		gameObject = new CDagger();
 		defaultObjects.push_back(gameObject);
 		CWeapons::GetInstance()->Add(Weapon::DAGGER, gameObject);
+	}
+
+	for (int i = 0; i < 3; ++i)
+	{
+		gameObject = new CZombie();
+		defaultObjects.push_back(gameObject);
+		CMonsters::GetInstance()->Add(Monsters::ZOMBIE, gameObject);
 	}
 }
 
@@ -694,50 +704,51 @@ void LoadResources()
 */
 void Update(DWORD dt)
 {
-	// TO-DO: Need an optimized way
-	// Only the objects in the viewport and visible is a collidable object
 	vector<LPGAMEOBJECT> coObjects;
-	cellsObjects.clear();
+	coObjects.clear();
 
 	// Get the bounding box of viewport
 	float left, top, right, bottom;
-	float width, height;
-	game->GetCameraPosition(left, top);
-	game->GetViewportSize(width, height);
-	right = left + width;
-	bottom = top + height;
+	game->GetViewportBoundingBox(left, top, right, bottom);
+
 
 	// Get objects in the cells
-	cells->GetObjectsByRec(left, top, right, bottom, cellsObjects);
+	updateObjects.clear();
+	cells->GetObjectsInRectangle(left, top, right, bottom, updateObjects);
 
 
 	// Add the default objects
 	for (UINT i = 0; i < defaultObjects.size(); ++i)
 	{
 		if (defaultObjects[i]->GetState() == STATE_VISIBLE)
-			cellsObjects.insert(cellsObjects.end(), defaultObjects[i]);
+		{
+			updateObjects.push_back(defaultObjects[i]);
+		}
 	}
 
 
 	// Get collide-able objects
-	for (UINT i = 0; i < cellsObjects.size(); i++)
+	for (UINT i = 0; i < updateObjects.size(); i++)
 	{
-		if (cellsObjects[i]->GetState() == STATE_VISIBLE)
-			coObjects.push_back(cellsObjects[i]);
+		if (updateObjects[i]->GetState() == STATE_VISIBLE &&
+			updateObjects[i]->IsInViewport() == true ||
+			dynamic_cast<CInvisibleWall *>(updateObjects[i]))
+			coObjects.push_back(updateObjects[i]);
 	}
 
 
 	// Call Update function of each objects
-	for (UINT i = 0; i < cellsObjects.size(); i++)
+	for (UINT i = 0; i < updateObjects.size(); i++)
 	{
-		if (dynamic_cast<CMovableObject *>(cellsObjects[i])
-			&& cellsObjects[i]->GetState() == STATE_VISIBLE)
-			dynamic_cast<CMovableObject *>(cellsObjects[i])->Update(dt, &coObjects);
-	}		
+		if (dynamic_cast<CActiveObject *>(updateObjects[i])
+			&& updateObjects[i]->GetState() == STATE_VISIBLE
+			&& updateObjects[i]->GetFreezing() == false)
+			dynamic_cast<CActiveObject *>(updateObjects[i])->Update(dt, &coObjects);
+	}	
 
 
 	// Help freezing time in game
-	CTimer::GetInstance()->Update(dt, &cellsObjects);
+	CTimer::GetInstance()->Update(dt, &updateObjects);
 }
 
 
@@ -757,12 +768,14 @@ void Render()
 
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 
-		tileMap->Draw();
+		float left, top, right, bottom;
+		game->GetViewportBoundingBox(left, top, right, bottom);
+		tileMap->Draw(left, top, right, bottom);
 
-		for (UINT i = 0; i < cellsObjects.size(); i++)
+		for (UINT i = 0; i < updateObjects.size(); i++)
 		{
-			cellsObjects[i]->Render();
-			cellsObjects[i]->RenderBoundingBox();
+			updateObjects[i]->Render();
+			updateObjects[i]->RenderBoundingBox();
 		}
 
 		spriteHandler->End();

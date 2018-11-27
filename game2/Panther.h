@@ -23,7 +23,7 @@ enum class PantherAniID
 	JUMP_RIGHT
 };
 
-class CPanther : public CMovableObject
+class CPanther : public CActiveObject
 {
 	bool jumping;
 	LPGAMEOBJECT groundStandingOn;	// The ground that the panther is standing on

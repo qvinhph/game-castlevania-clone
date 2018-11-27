@@ -12,7 +12,7 @@ enum class ItemRopeAniID
 /*
 	The object when Simon touch will upgrade his Rope
 */
-class CItemRope : public CMovableObject
+class CItemRope : public CActiveObject
 {
 public:
 

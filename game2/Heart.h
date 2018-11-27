@@ -13,7 +13,7 @@ enum class HeartAniID
 	IDLE = 1700
 };
 
-class CHeart : public CMovableObject
+class CHeart : public CActiveObject
 {
 
 	float velocity_x;		// use for making heart's unique movement (falling down) 

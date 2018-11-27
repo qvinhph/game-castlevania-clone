@@ -41,8 +41,8 @@ typedef CObjectInfo * LPOBJECTINFO;
 
 class CTileMap
 {
-	int width;								// map width by tiles
-	int height;								// map height by tiles
+	int columns;							// map width by tiles
+	int rows;								// map height by tiles
 
 	CTileset* tileset;
 	LPCWSTR jsonFilePath;					// dir to json file contains the tileset information
@@ -56,6 +56,7 @@ public:
 
 	void Init(int tilesetTextureID);
 	void Draw();
+	void Draw(float &left, float &top, float &right, float &bottom);
 	void GetMapSize(int &width, int &height);
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void GetGameObjects(vector<LPGAMEOBJECT> * &objects) { objects = &this->gameObjects; }

@@ -37,8 +37,8 @@ void CTileMap::Init(int tilesetTextureID)
 
 	else
 	{
-		this->height = root[TILEMAP_KEY_HEIGHT].get<int>();
-		this->width = root[TILEMAP_KEY_WIDTH].get<int>();
+		this->rows = root[TILEMAP_KEY_HEIGHT].get<int>();
+		this->columns = root[TILEMAP_KEY_WIDTH].get<int>();
 
 		string tilesetPath;
 		int firstGrid;
@@ -64,26 +64,58 @@ void CTileMap::Draw()
 	for (UINT i = 0; i < layers.size(); i++)
 	{
 		int index = 0;		// the index in data array
+		int gridID;
 
 		for (UINT row = 0; row < layers[i]->rows; row++)
 			for (UINT column = 0; column < layers[i]->columns; column++)
 			{
-				int gridID = layers[i]->data[index];
+				gridID = layers[i]->data[index];
 				index++;
 
 				if (gridID < tileset->GetFirstGrid()) continue;			// empty tile
 
-				tileset->Get(gridID)->Draw(column * tileset->GetTileWidth(),
-											row * tileset->GetTileHeight());
+				tileset->Get(gridID)->Draw(column * tileset->GetTileWidth(),		// TO-DO: optmize by use variable
+											row * tileset->GetTileHeight());		// tileWidth and tileHeight;
 			}
 
 	}
 }
 
+void CTileMap::Draw(float & left, float & top, float & right, float & bottom)
+{
+	// Find the top-left and bottom-right tile that contains the viewport's area
+	int tileHeight = tileset->GetTileHeight();
+	int tileWidth = tileset->GetTileWidth();
+
+	int firstColumn, firstRow;		// The top-right tile that has the viewport's area
+	int lastColumn, lastRow;		// The bottom-right tile that has the viewport's area
+
+	firstColumn = left / tileWidth;
+	lastColumn = (right / tileWidth == columns) ? columns - 1 : (right / tileWidth);
+
+	firstRow = top / tileHeight;
+	lastRow = (bottom / tileHeight == rows) ? rows - 1 : (bottom / tileHeight);
+
+	// Draw the tiles bounded by top-left and bottom-right tile
+	int index;
+	int gridID;
+	for (UINT row = firstRow; row <= lastRow; ++row)
+		for (UINT column = firstColumn; column <= lastColumn; ++column)
+		{
+			index = row * columns + column;
+
+			// Get grid ID
+			gridID = layers[0]->data[index];
+			if (gridID < tileset->GetFirstGrid()) continue;		// empty tile
+
+			tileset->Get(gridID)->Draw(column * tileWidth, row * tileHeight);
+		}
+}
+
 void CTileMap::GetMapSize(int & width, int & height)
 {
-	width = this->width * tileset->GetTileWidth();
-	height = this->height * tileset->GetTileHeight();
+	width = this->columns * tileset->GetTileWidth();
+	height = this->rows * tileset->GetTileHeight();
 }
 
 void CTileMap::GetBoundingBox(float & left, float & top, float & right, float & bottom)
@@ -128,6 +160,14 @@ void CTileMap::CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo)
 		}
 
 
+		// Monsters' spawner
+		else if (info->name == "spawnerzombie")
+		{
+			obj = new CSpawnerZombie();
+			dynamic_cast<CSpawnerZombie *>(obj)->SetSize(info->width, info->height);
+		}
+
+
 		// Simon
 		else if (info->name == "simon")
 		{
@@ -144,6 +184,7 @@ void CTileMap::CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo)
 			this->gameObjects.clear();
 			break;
 		}
+
 
 		obj->SetPosition(info->x, info->y);
 		obj->SetHoldingItem(info->dropableItem);

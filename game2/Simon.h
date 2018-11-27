@@ -84,7 +84,7 @@ struct AutoInfo
 	DWORD autoTimeLast;
 };
 
-class CSimon : public CMovableObject
+class CSimon : public CActiveObject
 {
 	// Flags
 	bool controllable; 

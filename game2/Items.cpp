@@ -6,10 +6,10 @@ CItems * CItems::__instance = NULL;
 /*
 	Add the given item to the collection according to item name
 */
-void CItems::Add(Item itemName, LPGAMEOBJECT itemObj)
+void CItems::Add(Item itemName, LPGAMEOBJECT item)
 {
-	itemObj->SetState(STATE_INVISIBLE);
-	items[itemName].push_back(itemObj);
+	item->SetState(STATE_INVISIBLE);
+	items[itemName].push_back(item);
 }
 
 /*
@@ -23,7 +23,7 @@ void CItems::CheckAndDrop(LPGAMEOBJECT object)
 	{
 		float x, y;
 		object->GetPosition(x, y);
-		GetAndShowItem(item, x, y);
+		Drop(item, x, y);
 
 		
 		// These code may useful for choosing what to drop
@@ -42,25 +42,23 @@ void CItems::CheckAndDrop(LPGAMEOBJECT object)
 /*
 	Get the item according to the given name and set it the gien position
 */
-void CItems::GetAndShowItem(Item itemName, float x, float y)
-{
-	vector<LPGAMEOBJECT> itemsByName = items[itemName];
-	
-	if (itemsByName.empty())
-	{
-		DebugOut(L"\n[ERROR] No items with the given name (Item enum: %d) found", (int)itemName);
-		return;
-	}
+void CItems::Drop(Item itemName, float x, float y)
+{	
+	if (items[itemName].empty())
+		DebugOut(L"\n[ERROR] No items with the given name found (Item enum: %d)", (int)itemName);
 
-	for (auto it = itemsByName.begin(); it != itemsByName.end(); ++it)
+	else 
 	{
-		if ((*it)->GetState() == STATE_INVISIBLE)
+		for (auto it = items[itemName].begin(); it != items[itemName].end(); ++it)
 		{
-			(*it)->SetPosition(x, y);
-			(*it)->SetState(STATE_VISIBLE);
-			return;
+			if ((*it)->GetState() == STATE_INVISIBLE)
+			{
+				(*it)->SetPosition(x, y);
+				(*it)->SetState(STATE_VISIBLE);
+				break;
+			}
 		}
-	}
+	}	
 }
 
 CItems * CItems::GetInstance()

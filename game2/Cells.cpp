@@ -40,17 +40,19 @@ void CCells::Init(CTileMap * tileMap, int cellWidth, int cellHeight)
 
 }
 
-void CCells::GetObjectsByRec(float & left, float & top, float & right, float & bottom, vector<LPGAMEOBJECT>& objects)
+void CCells::GetObjectsInRectangle(float & left, float & top, float & right, float & bottom, vector<LPGAMEOBJECT>& objects)
 {
-	int beginCellColumn, beginCellRow, endCellColumn, endCellRow;
+	// Find the top-left and bottom-right cell that contains the viewport's area
+	int firstCellColumn, firstCellRow;		// the left-top cell that containing the rectangle's area
+	int lastCellColumn, lastCellRow;		// the right-bottom cell that containing the rectangle's area
 	this->GetCellsContainRectangle(left, top, right, bottom,
-		beginCellColumn, beginCellRow, endCellColumn, endCellRow);
+		firstCellColumn, firstCellRow, lastCellColumn, lastCellRow);
 
-	unordered_set<LPGAMEOBJECT> setOfObjects;
 
 	// get objects to from cells
-	for (UINT row = beginCellRow; row <= endCellRow; row++)
-		for (UINT column = beginCellColumn; column <= endCellColumn; column++)
+	unordered_set<LPGAMEOBJECT> setOfObjects;
+	for (UINT row = firstCellRow; row <= lastCellRow; row++)
+		for (UINT column = firstCellColumn; column <= lastCellColumn; column++)
 		{
 			// Empty cell
 			if (cells[column][row] == NULL)
@@ -89,11 +91,12 @@ void CCells::Classify(LPGAMEOBJECT obj)
 		}
 }
 
-void CCells::GetCellsContainRectangle(float & left, float & top, float & right, float & bottom, int & beginCellColumn, int & beginCellRow, int & endCellColumn, int & endCellRow)
+void CCells::GetCellsContainRectangle(float & left, float & top, float & right, float & bottom, 
+	int & firstCellColumn, int & firstCellRow, int & lastCellColumn, int & lastCellRow)
 {
-	beginCellColumn = (left < 0) ? 0 : left / cellWidth;
-	beginCellRow = (top < 0) ? 0 : top / cellHeight;
+	firstCellColumn = (left < 0) ? 0 : left / cellWidth;
+	firstCellRow = (top < 0) ? 0 : top / cellHeight;
 
-	endCellColumn = (right / cellWidth < columns) ? (right / cellWidth) : columns - 1;
-	endCellRow = (bottom / cellHeight < rows) ? (bottom / cellHeight) : rows - 1;
+	lastCellColumn = (right / cellWidth < columns) ? (right / cellWidth) : columns - 1;
+	lastCellRow = (bottom / cellHeight < rows) ? (bottom / cellHeight) : rows - 1;
 }

@@ -26,7 +26,7 @@ void CPanther::GetBoundingBox(float & left, float & top, float & right, float & 
 
 void CPanther::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	CMovableObject::Update(dt);
+	CActiveObject::Update(dt);
 
 
 	// Simple fall down

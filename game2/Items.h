@@ -14,8 +14,8 @@ class CItems
 public:
 	
 	void Add(Item itemName, LPGAMEOBJECT item);			
-	void CheckAndDrop(LPGAMEOBJECT gameObject);
-	void GetAndShowItem(Item iteamName, float x, float y);	
+	void CheckAndDrop(LPGAMEOBJECT gameObject);			// Check if the given object is holding item, drop it if yes
+	void Drop(Item iteamName, float x, float y);	
 
 	static CItems * GetInstance();
 };

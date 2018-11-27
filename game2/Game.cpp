@@ -57,14 +57,6 @@ void CGame::Init(HWND hWnd)
 */
 void CGame::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, ARGB& argb)
 {
-	// TO-DO: REMOVE THIS HARDCODE
-	// SHOULD: these code should be move to CSimon::CalibrateCamera()
-	// ==> Make the IsInViewport work correctly
-	// Limit the camera position
-	if (xCamera < 0)		// 0 is ORIGIN_X ( gốc tọa độ)
-		xCamera = 0;
-	if (xCamera + viewportWidth > 1536) // 1536 is the map size (pixels) ( 48 tiles x 32 )
-		xCamera = 1536 - viewportWidth;
 
 	// Get the viewport position
 	float xv = x - xCamera;
@@ -84,6 +76,14 @@ int CGame::IsKeyDown(int keyCode)
 	return (keyStates[keyCode] & 0x80) > 0;
 }
 
+void CGame::GetViewportBoundingBox(float & left, float & top, float & right, float & bottom)
+{
+	left = xCamera;
+	top = yCamera;
+	right = left + viewportWidth;
+	bottom = top + viewportHeight;
+}
+
 void CGame::InitKeyboard(LPKEY_EVENT_HANDLER handler)
 {
 	HRESULT
@@ -101,7 +101,7 @@ void CGame::InitKeyboard(LPKEY_EVENT_HANDLER handler)
 	}
 
 	hr = di->CreateDevice(GUID_SysKeyboard, &didv, NULL);
-
+	
 	// TO-DO: put in exception handling
 	if (hr != DI_OK)
 	{

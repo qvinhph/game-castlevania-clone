@@ -162,7 +162,7 @@ void CSimon::PickAnimation()
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	// Calculate dx, dy
-	CMovableObject::Update(dt);
+	CActiveObject::Update(dt);
 	
 
 	// While jumping and falling
@@ -268,7 +268,7 @@ void CSimon::ProceedAttacking()
 	if (GetTickCount() - attack_start > ATTACK_TIME)
 	{
 		// If attacking by rope
-		if (this->rope->GetState() == STATE_VISIBLE)
+		if (this->rope->GetState() == STATE_VISIBLE) 
 			this->rope->SetState(STATE_INVISIBLE);
 		else
 			weapons->UseWeapon(secondWeapon, this);
@@ -852,8 +852,6 @@ void CSimon::Attack(int choice)
 		// Simon behaviors
 		if (jumping)
 			this->StandUp();
-		//else 
-		//	vx = 0;
 
 		if (choice == SIMON_ATTACK_BY_ROPE)
 		{
@@ -876,11 +874,15 @@ void CSimon::CalibrateCameraPosition()
 
 	float viewportWidth;
 	float viewportHeight;
-	CGame::GetInstance()->GetViewportSize(viewportHeight, viewportWidth);
-	xCam = xCentral - viewportWidth / 2;
+	CGame::GetInstance()->GetViewportSize(viewportWidth, viewportHeight);
 
-	// TODO: should this need a more generic code ?
-	yCam = 0;//yCentral - viewportHeight / 2;
+	xCam = xCentral - viewportWidth / 2;
+	yCam = 0;
+
+	if (xCam < 0)		
+		xCam = 0;
+	if (xCam + viewportWidth > 4320)	// TO-DO: 1536...
+		xCam = 4320 - viewportWidth;
 
 	CGame::GetInstance()->SetCameraPosition(xCam, yCam);
 }

@@ -12,7 +12,7 @@ void CHeart::GetBoundingBox(float & left, float & top, float & right, float & bo
 
 void CHeart::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	CMovableObject::Update(dt);
+	CActiveObject::Update(dt);
 
 	// Simple vertical movement
 	vy = HEART_FALL_SPEED_Y;
@@ -35,7 +35,7 @@ void CHeart::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	else
 	{
 		vx = vy = 0;
-		CMovableObject::ProceedCollisions(coEvents);
+		CActiveObject::ProceedCollisions(coEvents);
 	}
 
 	// clean up collision events

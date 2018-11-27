@@ -15,7 +15,7 @@ void CDagger::GetBoundingBox(float & left, float & top, float & right, float & b
 
 void CDagger::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	CMovableObject::Update(dt);
+	CActiveObject::Update(dt);
 
 	// Choose directon of speed 
 	vx = (nx > 0) ?
