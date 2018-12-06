@@ -29,6 +29,9 @@
 #include "Panther.h"
 #include "Zombie.h"
 #include "SpawnerZombie.h"
+#include "SpawnerPanther.h"
+#include "SpawnerPinkBat.h"
+#include "PinkBat.h"
 
 #define ID_TEX_SIMON		0
 #define ID_TEX_ROPE			1
@@ -39,3 +42,6 @@
 
 #define NUMBER_OF_FLAME		6
 #define NUMBER_OF_DAGGER	2
+#define NUMBER_OF_HEART		5
+#define NUMBER_OF_PANTHER	3
+#define NUMBER_OF_ZOMBIE	3

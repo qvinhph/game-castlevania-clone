@@ -150,22 +150,15 @@ void CTileMap::CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo)
 		// Monsters
 		else if (info->name == "zombie")			obj = new CZombie();
 		else if (info->name == "panther")			obj = new CPanther();
-
-
-		// Invisiblewall
-		else if (info->name == "invisiblewall")
-		{
-			obj = new CInvisibleWall();
-			dynamic_cast<CInvisibleWall *>(obj)->SetSize(info->width, info->height);
-		}
-
+		else if (info->name == "pinkbat")			obj = new CPinkBat();
 
 		// Monsters' spawner
-		else if (info->name == "spawnerzombie")
-		{
-			obj = new CSpawnerZombie();
-			dynamic_cast<CSpawnerZombie *>(obj)->SetSize(info->width, info->height);
-		}
+		else if (info->name == "spawnerzombie")		obj = new CSpawnerZombie(info->width, info->height);
+		else if (info->name == "spawnerpinkbat")	obj = new CSpawnerPinkBat(info->width, info->height);
+		else if (info->name == "spawnerpanther")	obj = new CSpawnerPanther();
+
+		// Invisiblewall
+		else if (info->name == "invisiblewall")		obj = new CInvisibleWall(info->width, info->height);
 
 
 		// Simon

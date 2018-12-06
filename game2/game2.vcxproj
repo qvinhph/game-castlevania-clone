@@ -22,6 +22,7 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationFrame.h" />
     <ClInclude Include="Animations.h" />
+    <ClInclude Include="PinkBat.h" />
     <ClInclude Include="BigHeart.h" />
     <ClInclude Include="Candle.h" />
     <ClInclude Include="Castlevania.h" />
@@ -30,6 +31,8 @@
     <ClInclude Include="Dagger.h" />
     <ClInclude Include="Monsters.h" />
     <ClInclude Include="Panther.h" />
+    <ClInclude Include="SpawnerPanther.h" />
+    <ClInclude Include="SpawnerPinkBat.h" />
     <ClInclude Include="SpawnerZombie.h" />
     <ClInclude Include="StairsDown.h" />
     <ClInclude Include="StairsUp.h" />
@@ -63,12 +66,15 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationFrame.cpp" />
     <ClCompile Include="Animations.cpp" />
+    <ClCompile Include="PinkBat.cpp" />
     <ClCompile Include="BigHeart.cpp" />
     <ClCompile Include="Candle.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="Cells.cpp" />
     <ClCompile Include="Monsters.cpp" />
     <ClCompile Include="Panther.cpp" />
+    <ClCompile Include="SpawnerPanther.cpp" />
+    <ClCompile Include="SpawnerPinkBat.cpp" />
     <ClCompile Include="SpawnerZombie.cpp" />
     <ClCompile Include="StairsDown.cpp" />
     <ClCompile Include="StairsUp.cpp" />

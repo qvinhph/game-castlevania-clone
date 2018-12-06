@@ -5,6 +5,7 @@
 #include "Candle.h"
 #include "Zombie.h"
 #include "Panther.h"
+#include "PinkBat.h"
 #include "debug.h"
 
 
@@ -33,7 +34,9 @@ void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				if (this->IsOverlapping(coObjects->at(i)))
 					if (dynamic_cast<CBigCandle *>(coObjects->at(i)) ||
 						dynamic_cast<CCandle *>(coObjects->at(i)) || 
-						dynamic_cast<CZombie *>(coObjects->at(i)))
+						dynamic_cast<CZombie *>(coObjects->at(i)) || 
+						dynamic_cast<CPanther *>(coObjects->at(i)) || 
+						dynamic_cast<CPinkBat *>(coObjects->at(i)))
 						coObjects->at(i)->Destroy();
 
 		// clean up collision events
@@ -208,7 +211,7 @@ void CRope::SetState(int state)
 {
 	CGameObject::SetState(state);
 	
-	// reset the current animation for next usage
+	// Reset the current animation for next usage
 	if (state == STATE_INVISIBLE)
 		if (currentAniID > 0)
 			this->ResetAnimationTimer(currentAniID);

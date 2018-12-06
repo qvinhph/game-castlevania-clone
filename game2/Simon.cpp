@@ -16,6 +16,8 @@
 #include "Candle.h"
 #include "StairsUp.h"
 #include "StairsDown.h"
+#include "Panther.h"
+#include "PinkBat.h"
 
 #include "debug.h"
 
@@ -317,6 +319,9 @@ void CSimon::ProceedGravity()
 	vy += SIMON_FALL_GRAVITY * this->dt;
 }
 
+/*
+	Help get out of the stairs
+*/
 void CSimon::ProceedOnStairs()
 {
 	// Try getting out the stairs
@@ -325,7 +330,12 @@ void CSimon::ProceedOnStairs()
 	if (onStairs == 1)
 	{
 		for (UINT i = 0; i < ovObjects.size(); ++i)
-			stairs = dynamic_cast<CStairsDown *>(ovObjects[i]);
+			if (dynamic_cast<CStairsDown *>(ovObjects[i]))
+			{
+				stairs = ovObjects[i];
+				break;
+			}
+
 		if (stairs == NULL) return;
 
 		float xS, yS;
@@ -344,7 +354,12 @@ void CSimon::ProceedOnStairs()
 	else if (onStairs == -1)
 	{
 		for (UINT i = 0; i < ovObjects.size(); ++i)
-			stairs = dynamic_cast<CStairsUp *>(ovObjects[i]);
+			if (dynamic_cast<CStairsUp *>(ovObjects[i]))
+			{
+				stairs = ovObjects[i];
+				break;
+			}
+
 		if (stairs == NULL) return;
 
 		float xS, yS;
@@ -412,16 +427,6 @@ void CSimon::ProceedAutoMove()
 			dy = vy * dt;
 		}
 	}
-
-	/*if (autoMove == false)
-	{
-
-		this->ResetAnimationTimer(currentAniID);
-		DebugOut(L"\nAfter reset: ");
-		DebugOut(L"\nAni ID: %d", currentAniID);
-		DebugOut(L"\nCurrent frame: %d", animations->Get(currentAniID)->GetCurrentFrame());
-
-	}*/
 }
 
 void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
@@ -483,11 +488,13 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			weapons->AddToStock(Weapon::DAGGER);
 		}
 
-		else if (dynamic_cast<CZombie *>(e->obj))
+		else if (dynamic_cast<CZombie *>(e->obj) ||
+				dynamic_cast<CPanther *>(e->obj) ||
+				dynamic_cast<CPinkBat *>(e->obj))
 		{
-			DebugOut(L"\n[INFO] Touch Zombie");
+			DebugOut(L"\n[INFO] Touch a monster !!");
 
-			if (untouchable_start == 0)
+			if (untouchable_start == TIMER_IDLE)
 			{
 				this->OnGetDamaged(e);
 				return;
@@ -565,7 +572,7 @@ void CSimon::StandUp()
 		crouching = false;
 		y += SIMON_JUMPING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
 	}
-	else if (crouching)
+	else if (crouching && attack_start == TIMER_IDLE)
 	{
 		crouching = false;
 		y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
@@ -728,7 +735,11 @@ void CSimon::Upstairs()
 
 		// Check if Simon is on a stairs-start
 		for (UINT i = 0; i < ovObjects.size(); ++i)
-			stairs = dynamic_cast<CStairsUp *>(ovObjects[i]);
+			if (dynamic_cast<CStairsUp *>(ovObjects[i]))
+			{
+				stairs = ovObjects[i];
+				break;
+			}
 
 		// Do nothing if there is no stairs overlapped
 		if (stairs == NULL) return;
@@ -768,7 +779,11 @@ void CSimon::Downstairs()
 		// Check if Simon is on a stairs-start
 		LPGAMEOBJECT stairs = NULL;
 		for (UINT i = 0; i < ovObjects.size(); ++i)
-			stairs = dynamic_cast<CStairsDown *>(ovObjects[i]);
+			if (dynamic_cast<CStairsDown *>(ovObjects[i]))
+			{
+				stairs = ovObjects[i];
+				break;
+			}
 
 		// Do nothing if there is no stairs overlapped
 		if (stairs == NULL) return;

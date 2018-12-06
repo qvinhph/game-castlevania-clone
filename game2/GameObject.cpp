@@ -33,17 +33,14 @@ void CGameObject::RenderBoundingBox()
 */
 bool CGameObject::IsInViewport()
 {
-	float xCam, yCam;
-	float viewportWidth, viewportHeight;
-	CGame::GetInstance()->GetCameraPosition(xCam, yCam);
-	CGame::GetInstance()->GetViewportSize(viewportWidth, viewportHeight);
+	float vpLeft, vpRight, vpTop, vpBottom;
+	CGame::GetInstance()->GetViewportBoundingBox(vpLeft, vpTop, vpRight, vpBottom);
 	
 	float left, top, right, bottom;
 	this->GetBoundingBox(left, top, right, bottom);
 
-	if (xCam > left || yCam > top ||
-		xCam + viewportWidth < right ||
-		yCam + viewportHeight < bottom)
+	if (vpLeft > left || vpTop > top 
+		|| vpRight < right || vpBottom < bottom)
 		return false;
 
 	return true;
@@ -114,10 +111,12 @@ void CGameObject::Destroy()
 
 CGameObject::CGameObject()
 {
-	flicker_start = 0;
-	ARGB argb = ARGB();
-
+	flicker_start = TIMER_IDLE;
 	state = STATE_VISIBLE;
+	x = y = -1;
 	currentAniID = -1;
+	lastAniID = -1;
+
+	argb = ARGB();
 	animations = CAnimations::GetInstance();
 }

@@ -27,8 +27,7 @@ public:
 	void Render() override { /* Nothing here */ }
 	void Update(DWORD dt, vector<LPGAMEOBJECT> * coObjects) override;
 
-	void SetSize(float width, float height);
 	void SetupZombieInfo(float &x, float &y, int &nx);
-	CSpawnerZombie();
+	CSpawnerZombie(float width, float height);
 };
 

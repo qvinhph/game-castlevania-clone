@@ -1,5 +1,3 @@
-// INIT BRANCH: SPACE-PARTIONING
-
 #include <Windows.h>
 #include <d3d9.h>
 #include <d3dx9.h>
@@ -81,18 +79,7 @@ void CInputHandler::OnKeyDown(int keyCode)
 
 		// DEBUGGING
 	case DIK_1:
-		CSimon::GetInstance()->SetPosition(396.0f, 96.0f);
-		break;
-	case DIK_P:
-		for (UINT i = 0; i < updateObjects.size(); ++i)
-		{
-			if (dynamic_cast<CPanther *>(updateObjects[i]))
-			{
-				updateObjects[i]->SetState(STATE_VISIBLE);
-				updateObjects[i]->SetPosition(234, 191);
-
-			}
-		}
+		CSimon::GetInstance()->SetPosition(0.0f, 0.0f);
 		break;
 	case DIK_O:
 		CSimon::GetInstance()->RemoveOnStairs();
@@ -207,6 +194,7 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int Sc
 
 void TestInit()
 {
+	//tileMap = new CTileMap(L"json\\maptest_jsonmap.json");
 	tileMap = new CTileMap(L"json\\scene_inside_jsonmap.json");
 	tileMap->Init(ID_TEX_TILESET);
 	cells = new CCells();
@@ -225,6 +213,8 @@ void InitDefaultObjects()
 	gameObject = CRope::GetInstance();
 	defaultObjects.push_back(gameObject);
 
+
+	// Dropable things
 	gameObject = new CItemRope();
 	defaultObjects.push_back(gameObject);
 	items->Add(Item::ITEMROPE, gameObject);
@@ -233,6 +223,17 @@ void InitDefaultObjects()
 	defaultObjects.push_back(gameObject);
 	items->Add(Item::ITEMDAGGER, gameObject);
 	
+	gameObject = new CBigHeart();
+	defaultObjects.push_back(gameObject);
+	items->Add(Item::BIGHEART, gameObject);
+
+	for (int i = 0; i < NUMBER_OF_HEART; ++i)
+	{
+		gameObject = new CHeart();
+		defaultObjects.push_back(gameObject);
+		items->Add(Item::HEART, gameObject);
+	}
+
 	for (int i = 0; i < NUMBER_OF_FLAME; ++i)
 	{
 		gameObject = new CFlame();
@@ -240,6 +241,8 @@ void InitDefaultObjects()
 		CFlames::GetInstance()->Add((CFlame *)gameObject);
 	}
 
+
+	// Weapons
 	for (int i = 0; i < NUMBER_OF_DAGGER; ++i)
 	{
 		gameObject = new CDagger();
@@ -247,11 +250,27 @@ void InitDefaultObjects()
 		CWeapons::GetInstance()->Add(Weapon::DAGGER, gameObject);
 	}
 
-	for (int i = 0; i < 3; ++i)
+
+	// Monsters
+	for (int i = 0; i < NUMBER_OF_ZOMBIE; ++i)
 	{
 		gameObject = new CZombie();
 		defaultObjects.push_back(gameObject);
-		CMonsters::GetInstance()->Add(Monsters::ZOMBIE, gameObject);
+		CMonsters::GetInstance()->Add(Monster::ZOMBIE, gameObject);
+	}
+
+	for (int i = 0; i < NUMBER_OF_PANTHER; ++i)
+	{
+		gameObject = new CPanther();
+		defaultObjects.push_back(gameObject);
+		CMonsters::GetInstance()->Add(Monster::PANTHER, gameObject);
+	}
+
+	for (int i = 0; i < 3; ++i)
+	{
+		gameObject = new CPinkBat();
+		defaultObjects.push_back(gameObject);
+		CMonsters::GetInstance()->Add(Monster::PINKBAT, gameObject);
 	}
 }
 
@@ -338,19 +357,19 @@ void LoadResources()
 	sprites->Add(99138, 11, 331, 43, 377, texSimon);	// crouch attack left
 	sprites->Add(99139, 73, 331, 105, 377, texSimon);	// crouch attack left
 
-	sprites->Add(99047, 302, 134, 350, 196, texSimon);	// down stair attack right
+	sprites->Add(99047, 318, 134, 350, 196, texSimon);	// down stair attack right
 	sprites->Add(99048, 258, 134, 290, 196, texSimon);	// down stair attack right
-	sprites->Add(99049, 198, 136, 239, 196, texSimon);	// down stair attack right
-	sprites->Add(99147, 130, 332, 178, 394, texSimon);	// down stair attack left
+	sprites->Add(99049, 198, 134, 230, 196, texSimon);	// down stair attack right
+	sprites->Add(99147, 130, 332, 162, 394, texSimon);	// down stair attack left
 	sprites->Add(99148, 190, 332, 222, 394, texSimon);	// down stair attack left
-	sprites->Add(99149, 241, 334, 282, 394, texSimon);	// down stair attack left
+	sprites->Add(99149, 250, 332, 282, 394, texSimon);	// down stair attack left
 
-	sprites->Add(99057, 120, 134, 161, 196, texSimon);	// up stair attack right
+	sprites->Add(99057, 129, 134, 161, 196, texSimon);	// up stair attack right
 	sprites->Add(99058, 69, 134, 101, 196, texSimon);	// up stair attack right
-	sprites->Add(99059, 9, 136, 53, 196, texSimon);		// up stair attack right
-	sprites->Add(99157, 319, 332, 360, 394, texSimon);	// up stair attack left
+	sprites->Add(99059, 9, 134, 41, 196, texSimon);		// up stair attack right
+	sprites->Add(99157, 319, 332, 351, 394, texSimon);	// up stair attack left
 	sprites->Add(99158, 379, 332, 411, 394, texSimon);	// up stair attack left
-	sprites->Add(99159, 427, 334, 471, 394, texSimon);	// up stair attack left
+	sprites->Add(99159, 439, 332, 471, 394, texSimon);	// up stair attack left
 
 	sprites->Add(99099, 10, 270, 42, 328, texSimon);	// damaging right
 	sprites->Add(99199, 438, 72, 470, 130, texSimon);	// damaging left
@@ -447,37 +466,37 @@ void LoadResources()
 	ani->AddFrame(99124);
 	animations->Add((int)SimonAniID::IDLE_DOWNSTAIRS_LEFT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(75);
 	ani->AddFrame(99037);
 	ani->AddFrame(99038);
 	ani->AddFrame(99039, 200);
 	animations->Add((int)SimonAniID::CROUCH_ATTACK_RIGHT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(75);
 	ani->AddFrame(99137);
 	ani->AddFrame(99138);
 	ani->AddFrame(99139, 200);
 	animations->Add((int)SimonAniID::CROUCH_ATTACK_LEFT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(75);
 	ani->AddFrame(99047);
 	ani->AddFrame(99048);
 	ani->AddFrame(99049, 200);
 	animations->Add((int)SimonAniID::DOWN_STAIR_ATTACK_RIGHT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(75);
 	ani->AddFrame(99147);
 	ani->AddFrame(99148);
 	ani->AddFrame(99149, 200);
 	animations->Add((int)SimonAniID::DOWN_STAIR_ATTACK_LEFT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(75);
 	ani->AddFrame(99057);
 	ani->AddFrame(99058);
 	ani->AddFrame(99059, 200);
 	animations->Add((int)SimonAniID::UP_STAIR_ATTACK_RIGHT, ani);
 
-	ani = new CAnimation(100);
+	ani = new CAnimation(75);
 	ani->AddFrame(99157);
 	ani->AddFrame(99158);
 	ani->AddFrame(99159, 200);
@@ -689,11 +708,32 @@ void LoadResources()
 	ani->AddFrame(52103);
 	animations->Add((int)PantherAniID::JUMP_LEFT, ani);
 
+	// Bat
+	sprites->Add(53101, 100, 0, 132, 32, texMonsters);		// flying left
+	sprites->Add(53102, 132, 0, 164, 32, texMonsters);		// flying left
+	sprites->Add(53103, 164, 0, 196, 32, texMonsters);		// flying left
+				  
+	sprites->Add(53001, 194, 180, 226, 212, texMonsters);	// flying right
+	sprites->Add(53002, 162, 180, 194, 212, texMonsters);	// flying right
+	sprites->Add(53003, 130, 180, 162, 212, texMonsters);	// flying right
+
+	ani = new CAnimation(100);
+	ani->AddFrame(53001);
+	ani->AddFrame(53002);
+	ani->AddFrame(53003);
+	animations->Add((int)PinkBatAniID::FLYING_RIGHT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(53101);
+	ani->AddFrame(53102);
+	ani->AddFrame(53103);
+	animations->Add((int)PinkBatAniID::FLYING_LEFT, ani);
+
 #pragma endregion
 
 
-	TestInit();
 	InitDefaultObjects();
+	TestInit();
 
 }
 
@@ -706,6 +746,7 @@ void Update(DWORD dt)
 {
 	vector<LPGAMEOBJECT> coObjects;
 	coObjects.clear();
+
 
 	// Get the bounding box of viewport
 	float left, top, right, bottom;
@@ -730,9 +771,8 @@ void Update(DWORD dt)
 	// Get collide-able objects
 	for (UINT i = 0; i < updateObjects.size(); i++)
 	{
-		if (updateObjects[i]->GetState() == STATE_VISIBLE &&
-			updateObjects[i]->IsInViewport() == true ||
-			dynamic_cast<CInvisibleWall *>(updateObjects[i]))
+		if (updateObjects[i]->GetState() == STATE_VISIBLE
+			&& updateObjects[i]->IsInViewport() == true)
 			coObjects.push_back(updateObjects[i]);
 	}
 
@@ -743,7 +783,9 @@ void Update(DWORD dt)
 		if (dynamic_cast<CActiveObject *>(updateObjects[i])
 			&& updateObjects[i]->GetState() == STATE_VISIBLE
 			&& updateObjects[i]->GetFreezing() == false)
+		{
 			dynamic_cast<CActiveObject *>(updateObjects[i])->Update(dt, &coObjects);
+		}
 	}	
 
 

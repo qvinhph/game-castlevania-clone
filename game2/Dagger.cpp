@@ -2,6 +2,9 @@
 #include "Weapons.h"
 #include "InvisibleWall.h"
 #include "BigCandle.h"
+#include "Candle.h"
+#include "Panther.h"
+#include "Zombie.h"
 
 
 
@@ -41,6 +44,10 @@ void CDagger::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// Clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+
+	// If the dagger go out the viewport
+	if (this->IsInViewport() == false)
+		SetState(STATE_INVISIBLE);
 }
 
 void CDagger::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
@@ -49,18 +56,27 @@ void CDagger::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 	float nx, ny, min_tx, min_ty;
 	FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
-	// If there is no collision
-	if (min_tx == 1) x += dx;
-	if (min_ty == 1) y += dy;
+	// Set the object's position right to the point occured collision
+	x += min_tx * dx;
+	y += min_ty * dy;
 
 	for (UINT i = 0; i < coEventsResult.size(); i++)
 	{
 		LPCOLLISIONEVENT e = coEvents[i];
-		if (dynamic_cast<CBigCandle *>(e->obj))
+		if (dynamic_cast<CBigCandle *>(e->obj) || 
+			dynamic_cast<CCandle *>(e->obj) || 
+			dynamic_cast<CPanther *>(e->obj) || 
+			dynamic_cast<CZombie *>(e->obj))
 		{
 			e->obj->Destroy();
 			this->SetState(STATE_INVISIBLE);
 			break;
+		}
+		else
+		{
+			// Ignore other objects by completing the rest of dx / dy
+			if (e->nx != 0)	x += (1 - min_tx) * dx;
+			if (e->ny != 0)	y += (1 - min_ty) * dy;
 		}
 	}
 }

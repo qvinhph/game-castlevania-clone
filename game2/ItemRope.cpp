@@ -1,5 +1,5 @@
 #include "ItemRope.h"
-
+	
 void CItemRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CActiveObject::Update(dt);

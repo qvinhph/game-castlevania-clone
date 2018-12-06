@@ -124,17 +124,6 @@
                  "width":1536,
                  "x":0,
                  "y":384
-                }, 
-                {
-                 "height":276,
-                 "id":60,
-                 "name":"spawnerzombie",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":524,
-                 "x":129,
-                 "y":108
                 }],
          "opacity":1,
          "type":"objectgroup",

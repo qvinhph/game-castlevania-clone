@@ -29,7 +29,7 @@ void CSpawnerZombie::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					float x, y;
 					int nx;
 					SetupZombieInfo(x, y, nx);
-					CMonsters::GetInstance()->Spawn(Monsters::ZOMBIE, x, y, nx);
+					CMonsters::GetInstance()->Spawn(Monster::ZOMBIE, x, y, nx);
 
 					// Start to rest spawning
 					rest_start = GetTickCount();
@@ -51,12 +51,6 @@ void CSpawnerZombie::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (GetTickCount() - pause_start > PAUSE_TIME)
 				pause_start = TIMER_IDLE;
 	}
-}
-
-void CSpawnerZombie::SetSize(float width, float height)
-{
-	this->width = width;
-	this->height = height;
 }
 
 void CSpawnerZombie::SetupZombieInfo(float & x, float & y, int & nx)
@@ -81,7 +75,7 @@ void CSpawnerZombie::SetupZombieInfo(float & x, float & y, int & nx)
 	}
 }
 
-CSpawnerZombie::CSpawnerZombie()
+CSpawnerZombie::CSpawnerZombie(float width, float height) : width(width), height(height)
 {
 	pause_start = TIMER_IDLE;
 	rest_start = TIMER_IDLE;

@@ -14,6 +14,14 @@ using namespace std;
 
 
 
+// The action with this timer is not working.
+#define TIMER_IDLE			0
+
+// The action with this timer is not going to end.
+#define TIMER_ETERNAL		-1
+
+
+
 
 // Item or dropable objects' name
 enum class Item
@@ -33,9 +41,12 @@ enum class Weapon
 };
 
 // Monsters' name
-enum class Monsters
+enum class Monster
 {
 	ZOMBIE,
+	PANTHER,
+	PINKBAT,
+	FISH,
 };
 
 
@@ -74,7 +85,7 @@ protected:
 
 	CAnimations* animations;		// pointer helping getting the animations
 	int currentAniID;
-	int lastAniID = -1;
+	int lastAniID;
 
 	ARGB argb;						// for changing color of the sprite
 	Item item;						// the item object holds, drop when destroyed
@@ -97,10 +108,12 @@ public:
 
 	virtual void SetState(int state) { this->state = state; }
 	int GetState() { return this->state; }
+
+	void SetCurrentAniID(int aniID) { this->currentAniID = aniID; }
+	int GetCurrentAniID() { return this->currentAniID; }
 	
 	void RenderBoundingBox();
 	void FreezeAnimation();
-	bool IsInViewport();
 	void ReDirect(float posisionX);
 	void ResetAnimationTimer(int aniID);
 
@@ -108,6 +121,7 @@ public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
 	virtual void Render();
 	virtual void Destroy();		
+	virtual bool IsInViewport();
 
 	CGameObject();
 };

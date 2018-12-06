@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include "GameObject.h"
+#include "MovableObject.h"
 
 
 /*
@@ -9,15 +10,18 @@
 */
 class CMonsters
 {
-	unordered_map<Monsters, vector<LPGAMEOBJECT>> monsters;
+	unordered_map<Monster, vector<LPACTIVEOBJECT>> monsters;
 
 	static CMonsters * __instance;
 	CMonsters() = default;
 
 public:
 
-	void Add(Monsters monsterName, LPGAMEOBJECT monster);
-	void Spawn(Monsters monsterName, float x, float y, int nx);			// Spawn the monster at the given point
+	void Add(Monster monsterName, LPACTIVEOBJECT monster);
+	void Add(Monster monsterName, LPGAMEOBJECT monster);
+
+	LPACTIVEOBJECT Spawn(Monster monsterName);
+	LPACTIVEOBJECT Spawn(Monster monsterName, float x, float y, int nx);
 
 	static CMonsters * GetInstance();
 

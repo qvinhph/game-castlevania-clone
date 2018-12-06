@@ -30,11 +30,11 @@ void CPanther::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 
 	// Simple fall down
-	vy += PANTHER_FALL_GRAVITY;
+	vy += PANTHER_FALL_GRAVITY * dt;
 	if (CheckIfNeedJump() && vx != 0)
 	{
 		Jump();
-		groundStandingOn = NULL;
+		groundStandingOn = NULL;;
 	}
 
 
@@ -47,8 +47,15 @@ void CPanther::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			PANTHER_RUN_SPEED :
 			-PANTHER_RUN_SPEED;
 	}		
+
+
+	// Not falling while in INDLE state
+	// To avoid putting in wrong re-spawn place
+	if (vx == 0)
+		vy = 0;
 		
 
+	// Pick animation
 	PickAnimation();
 
 
@@ -65,7 +72,24 @@ void CPanther::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	else ProceedCollisions(coEvents);
 
 
+	// Clean up the collision events
 	for (UINT i = 0; i < coEvents.size(); ++i) delete coEvents[i];
+
+
+	// If the panther runs out the viewport
+	if (this->IsInViewport() == false && vx != 0)
+		SetState(STATE_INVISIBLE);
+}
+
+void CPanther::SetState(int state)
+{
+	CGameObject::SetState(state);
+
+	if (state == STATE_INVISIBLE)
+	{
+		vx = 0;
+		jumping = false;
+	}
 }
 
 bool CPanther::FindSimon(float radius)
@@ -161,24 +185,18 @@ void CPanther::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 
 		if (dynamic_cast<CInvisibleWall *>(e->obj))
 		{
-			if (e->nx != 0)
-			{
-				x += DEFLECTION_AVOID_OVERLAPPING * nx;
-				vx = -vx;
-			}
-
 			if (e->ny < 0)
 			{
+				// Land the ground while jumping -> Re-direct to simon 
 				if (vx != 0 && jumping)
 				{
 					ChangeDirectonToSimon();
 					vx = (this->nx > 0) ?
 						PANTHER_RUN_SPEED :
 						-PANTHER_RUN_SPEED;
-				}
 
-				if (jumping)
-					jumping = false;				
+					jumping = false;
+				}			
 
 				y += DEFLECTION_AVOID_OVERLAPPING * ny;
 				vy = 0;				

@@ -63,8 +63,8 @@ void CActiveObject::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 void CActiveObject::SetState(int state)
 {
 	CGameObject::SetState(state);
-	if (state == STATE_INVISIBLE)
-		vx = vy = dx = dy = 0;
+	//if (state == STATE_INVISIBLE)
+	//	vx = vy = dx = dy = 0;
 }
 
 /*

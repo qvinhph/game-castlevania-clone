@@ -23,6 +23,7 @@ public:
 									int &lastCellColumn, int &lastCellRow);
 
 	// Get all the objects in cells that containing the given rectangle
-	void GetObjectsInRectangle(float &left, float &top, float &right, float &bottom, vector<LPGAMEOBJECT> &objects);
+	void GetObjectsInRectangle(float &left, float &top, float &right, float &bottom, 
+		vector<LPGAMEOBJECT> &objects);
 };
 

@@ -36,12 +36,6 @@
 // For flickering while being untouchable.
 #define SIMON_UNTOUCHABLE_ALPHA_VALUE				100	
 
-// The action with this timer is not working.
-#define TIMER_IDLE			0
-
-// The action with this timer is not going to end.
-#define TIMER_ETERNAL		-1
-
 
 enum class SimonAniID
 {
