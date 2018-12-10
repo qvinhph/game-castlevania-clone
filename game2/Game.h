@@ -3,11 +3,17 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 #include <dinput.h>
+#include <string>
 
 #include "KeyEventHandler.h"
 
-#define DIRECTINPUT_VERSION	 0x0800
-#define KEYBOARD_BUFFER_SIZE 1024
+#define DIRECTINPUT_VERSION		0x0800
+#define KEYBOARD_BUFFER_SIZE	1024
+
+#define FONT_SIZE				16			// depend on the height of the font
+
+#define ARGB_WHITE(alpha)		ARGB(alpha, 255, 255, 255)
+#define ARGB_BLACK(alpha)		ARGB(alpha, 0, 0, 0)
 
 
 struct ARGB
@@ -33,6 +39,7 @@ class CGame
 
 	LPDIRECT3DSURFACE9 backBuffer = NULL;
 	LPD3DXSPRITE spriteHandler = NULL;			// Sprite helper library to help us draw 2D image on the screen 
+	LPD3DXFONT font = NULL;						// Helper library to help us draw text on the screen
 
 	LPDIRECTINPUT8       di;					// The DirectInput object         
 	LPDIRECTINPUTDEVICE8 didv;					// The keyboard device 
@@ -63,6 +70,11 @@ public:
 	void Init(HWND hWnd);
 	void Draw(float x, float y, LPDIRECT3DTEXTURE9 tex, int left, int top, int right, int bottom, 
 		ARGB &argb = ARGB());
+
+	/*
+		Draw the given string with the default color (able to change).
+	*/
+	void DrawString(float x, float y, std::string text, ARGB argb = ARGB_WHITE(255));
 
 	int IsKeyDown(int keyCode);
 	void ProcessKeyboard();

@@ -1,10 +1,13 @@
 #include "Timer.h"
+#include "Board.h"
 
 
 CTimer * CTimer::__instance = NULL;
 
 void CTimer::Update(WORD dt, vector<LPGAMEOBJECT>* objects)
 {
+	TimeCount(dt);
+
 	if (freezing)
 	{
 		// If run out of freezing time
@@ -40,6 +43,16 @@ void CTimer::Freeze(WORD time, LPGAMEOBJECT exceptedObj)
 		exceptedObj->SetFreezing(false);
 }
 
+void CTimer::TimeCount(DWORD dt)
+{
+	DWORD now = GetTickCount();
+	if (now - unit_of_time_start > TICK_PER_UNIT_TIME)
+	{
+		CBoard::GetInstance()->AddTime(-1);
+		unit_of_time_start = GetTickCount();
+	}
+}
+
 CTimer * CTimer::GetInstance()
 {
 	if (__instance == NULL)
@@ -51,6 +64,7 @@ CTimer * CTimer::GetInstance()
 CTimer::CTimer()
 {
 	freezing = false;
+	unit_of_time_start = GetTickCount();
 }
 
 

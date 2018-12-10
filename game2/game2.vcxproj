@@ -22,6 +22,7 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationFrame.h" />
     <ClInclude Include="Animations.h" />
+    <ClInclude Include="Board.h" />
     <ClInclude Include="PinkBat.h" />
     <ClInclude Include="BigHeart.h" />
     <ClInclude Include="Candle.h" />
@@ -66,6 +67,7 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationFrame.cpp" />
     <ClCompile Include="Animations.cpp" />
+    <ClCompile Include="Board.cpp" />
     <ClCompile Include="PinkBat.cpp" />
     <ClCompile Include="BigHeart.cpp" />
     <ClCompile Include="Candle.cpp" />

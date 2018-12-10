@@ -46,8 +46,19 @@ void CGame::Init(HWND hWnd)
 
 	d3ddv->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backBuffer);
 
+
 	// Initialize sprite helper from Direct3DX helper library
 	D3DXCreateSprite(d3ddv, &spriteHandler);
+
+
+	// Initialize font helper from Direct3DX Font helper library
+	D3DXCreateFont(d3ddv, FONT_SIZE, 0, FW_NORMAL, 1, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
+		ANTIALIASED_QUALITY, FF_DONTCARE, L"Nintendo NES Font", &font);
+	if (font == NULL)
+	{
+		OutputDebugString(L"[ERROR] CreateFont failed.\n");
+		return;
+	}
 
 	OutputDebugString(L"[INFO] InitGame done;\n");
 }
@@ -57,7 +68,6 @@ void CGame::Init(HWND hWnd)
 */
 void CGame::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, ARGB& argb)
 {
-
 	// Get the viewport position
 	float xv = x - xCamera;
 	float yv = y - yCamera;
@@ -71,6 +81,27 @@ void CGame::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top
 	spriteHandler->Draw(texture, &r, NULL, &p, D3DCOLOR_ARGB(argb.alpha, argb.red, argb.green, argb.blue));
 }
 
+void CGame::DrawString(float x, float y, std::string text, ARGB argb)
+{
+	RECT rect;
+	rect.left = x;
+	rect.top = y;
+	rect.right = rect.left;
+	rect.bottom = rect.top;
+
+
+	// Get the correct RECT size for the string
+	font->DrawTextA(NULL, text.c_str(), -1, &rect, DT_CALCRECT, NULL);
+
+
+	// Draw string
+	int result = font->DrawTextA(NULL, text.c_str(), -1, &rect, DT_LEFT,
+		D3DCOLOR_ARGB(argb.alpha, argb.red, argb.green, argb.blue));	
+
+
+	if (result == 0)
+		DebugOut(L"\n[ERROR] DrawString failed");
+}
 int CGame::IsKeyDown(int keyCode)
 {
 	return (keyStates[keyCode] & 0x80) > 0;

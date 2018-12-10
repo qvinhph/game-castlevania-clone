@@ -1,5 +1,6 @@
 #include "Heart.h"
 #include "debug.h"
+#include "InvisibleWall.h"
 
 
 void CHeart::GetBoundingBox(float & left, float & top, float & right, float & bottom)
@@ -34,8 +35,7 @@ void CHeart::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	else
 	{
-		vx = vy = 0;
-		CActiveObject::ProceedCollisions(coEvents);
+		ProceedCollisions(coEvents);
 	}
 
 	// clean up collision events
@@ -52,6 +52,40 @@ void CHeart::SetState(int state)
 	{
 		vy = HEART_FALL_SPEED_Y;
 		vx = HEART_MAX_SPEED_X_ALLOWED;
+	}
+}
+
+void CHeart::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
+{
+	vector<LPCOLLISIONEVENT> coEventsResult;
+	float min_tx, min_ty, nx, ny;
+	FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
+
+	// Set the object's position right to the point occured collision
+	x += min_tx * dx;
+	y += min_ty * dy;
+
+	for (UINT i = 0; i < coEventsResult.size(); ++i)
+	{
+		LPCOLLISIONEVENT e = coEventsResult[i];
+
+		if (dynamic_cast<CInvisibleWall *>(e->obj))
+		{
+			// Block when reach the ground
+			if (e->ny < 0)
+			{
+				y += DEFLECTION_AVOID_OVERLAPPING * e->ny;
+				vy = 0;
+			}
+
+			vx = vy = 0;
+		}
+		else
+		{
+			// Ignore other objects by completing the rest of dx / dy
+			if (e->nx != 0)	x += (1 - min_tx) * dx;
+			if (e->ny != 0)	y += (1 - min_ty) * dy;
+		}
 	}
 }
 

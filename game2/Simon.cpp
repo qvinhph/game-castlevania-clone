@@ -308,6 +308,10 @@ void CSimon::ProceedJumping()
 	}
 	else
 		vy += SIMON_JUMP_GRAVITY * this->dt;
+
+
+	// NOTE: JUMPING FLAG WILL BE ASSIGNED TO FALSE 
+	// WHEN REACHES THE GROUND ( void ProceedCollision(...) );
 }
 
 void CSimon::ProceedGravity()

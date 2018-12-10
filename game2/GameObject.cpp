@@ -29,7 +29,7 @@ void CGameObject::RenderBoundingBox()
 }
 
 /*
-	Return true if 100% of the object area in the viewport
+	Return true if 100% area of the object is in the viewport
 */
 bool CGameObject::IsInViewport()
 {

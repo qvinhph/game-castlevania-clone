@@ -17,7 +17,7 @@
 #define SIMON_WALKING_SPEED							0.12f		
 #define SIMON_JUMP_SPEED							0.4f
 #define SIMON_JUMP_GRAVITY							0.0012f
-#define SIMON_FALL_GRAVITY							0.01f 
+#define SIMON_FALL_GRAVITY							0.012f 
 #define SIMON_MAX_SPEED_WITH_JUMP_GRAVITY			0.26f		// max fall down speed can get by jump gravity
 #define SIMON_MAX_SPEED_Y							1.8f
 

@@ -12,6 +12,7 @@
 #include "Sprites.h"
 #include "Textures.h"
 
+#include "Board.h"
 #include "Simon.h"
 #include "Rope.h"
 #include "BigCandle.h"

@@ -1,6 +1,6 @@
 #include "Flames.h"
 
-CFlames * CFlames::__instance;
+CFlames * CFlames::__instance = NULL;
 
 void CFlames::Add(CFlame * flame)
 {

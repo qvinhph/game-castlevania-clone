@@ -21,8 +21,6 @@ using namespace std;
 #define TIMER_ETERNAL		-1
 
 
-
-
 // Item or dropable objects' name
 enum class Item
 {
@@ -47,6 +45,24 @@ enum class Monster
 	PANTHER,
 	PINKBAT,
 	FISH,
+};
+
+// Health of the object
+enum class HealthDefault
+{
+	ZOMBIE = 1,
+	PANTHER = 1,
+	PINKBAT = 1,
+	FISH = 1,
+};
+
+// Point that will be got when destroy the object
+enum class PointDefault
+{
+	ZOMBIE = 100,
+	PANTHER = 200,
+	PINKBAT = 200,
+	FISH = 300,
 };
 
 

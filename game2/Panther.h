@@ -2,7 +2,7 @@
 #include "MovableObject.h"
 
 #define PANTHER_IDLE_BBOX_HEIGHT	32.0f
-#define PANTHER_IDLE_BBOX_WIDTH		100.0f//48.0f
+#define PANTHER_IDLE_BBOX_WIDTH		48.0f
 
 #define PANTHER_RUN_BBOX_HEIGHT		32.0f
 #define PANTHER_RUN_BBOX_WIDTH		64.0f

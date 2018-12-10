@@ -30,6 +30,7 @@ CTileMap *tileMap;
 CGame *game;
 LPGAMEOBJECT gameObject;
 CCells *cells;
+CBoard *board;
 
 vector<LPGAMEOBJECT> updateObjects;			// The objects need be updated
 vector<LPGAMEOBJECT> defaultObjects;		// Always need be Updated objects
@@ -206,6 +207,7 @@ void InitDefaultObjects()
 	CItems * items = CItems::GetInstance();			// For adding and managing the item-type objects
 	CFlames * flames = CFlames::GetInstance();		
 	CWeapons * weapons = CWeapons::GetInstance();
+	board = CBoard::GetInstance();
 
 	gameObject = CSimon::GetInstance();
 	defaultObjects.push_back(gameObject);
@@ -731,6 +733,34 @@ void LoadResources()
 
 #pragma endregion
 
+#pragma region Loading board resources
+
+	// player health unit
+	sprites->Add(97001, 112, 45, 120, 59, texMisc);
+	ani = new CAnimation(100);
+	ani->AddFrame(97001);
+	animations->Add((int)BoardAniID::PLAYER_HEALTH_UNIT, ani);
+
+	// enemy health unit
+	sprites->Add(97002, 123, 45, 131, 59, texMisc);
+	ani = new CAnimation(100);
+	ani->AddFrame(97002);
+	animations->Add((int)BoardAniID::ENEMY_HEALTH_UNIT, ani);
+
+	// empty health unit
+	sprites->Add(97003, 134, 45, 142, 59, texMisc);
+	ani = new CAnimation(100);
+	ani->AddFrame(97003);
+	animations->Add((int)BoardAniID::EMPTY_UNIT_HEALTH, ani);
+
+	// item box
+	sprites->Add(97004, 179, 116, 243, 170, texMisc);
+	ani = new CAnimation(100);
+	ani->AddFrame(97004);
+	animations->Add((int)BoardAniID::ITEM_BOX, ani);
+
+#pragma endregion
+
 
 	InitDefaultObjects();
 	TestInit();
@@ -810,15 +840,18 @@ void Render()
 
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 
+		// Only draw the tile in the camera 
 		float left, top, right, bottom;
 		game->GetViewportBoundingBox(left, top, right, bottom);
-		tileMap->Draw(left, top, right, bottom);
+		//tileMap->Draw(left, top, right, bottom);
 
 		for (UINT i = 0; i < updateObjects.size(); i++)
 		{
 			updateObjects[i]->Render();
 			updateObjects[i]->RenderBoundingBox();
 		}
+
+		board->Render();
 
 		spriteHandler->End();
 		d3ddv->EndScene();

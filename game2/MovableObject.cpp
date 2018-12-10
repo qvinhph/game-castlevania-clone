@@ -51,12 +51,18 @@ void CActiveObject::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 				vy = 0;
 			}
 
-			if (e->nx != 0)
+			/*if (e->nx != 0)
 			{
 				x += DEFLECTION_AVOID_OVERLAPPING * e->nx;
 				vx = 0;
-			}
-		}		
+			}*/
+		}	
+		else
+		{
+			// Ignore other objects by completing the rest of dx / dy
+			if (e->nx != 0)	x += (1 - min_tx) * dx;
+			if (e->ny != 0)	y += (1 - min_ty) * dy;
+		}
 	}
 }
 

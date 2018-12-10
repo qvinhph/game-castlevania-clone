@@ -19,6 +19,7 @@ void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		SetMatchedAnimation();
 		UpdateRopePosition(currentAniID);
+		PickDamage();
 
 		vector<LPCOLLISIONEVENT> coEvents;
 		coEvents.clear();
@@ -37,7 +38,7 @@ void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						dynamic_cast<CZombie *>(coObjects->at(i)) || 
 						dynamic_cast<CPanther *>(coObjects->at(i)) || 
 						dynamic_cast<CPinkBat *>(coObjects->at(i)))
-						coObjects->at(i)->Destroy();
+						coObjects->at(i)->BeHit(this->damage);
 
 		// clean up collision events
 		for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
@@ -205,6 +206,14 @@ void CRope::LevelUp()
 	default:
 		break;
 	}
+}
+
+void CRope::PickDamage()
+{
+	if (level == ROPE_LEVEL1)
+		damage = ROPE_DAMAGE_LEVEL1;
+	else
+		damage = ROPE_DAMAGE_LEVEL2;
 }
 
 void CRope::SetState(int state)
