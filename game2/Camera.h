@@ -34,6 +34,9 @@ public:
 	void GetLimitBound(float &left, float &top, float &right, float &bottom);
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 
+	// Change the current camera limit bound to the bound contain the given point
+	void ChangeLimitBound(float x, float y);
+
 	static CCamera * GetInstance();
 	~CCamera();
 };

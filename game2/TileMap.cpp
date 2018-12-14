@@ -21,6 +21,7 @@
 #define TILEMAP_KEY_OBJECTS					"objects"
 #define TILEMAP_KEY_X_POSITION				"x"
 #define TILEMAP_KEY_Y_POSITION				"y"
+#define TILEMAP_KEY_TYPE					"type"
 
 void CTileMap::Init(int tilesetTextureID)
 {
@@ -182,6 +183,18 @@ void CTileMap::CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo)
 			continue;
 		}
 
+		// Teleport
+		else if (info->name == "portal")
+		{
+			PortalIndicator indicator;
+			if (info->nx == 0) indicator = PortalIndicator::NONE;
+			else if (info->nx == -1) indicator = PortalIndicator::BACK;
+			else if (info->nx == 1) indicator = PortalIndicator::NEXT;
+
+			obj = new CPortal(info->width, info->height, indicator);
+			CPortals::GetInstance()->Add(obj);
+		}
+
 
 		// Simon
 		else if (info->name == "simon")
@@ -300,6 +313,7 @@ vector<LPOBJECTINFO> CTileMap::GetObjects(json root)
 							nx,
 							(*obj)[TILEMAP_KEY_WIDTH].get<float>(),
 							(*obj)[TILEMAP_KEY_HEIGHT].get<float>(),
+							(*obj)[TILEMAP_KEY_TYPE].get<string>(),
 							item));
 				}
 			}

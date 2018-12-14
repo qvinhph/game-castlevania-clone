@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "debug.h"
 
 CCamera * CCamera::__instance = NULL;
 
@@ -37,6 +38,23 @@ void CCamera::GetBoundingBox(float & left, float & top, float & right, float & b
 	top = y;
 	right = x + viewportWidth;
 	bottom = y + viewportHeight;
+}
+
+void CCamera::ChangeLimitBound(float x, float y)
+{
+	RECT bound;
+	for (UINT i = 0; i < limitBounds.size(); i++)
+	{
+		bound = limitBounds[i];
+		if (x < bound.right && x > bound.left
+			&& y < bound.bottom && y > bound.top)
+		{
+			this->currentLimitBound = i;
+			return;
+		}
+	}
+
+	DebugOut(L"\n[ERROR] Cannot focus the camera to the given point");
 }
 
 CCamera * CCamera::GetInstance()

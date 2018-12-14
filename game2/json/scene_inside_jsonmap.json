@@ -976,7 +976,7 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":1536,
+                 "width":1533.33333333333,
                  "x":0,
                  "y":384
                 }, 
@@ -1012,6 +1012,40 @@
                  "width":3072,
                  "x":1534,
                  "y":0
+                }, 
+                {
+                 "height":34,
+                 "id":110,
+                 "name":"portal",
+                 "properties":[
+                        {
+                         "name":"Direction",
+                         "type":"int",
+                         "value":1
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":28.5,
+                 "x":1377,
+                 "y":348
+                }, 
+                {
+                 "height":62,
+                 "id":111,
+                 "name":"portal",
+                 "properties":[
+                        {
+                         "name":"Direction",
+                         "type":"int",
+                         "value":0
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":1551.58333333333,
+                 "y":352.833333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1020,7 +1054,7 @@
          "y":0
         }],
  "nextlayerid":39,
- "nextobjectid":103,
+ "nextobjectid":112,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.0",

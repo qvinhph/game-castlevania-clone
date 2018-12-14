@@ -26,13 +26,14 @@ struct CObjectInfo
 	std::string name;
 	float x;
 	float y;
-	int nx;		// Direction of the object
+	int nx;				// Direction of the object
 	float width;
 	float height;
 	Item dropableItem;
+	string type;		// Multiply use with many different object
 
-	CObjectInfo(string name, float x, float y, int nx, float width, float height, Item item)
-		: name(name), x(x), y(y), nx(nx), width(width), height(height), dropableItem(item) {}
+	CObjectInfo(string name, float x, float y, int nx, float width, float height, string type, Item item)
+		: name(name), x(x), y(y), nx(nx), width(width), height(height), dropableItem(item), type(type) {}
 };
 typedef CObjectInfo * LPOBJECTINFO;
 

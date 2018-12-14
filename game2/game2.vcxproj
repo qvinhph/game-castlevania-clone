@@ -55,6 +55,8 @@
     <ClInclude Include="Simon.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Sprites.h" />
+    <ClInclude Include="Portal.h" />
+    <ClInclude Include="Portals.h" />
     <ClInclude Include="Textures.h" />
     <ClInclude Include="BigCandle.h" />
     <ClInclude Include="Tile.h" />
@@ -82,6 +84,8 @@
     <ClCompile Include="SpawnerZombie.cpp" />
     <ClCompile Include="StairsDown.cpp" />
     <ClCompile Include="StairsUp.cpp" />
+    <ClCompile Include="Portal.cpp" />
+    <ClCompile Include="Portals.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Weapons.cpp" />
     <ClCompile Include="Dagger.cpp" />

@@ -19,6 +19,7 @@
 #include "Panther.h"
 #include "PinkBat.h"
 #include "Board.h"
+#include "Portals.h"
 
 #include "debug.h"
 
@@ -539,6 +540,12 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 				if (e->nx != 0) x += (1 - min_tx) * dx;
 				if (e->ny != 0) y += (1 - min_ty) * dy;
 			}
+		}
+
+		else if (dynamic_cast<CPortal *>(e->obj))
+		{
+			CPortal * portal = dynamic_cast<CPortal *>(e->obj);
+			CPortals::GetInstance()->Teleport(portal, this->x, this->y);
 		}
 
 		// block with ground objects

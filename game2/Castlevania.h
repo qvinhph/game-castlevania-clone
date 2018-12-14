@@ -34,6 +34,8 @@
 #include "SpawnerPinkBat.h"
 #include "PinkBat.h"
 #include "Camera.h"
+#include "Portal.h"
+#include "Portals.h"
 
 #define ID_TEX_SIMON		0
 #define ID_TEX_ROPE			1

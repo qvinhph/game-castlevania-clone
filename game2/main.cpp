@@ -853,7 +853,7 @@ void Render()
 		for (UINT i = 0; i < updateObjects.size(); i++)
 		{
 			updateObjects[i]->Render();
-			//updateObjects[i]->RenderBoundingBox();
+			updateObjects[i]->RenderBoundingBox();
 		}
 
 		board->Render();
