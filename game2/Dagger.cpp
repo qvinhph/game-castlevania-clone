@@ -68,7 +68,7 @@ void CDagger::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			dynamic_cast<CPanther *>(e->obj) || 
 			dynamic_cast<CZombie *>(e->obj))
 		{
-			e->obj->Destroy();
+			e->obj->BeHit(this->damage);
 			this->SetState(STATE_INVISIBLE);
 			break;
 		}
@@ -88,6 +88,11 @@ void CDagger::SetState(int state)
 	// Make the dagger object available again to use next time
 	if (state == STATE_INVISIBLE)
 		CWeapons::GetInstance()->AddToStock(Weapon::DAGGER);
+}
+
+CDagger::CDagger()
+{
+	damage = DAGGER_DAMAGE;
 }
 
 

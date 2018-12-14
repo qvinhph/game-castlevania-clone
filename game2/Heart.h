@@ -8,6 +8,8 @@
 #define HEART_VECLOCITY_X					0.0002
 #define HEART_MAX_SPEED_X_ALLOWED			0.1f			
 
+#define HEART_POINT_AWARD					1
+
 enum class HeartAniID
 {
 	IDLE = 1700

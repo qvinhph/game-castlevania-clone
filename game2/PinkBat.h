@@ -8,6 +8,10 @@
 #define BAT_SPEED_VY				0.06
 #define BAT_MOVEMENT_AMPLITUDE		20
 
+#define PINK_BAT_DEFAULT_HEALTH		1
+#define PINK_BAT_DAMAGE				2
+#define PINK_BAT_POINT_AWARD		200
+
 enum class PinkBatAniID
 {
 	FLYING_LEFT = 5301,

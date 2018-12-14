@@ -16,7 +16,7 @@ class CTimer
 	bool freezing;
 	DWORD freezeTime;
 	DWORD startFreezeTime;
-	vector<LPGAMEOBJECT> * objects;
+	vector<LPGAMEOBJECT> objects;
 
 public:
 

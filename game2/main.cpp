@@ -287,8 +287,8 @@ void LoadResources()
 	//
 	//	GET VIEWPORT SIZE
 	//
-	CGame::GetInstance()->SetViewportWidth(VIEWPORT_WIDTH);
-	CGame::GetInstance()->SetViewportHeight(VIEWPORT_HEIGHT);
+	CCamera * camera = CCamera::GetInstance();
+	camera->SetViewportSize(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 
 	//
 	// LOAD TEXTURES
@@ -329,8 +329,8 @@ void LoadResources()
 	sprites->Add(99102, 135, 200, 167, 262, texSimon);	// walk left
 	sprites->Add(99103, 192, 200, 224, 262, texSimon);	// walk left
 
-	sprites->Add(99004, 196, 1, 228, 47, texSimon);		// crouch right
-	sprites->Add(99104, 252, 199, 284, 245, texSimon);	// crouch left
+	sprites->Add(99004, 196, 18, 228, 64, texSimon);	// crouch right
+	sprites->Add(99104, 252, 216, 284, 262, texSimon);	// crouch left
 
 	sprites->Add(99007, 136, 2, 168, 64, texSimon);		// attack right
 	sprites->Add(99008, 75, 2, 107, 64, texSimon);		// attack right
@@ -341,14 +341,11 @@ void LoadResources()
 	
 	sprites->Add(99020, 438, 72, 470, 130, texSimon);	// go in
 
-	sprites->Add(99021, 10, 270, 42, 328, texSimon);	// pushed back right
-	sprites->Add(99121, 438, 72, 470, 130, texSimon);	// pushed back left
-
-	sprites->Add(99022, 263, 68, 293, 130, texSimon);	// climbing right
+	sprites->Add(99022, 262, 68, 294, 130, texSimon);	// climbing right
 	sprites->Add(99023, 191, 68, 221, 130, texSimon);	// upstairs right
 	sprites->Add(99024, 319, 68, 349, 130, texSimon);	// downstairs right
 
-	sprites->Add(99122, 187, 266, 217, 328, texSimon);	// climbing left
+	sprites->Add(99122, 186, 266, 218, 328, texSimon);	// climbing left
 	sprites->Add(99123, 259, 266, 289, 328, texSimon);	// upstairs left
 	sprites->Add(99124, 131, 266, 161, 328, texSimon);	// downstairs left
 	
@@ -373,10 +370,13 @@ void LoadResources()
 	sprites->Add(99158, 379, 332, 411, 394, texSimon);	// up stair attack left
 	sprites->Add(99159, 439, 332, 471, 394, texSimon);	// up stair attack left
 
-	sprites->Add(99099, 10, 270, 42, 328, texSimon);	// damaging right
-	sprites->Add(99199, 438, 72, 470, 130, texSimon);	// damaging left
+	sprites->Add(99090, 10, 270, 42, 328, texSimon);	// damaging right
+	sprites->Add(99190, 438, 72, 470, 130, texSimon);	// damaging left
 
-	sprites->Add(99999, 60, 269, 64, 60, texSimon);	// die
+	sprites->Add(99198, 252, 200, 284, 262, texSimon);	// die_left
+	sprites->Add(99199, 60, 267, 124, 329, texSimon);	// die_left
+	sprites->Add(99098, 196, 2, 228, 64, texSimon);		// die_right
+	sprites->Add(99099, 115, 68, 179, 130, texSimon);	// die_right
 
 	ani = new CAnimation(100);
 	ani->AddFrame(99000);
@@ -423,14 +423,6 @@ void LoadResources()
 	ani = new CAnimation(100);
 	ani->AddFrame(99020);
 	animations->Add((int)SimonAniID::GO_IN, ani);
-
-	ani = new CAnimation(100);
-	ani->AddFrame(99021);
-	animations->Add((int)SimonAniID::PUSHED_BACK_RIGHT, ani);
-
-	ani = new CAnimation(100);
-	ani->AddFrame(99121);
-	animations->Add((int)SimonAniID::PUSHED_BACK_LEFT, ani);
 
 	ani = new CAnimation(150);
 	ani->AddFrame(99022);
@@ -504,16 +496,22 @@ void LoadResources()
 	ani->AddFrame(99159, 200);
 	animations->Add((int)SimonAniID::UP_STAIR_ATTACK_LEFT, ani);
 
-	ani = new CAnimation(100);
-	ani->AddFrame(99999);
-	animations->Add((int)SimonAniID::DIE, ani);
+	ani = new CAnimation(500);
+	ani->AddFrame(99198);
+	ani->AddFrame(99199, 999999999);
+	animations->Add((int)SimonAniID::DIE_LEFT, ani);
+
+	ani = new CAnimation(500);
+	ani->AddFrame(99098);
+	ani->AddFrame(99099, 999999999);
+	animations->Add((int)SimonAniID::DIE_RIGHT, ani);
 
 	ani = new CAnimation(100);
-	ani->AddFrame(99099);
+	ani->AddFrame(99090);
 	animations->Add((int)SimonAniID::DAMAGING_RIGHT, ani);
 
 	ani = new CAnimation(100);
-	ani->AddFrame(99199);
+	ani->AddFrame(99190);
 	animations->Add((int)SimonAniID::DAMAGING_LEFT, ani);
 
 #pragma endregion
@@ -754,10 +752,16 @@ void LoadResources()
 	animations->Add((int)BoardAniID::EMPTY_UNIT_HEALTH, ani);
 
 	// item box
-	sprites->Add(97004, 179, 116, 243, 170, texMisc);
+	sprites->Add(97004, 179, 116, 243, 160, texMisc);
 	ani = new CAnimation(100);
 	ani->AddFrame(97004);
 	animations->Add((int)BoardAniID::ITEM_BOX, ani);
+
+	// heart
+	sprites->Add(97004, 228, 162, 244, 188, texMisc);
+	ani = new CAnimation(100);
+	ani->AddFrame(97004);
+	animations->Add((int)BoardAniID::HEART, ani);
 
 #pragma endregion
 
@@ -780,7 +784,7 @@ void Update(DWORD dt)
 
 	// Get the bounding box of viewport
 	float left, top, right, bottom;
-	game->GetViewportBoundingBox(left, top, right, bottom);
+	CCamera::GetInstance()->GetBoundingBox(left, top, right, bottom);
 
 
 	// Get objects in the cells
@@ -821,6 +825,7 @@ void Update(DWORD dt)
 
 	// Help freezing time in game
 	CTimer::GetInstance()->Update(dt, &updateObjects);
+	CBoard::GetInstance()->Update();
 }
 
 
@@ -842,13 +847,13 @@ void Render()
 
 		// Only draw the tile in the camera 
 		float left, top, right, bottom;
-		game->GetViewportBoundingBox(left, top, right, bottom);
-		//tileMap->Draw(left, top, right, bottom);
+		CCamera::GetInstance()->GetBoundingBox(left, top, right, bottom);
+		tileMap->Draw(left, top, right, bottom);
 
 		for (UINT i = 0; i < updateObjects.size(); i++)
 		{
 			updateObjects[i]->Render();
-			updateObjects[i]->RenderBoundingBox();
+			//updateObjects[i]->RenderBoundingBox();
 		}
 
 		board->Render();
@@ -906,6 +911,8 @@ int Run()
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	DebugOut(L"\nStart             asdasdasdsadsad");
+
 	HWND hWnd = CreateGameWindow(hInstance, nCmdShow, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	game = CGame::GetInstance();
@@ -913,10 +920,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	inputHandler = new CInputHandler();
 	game->InitKeyboard(inputHandler);
+	DebugOut(L"\nStart");
+	DebugOut(L"\nStart ---------- 2");
+
 
 	LoadResources();
 
 	SetWindowPos(hWnd, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
+	DebugOut(L"\nEnd------------------444444");
 
 	Run();
 

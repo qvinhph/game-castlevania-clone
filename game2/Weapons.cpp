@@ -11,7 +11,8 @@ void CWeapons::UseWeapon(Weapon weaponName, LPGAMEOBJECT obj)
 {
 	float left, top, right, bottom;
 	LPGAMEOBJECT weapon = GetWeapon(weaponName);
-	if (weapon == nullptr)
+
+	if (weapon == NULL)
 	{
 		DebugOut(L"\n[ERROR] Failed to get weapon (Weapon enum: %d)", weaponName);
 		return;
@@ -25,9 +26,11 @@ void CWeapons::UseWeapon(Weapon weaponName, LPGAMEOBJECT obj)
 		{
 			CSimon * simon = dynamic_cast<CSimon *>(obj);
 
+			// Get the direction depending on Simon's direction
 			weapon->SetDirection(simon->GetDirection());
 			obj->GetBoundingBox(left, top, right, bottom);
 
+			// Set the weapon position depending on Simon's position
 			if (weapon->GetDirection() > 0)
 				weapon->SetPosition(right, 
 					top + Y_DISTANCE_DAGGER_LOWER_SIMON);
@@ -35,6 +38,7 @@ void CWeapons::UseWeapon(Weapon weaponName, LPGAMEOBJECT obj)
 				weapon->SetPosition(left - DAGGER_BBOX_WIDTH, 
 					top + Y_DISTANCE_DAGGER_LOWER_SIMON);
 
+			// Set the weapon visible
 			weapon->SetState(STATE_VISIBLE);
 		}
 	default:
@@ -62,7 +66,7 @@ LPGAMEOBJECT CWeapons::GetWeapon(Weapon weaponName)
 	else
 		DebugOut(L"\n[INFO] Out of stock of the weapon (Weapon enum: %d)", (int)weaponName);
 	
-	return nullptr;
+	return NULL;
 }
 
 void CWeapons::Add(Weapon weaponName, LPGAMEOBJECT weapon)

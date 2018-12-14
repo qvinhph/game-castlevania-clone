@@ -4,7 +4,6 @@
 
 #include "debug.h"
 
-
 void CZombie::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
 	left = x;
@@ -87,4 +86,21 @@ void CZombie::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 			if (e->ny < 0)	y += (1 - min_ty) * dy;
 		}
 	}
+}
+
+void CZombie::SetState(int state)
+{
+	CGameObject::SetState(state);
+
+	if (state == STATE_VISIBLE)
+	{
+		health = ZOMBIE_DEFAULT_HEALTH;
+	}
+}
+
+CZombie::CZombie()
+{
+	point = ZOMBIE_POINT_AWARD;
+	health = ZOMBIE_DEFAULT_HEALTH;
+	damage = ZOMBIE_DAMAGE;
 }

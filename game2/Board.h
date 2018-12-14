@@ -1,5 +1,5 @@
 #pragma once
-#include "Game.h"
+#include "GameObject.h"
 
 #define SCORE_DEFAULT		0
 #define SCORE_DIGITS		6	
@@ -18,13 +18,13 @@
 
 #define HEART_DEFAULT		5
 #define HEART_DIGITS		2
-#define HEART_POSITION_X	336
+#define HEART_POSITION_X	338
 #define HEART_POSITION_Y	32
 
-#define POINT_DEFAULT		3
-#define POINT_DIGITS		2
-#define POINT_POSITION_X	338
-#define POINT_POSITION_Y	48
+#define LIFE_POINT_DEFAULT		3
+#define LIFE_POINT_DIGITS		2
+#define LIFE_POINT_POSITION_X	338
+#define LIFE_POINT_POSITION_Y	48
 
 #define PLAYER_HEALTH_DEFAULT			16
 #define PLAYER_TEXT_POSITION_X			2
@@ -40,16 +40,22 @@
 
 #define SCORE_TEXT						"SCORE-"
 #define TIME_TEXT						"TIME "
-#define POINT_TEXT						"P- "
+#define LIFE_POINT_TEXT					"P-"
+#define HEART_TEXT						" -"
 #define STAGE_TEXT						"STAGE "
 #define PLAYER_LIFE_TEXT				"PLAYER "
 #define ENEMY_LIFE_TEXT					"ENEMY  "
 
 #define ITEM_BOX_POSITION_X		256
 #define ITEM_BOX_POSITION_Y		32
+#define ITEM_BOX_WIDTH			64
+#define ITEM_BOX_HEIGHT			44
 
 #define HEALTH_UNIT_WIDTH		8
 #define HEALTH_UNIT_HEIGHT		14
+
+#define HEALTH_PAUSE_TIME		100			// The time health bar take to pause after changing
+
 
 enum class BoardAniID
 {
@@ -57,6 +63,7 @@ enum class BoardAniID
 	ENEMY_HEALTH_UNIT,
 	EMPTY_UNIT_HEALTH,
 	ITEM_BOX,
+	HEART
 };
 
 
@@ -69,10 +76,20 @@ class CBoard
 	int playerHealth;
 	int enemyHealth;
 	int heart;
-	int point;			// number of Simon's life left
+	int lifePoint;			// number of Simon's life left
+
+	int playerHealthTemp = 0;
+	int enemyHealthTemp = 0;
+
+	// Timers, also be used as FLAG for the action when assigned to TIMER_IDLE(false) or non-TIMER_IDLE(true)
+	// Assigned to TIMER_IDLE			: the timer is not working,
+	// Assigned to TIMER_ETERNAL		: the timer is working and the action is not going to stop
+	// Assigned to unsigned number		: the timer is working
+	DWORD player_health_pause_start = TIMER_IDLE;
 
 	static CBoard * __instance;
-
+	static CGame * gameInstance;
+	static CCamera * cameraInstance;
 	CBoard();
 
 public:
@@ -91,8 +108,8 @@ public:
 	int GetHeart() { return this->heart; }
 	void SetHeart(int heart) { this->heart = heart; }
 
-	int GetPoint() { return this->point; }
-	void SetPoint(int point) { this->point = point; }
+	int GetLifePoint() { return this->lifePoint; }
+	void SetLifePoint(int point) { this->lifePoint = point; }
 
 	int GetPlayerLife() { return this->playerHealth; }
 	void SetPlayerLife(int playerLife) { this->playerHealth = playerLife; }
@@ -103,6 +120,8 @@ public:
 #pragma endregion
 
 	void Render();
+	void Update();
+
 	void RenderScore();
 	void RenderTime();
 	void RenderStage();
@@ -110,15 +129,19 @@ public:
 	void RenderEnemyLife();
 	void RenderHeart();
 	void RenderPoint();
+	void RenderWeaponBox();
 
 	// Also use these functions for subtraction
 	void AddScore(int number) { this->score += number; }
 	void AddTime(int number) { this->time += number; }
-	void AddPlayerLife(int number) { this->playerHealth += number; }
-	void AddEnemyLife(int number) { this->enemyHealth += number; }
 	void AddHeart(int number) { this->heart += number; }
-	void AddPoint(int number) { this->point += point; }
+	void AddLifePoint(int number) { this->lifePoint += number; }
 	void AddStage(int number) { this->stage += number; }
+	void AddEnemyLife(int number) { this->enemyHealth += number; }
+	void AddPlayerLife(int number) { this->playerHealthTemp += number; }
+
+	void ChangePlayerHealthGradually();
+	void CalcWeaponInsidePosition(float weaponWidth, float weaponHeight, float &x, float &y);
 
 	static CBoard * GetInstance();
 };

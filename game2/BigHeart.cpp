@@ -21,6 +21,12 @@ void CBigHeart::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 
+CBigHeart::CBigHeart()
+{
+	this->currentAniID = (int)BigHeartAniID::IDLE;
+	this->point = BIG_HEART_POINT_AWARD;
+}
+
 void CBigHeart::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
 	left = x;

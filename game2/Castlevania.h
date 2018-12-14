@@ -33,6 +33,7 @@
 #include "SpawnerPanther.h"
 #include "SpawnerPinkBat.h"
 #include "PinkBat.h"
+#include "Camera.h"
 
 #define ID_TEX_SIMON		0
 #define ID_TEX_ROPE			1

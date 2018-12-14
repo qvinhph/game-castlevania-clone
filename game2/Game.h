@@ -4,6 +4,7 @@
 #include <d3dx9.h>
 #include <dinput.h>
 #include <string>
+#include "Camera.h"
 
 #include "KeyEventHandler.h"
 
@@ -49,23 +50,12 @@ class CGame
 
 	LPKEY_EVENT_HANDLER keyEventHandler;
 
-	float xCamera;
-	float yCamera;
-	float viewportWidth;
-	float viewportHeight;
+	CCamera * camera = CCamera::GetInstance();
 
 	static CGame * __instance;
 	CGame() = default;
 
 public:
-	void SetCameraPosition(float x, float y) { this->xCamera = x; this->yCamera = y; }
-	void GetCameraPosition(float &x, float &y) { x = this->xCamera; y = this->yCamera; }
-	
-	void SetViewportWidth(float viewportWidth) { this->viewportWidth = viewportWidth; }
-	void SetViewportHeight(float viewportHeight) { this->viewportHeight = viewportHeight; }
-	void GetViewportSize(float &width, float &height) { height = this->viewportHeight; width = this->viewportWidth; }
-	void GetViewportBoundingBox(float &left, float &top, float &right, float &bottom);
-
 	void InitKeyboard(LPKEY_EVENT_HANDLER handler);
 	void Init(HWND hWnd);
 	void Draw(float x, float y, LPDIRECT3DTEXTURE9 tex, int left, int top, int right, int bottom, 

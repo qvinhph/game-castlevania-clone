@@ -4,6 +4,7 @@
 #define DAGGER_BBOX_HEIGHT		18.0f
 #define DAGGER_BBOX_WIDTH		32.0f
 #define DAGGER_SPEED_X			0.4f
+#define DAGGER_DAMAGE			1
 
 enum class DaggerAniID
 {
@@ -19,6 +20,8 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects) override;
 	void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents) override;
 	void SetState(int state) override;
+
+	CDagger();
 
 };
 

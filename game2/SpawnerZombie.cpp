@@ -61,7 +61,7 @@ void CSpawnerZombie::SetupZombieInfo(float & x, float & y, int & nx)
 
 	// Viewport bounding box
 	float leftV, topV, rightV, bottomV;
-	CGame::GetInstance()->GetViewportBoundingBox(leftV, topV, rightV, bottomV);
+	cameraInstance->GetBoundingBox(leftV, topV, rightV, bottomV);
 
 	// TO-DO: Setup a random nx
 	// Because somehow zombie may appear from the left of the viewport

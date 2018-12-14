@@ -1,8 +1,11 @@
 #include "Board.h"
-#include "Animations.h"
+#include "Heart.h"
+#include "Simon.h"
 #include "debug.h"
 
 CBoard * CBoard::__instance = NULL;
+CCamera * CBoard::cameraInstance = CCamera::GetInstance();
+CGame * CBoard::gameInstance = CGame::GetInstance();
 
 void CBoard::Render()
 {
@@ -15,7 +18,14 @@ void CBoard::Render()
 	RenderEnemyLife();
 	RenderPlayerHealth();
 	RenderStage();
+	RenderWeaponBox();
 
+}
+
+void CBoard::Update()
+{
+	if (playerHealthTemp != 0)
+		ChangePlayerHealthGradually();
 }
 
 void CBoard::RenderScore()
@@ -59,13 +69,12 @@ void CBoard::RenderStage()
 
 void CBoard::RenderPlayerHealth()
 {
-	CGame * game = CGame::GetInstance();
 	CAnimations * animations = CAnimations::GetInstance();
 	float xCam, yCam;
-	game->GetCameraPosition(xCam, yCam);
+	cameraInstance->GetPosition(xCam, yCam);
 
 	// Draw text
-	game->DrawString(PLAYER_TEXT_POSITION_X, PLAYER_TEXT_POSITION_Y, PLAYER_LIFE_TEXT);
+	gameInstance->DrawString(PLAYER_TEXT_POSITION_X, PLAYER_TEXT_POSITION_Y, PLAYER_LIFE_TEXT);
 
 
 	// Draw the remaining health
@@ -89,14 +98,13 @@ void CBoard::RenderPlayerHealth()
 
 void CBoard::RenderEnemyLife()
 {
-	CGame * game = CGame::GetInstance();
 	CAnimations * animations = CAnimations::GetInstance();
 	float xCam, yCam;
-	game->GetCameraPosition(xCam, yCam);
+	cameraInstance->GetPosition(xCam, yCam);
 
 
 	//Draw the text
-	game->DrawString(ENEMY_TEXT_POSITION_X, ENEMY_TEXT_POSITION_Y, ENEMY_LIFE_TEXT);
+	gameInstance->DrawString(ENEMY_TEXT_POSITION_X, ENEMY_TEXT_POSITION_Y, ENEMY_LIFE_TEXT);
 
 
 	// Draw the remaining health
@@ -120,6 +128,22 @@ void CBoard::RenderEnemyLife()
 
 void CBoard::RenderHeart()
 {
+	CAnimations * animations = CAnimations::GetInstance();
+	float xCam, yCam;
+	cameraInstance->GetPosition(xCam, yCam);
+
+	// Format the string to draw to the screen
+	std::string number = std::to_string(heart);
+	number.insert(number.begin(), HEART_DIGITS - number.size(), '0');
+
+
+	std::string heartString = HEART_TEXT + number;
+	gameInstance->DrawString(HEART_POSITION_X, HEART_POSITION_Y, heartString);
+
+	// Draw the heart image
+	animations->Get((int)BoardAniID::HEART)->Render(xCam + HEART_POSITION_X,
+													yCam + HEART_POSITION_Y);
+
 }
 
 void CBoard::RenderPoint()
@@ -127,12 +151,77 @@ void CBoard::RenderPoint()
 	CGame * game = CGame::GetInstance();
 
 	// Format the string to draw to the screen
-	std::string number = std::to_string(point);
-	number.insert(number.begin(), POINT_DIGITS - number.size(), '0');
+	std::string number = std::to_string(lifePoint);
+	number.insert(number.begin(), LIFE_POINT_DIGITS - number.size(), '0');
 
 
-	std::string pointString = POINT_TEXT + number;
-	game->DrawString(POINT_POSITION_X, POINT_POSITION_Y, pointString);
+	std::string pointString = LIFE_POINT_TEXT + number;
+	game->DrawString(LIFE_POINT_POSITION_X, LIFE_POINT_POSITION_Y, pointString);
+}
+
+void CBoard::RenderWeaponBox()
+{
+	CAnimations * animations = CAnimations::GetInstance();
+	float xCam, yCam;
+	cameraInstance->GetPosition(xCam, yCam);
+
+	// Render the box
+	animations->Get((int)BoardAniID::ITEM_BOX)->Render(xCam + ITEM_BOX_POSITION_X,
+														yCam + ITEM_BOX_POSITION_Y);
+
+	// Render the weapon holding inside
+	Weapon weapon = CSimon::GetInstance()->GetSecondaryWeapon();
+	float xWeapon, yWeapon;
+	switch (weapon)
+	{
+	case Weapon::DAGGER:
+		CalcWeaponInsidePosition(DAGGER_BBOX_WIDTH, DAGGER_BBOX_HEIGHT, xWeapon, yWeapon);
+		animations->Get((int)DaggerAniID::IDLE_RIGHT)->Render(xWeapon, yWeapon);
+		break;
+	case Weapon::NONE:
+		break;
+	}
+	
+}
+
+void CBoard::ChangePlayerHealthGradually()
+{
+	if (player_health_pause_start == TIMER_IDLE)
+	{
+		if (playerHealthTemp > 0)
+		{
+			playerHealthTemp--;
+			playerHealth++;
+		}
+
+		if (playerHealthTemp < 0)
+		{
+			playerHealthTemp++;
+			playerHealth--;
+		}
+
+		player_health_pause_start = GetTickCount();
+	}
+	else
+	{
+		if (GetTickCount() - player_health_pause_start > HEALTH_PAUSE_TIME)
+			player_health_pause_start = TIMER_IDLE;
+	}
+	
+}
+
+void CBoard::CalcWeaponInsidePosition(float weaponWidth, float weaponHeight, float & x, float & y)
+{
+	float xCam, yCam;
+	cameraInstance->GetPosition(xCam, yCam);
+
+	// Central position of item box
+	float xCenter = ITEM_BOX_POSITION_X + ITEM_BOX_WIDTH / 2;
+	float yCenter = ITEM_BOX_POSITION_Y + ITEM_BOX_HEIGHT / 2;
+
+	// Calculate the weapon image position
+	x = xCam + xCenter - weaponWidth / 2;
+	y = yCam + yCenter - weaponHeight / 2;
 }
 
 CBoard * CBoard::GetInstance()
@@ -151,6 +240,7 @@ CBoard::CBoard()
 	enemyHealth = ENEMY_HEALTH_DEFAULT;
 	stage = STAGE_DEFAULT;
 	heart = HEART_DEFAULT;
-	point = POINT_DEFAULT;
+	lifePoint = LIFE_POINT_DEFAULT;
+
 }
 

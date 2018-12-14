@@ -215,4 +215,7 @@ void CPanther::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 
 CPanther::CPanther() : jumping(false), groundStandingOn(NULL)
 {
+	point = PANTHER_POINT_AWARD;
+	health = PANTHER_DEFAULT_HEALTH;
+	damage = PANTHER_DAMAGE;
 }

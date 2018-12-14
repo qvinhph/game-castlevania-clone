@@ -94,6 +94,8 @@ class CGameObject
 {
 protected:
 
+	static CCamera * cameraInstance;
+
 	float x;
 	float y;
 	int state;
@@ -109,7 +111,15 @@ protected:
 	bool freezing; 
 	DWORD flicker_start;
 
+	int point = 0;					// the point awarded by this object
+	int health = 0;					// the health of the object
+	int damage = 0;					// the damage that the object is able to cause
+
 public:
+	int GetPoint() { return this->point; }
+	int GetHealth() { return this->health; }
+	int GetDamage() { return this->damage; }
+
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
 	void GetPosition(float &x, float &y) { x = this->x, y = this->y; }
 
@@ -138,6 +148,7 @@ public:
 	virtual void Render();
 	virtual void Destroy();		
 	virtual bool IsInViewport();
+	virtual void BeHit(int damage);
 
 	CGameObject();
 };

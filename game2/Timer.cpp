@@ -6,6 +6,7 @@ CTimer * CTimer::__instance = NULL;
 
 void CTimer::Update(WORD dt, vector<LPGAMEOBJECT>* objects)
 {
+	// TO-DO: Consider to move this to CBoard
 	TimeCount(dt);
 
 	if (freezing)
@@ -13,20 +14,20 @@ void CTimer::Update(WORD dt, vector<LPGAMEOBJECT>* objects)
 		// If run out of freezing time
 		if (GetTickCount() - startFreezeTime > freezeTime)
 		{
-			for (UINT i = 0; i < this->objects->size(); ++i)
-				this->objects->at(i)->SetFreezing(false);
+			for (UINT i = 0; i < this->objects.size(); ++i)
+				this->objects[i]->SetFreezing(false);
 
 			this->freezing = false;
 		}
 
 		// Else, keep freezing the objects' animation
 		else
-			for (UINT i = 0; i < this->objects->size(); ++i)
-				if (this->objects->at(i)->GetFreezing() == true)
-					this->objects->at(i)->FreezeAnimation();
+			for (UINT i = 0; i < this->objects.size(); ++i)
+				if (this->objects.at(i)->GetFreezing() == true)
+					this->objects.at(i)->FreezeAnimation();
 	}
 	else
-		this->objects = objects;			
+		this->objects = *objects;			
 }
 
 void CTimer::Freeze(WORD time, LPGAMEOBJECT exceptedObj)
@@ -35,8 +36,10 @@ void CTimer::Freeze(WORD time, LPGAMEOBJECT exceptedObj)
 	freezeTime = time;
 	freezing = true;
 
-	for (UINT i = 0; i < objects->size(); ++i)
-		objects->at(i)->SetFreezing(true);
+	for (UINT i = 0; i < objects.size(); ++i)
+	{
+		objects[i]->SetFreezing(true);
+	}
 
 	// Exception
 	if (exceptedObj != NULL)

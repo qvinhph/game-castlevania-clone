@@ -63,8 +63,12 @@ void CTileMap::Draw()
 {
 	for (UINT i = 0; i < layers.size(); i++)
 	{
+		int tileHeight = tileset->GetTileHeight();
+		int tileWidth = tileset->GetTileWidth();
 		int index = 0;		// the index in data array
-		int gridID;
+		int gridID; 
+		int firstGrid = tileset->GetFirstGrid();		// Use for define which tile is empty
+		LPTILE tile;
 
 		for (UINT row = 0; row < layers[i]->rows; row++)
 			for (UINT column = 0; column < layers[i]->columns; column++)
@@ -72,10 +76,10 @@ void CTileMap::Draw()
 				gridID = layers[i]->data[index];
 				index++;
 
-				if (gridID < tileset->GetFirstGrid()) continue;			// empty tile
+				if (gridID < firstGrid) continue;			// empty tile
 
-				tileset->Get(gridID)->Draw(column * tileset->GetTileWidth(),		// TO-DO: optmize by use variable
-											row * tileset->GetTileHeight());		// tileWidth and tileHeight;
+				tileset->Get(gridID, tile);
+				tile->Draw(column * tileWidth, row * tileHeight);
 			}
 
 	}
@@ -98,7 +102,10 @@ void CTileMap::Draw(float & left, float & top, float & right, float & bottom)
 
 	// Draw the tiles bounded by top-left and bottom-right tile
 	int index;
-	int gridID;
+	int gridID;	
+	int firstGrid = tileset->GetFirstGrid();		// Use for define which tile is empty
+	LPTILE tile;
+
 	for (UINT row = firstRow; row <= lastRow; ++row)
 		for (UINT column = firstColumn; column <= lastColumn; ++column)
 		{
@@ -106,9 +113,10 @@ void CTileMap::Draw(float & left, float & top, float & right, float & bottom)
 
 			// Get grid ID
 			gridID = layers[0]->data[index];
-			if (gridID < tileset->GetFirstGrid()) continue;		// empty tile
+			if (gridID < firstGrid) continue;		// empty tile
 
-			tileset->Get(gridID)->Draw(column * tileWidth, row * tileHeight);
+			tileset->Get(gridID, tile);
+			tile->Draw(column * tileWidth, row * tileHeight);
 		}
 }
 
@@ -148,17 +156,31 @@ void CTileMap::CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo)
 
 
 		// Monsters
-		else if (info->name == "zombie")			obj = new CZombie();
-		else if (info->name == "panther")			obj = new CPanther();
-		else if (info->name == "pinkbat")			obj = new CPinkBat();
+		//else if (info->name == "zombie")			obj = new CZombie();
+		//else if (info->name == "panther")			obj = new CPanther();
+		//else if (info->name == "pinkbat")			obj = new CPinkBat();
+
 
 		// Monsters' spawner
 		else if (info->name == "spawnerzombie")		obj = new CSpawnerZombie(info->width, info->height);
 		else if (info->name == "spawnerpinkbat")	obj = new CSpawnerPinkBat(info->width, info->height);
 		else if (info->name == "spawnerpanther")	obj = new CSpawnerPanther();
 
+
 		// Invisiblewall
 		else if (info->name == "invisiblewall")		obj = new CInvisibleWall(info->width, info->height);
+
+
+		// Camera Limit Bounds
+		else if (info->name == "camerabound")
+		{
+			float left = info->x;
+			float top = info->y;
+			float right = left + info->width;
+			float bottom = top + info->height;
+			CCamera::GetInstance()->AddLimitBound(left, top, right, bottom);
+			continue;
+		}
 
 
 		// Simon

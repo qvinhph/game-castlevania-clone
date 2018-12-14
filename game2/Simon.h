@@ -3,38 +3,39 @@
 #include "Rope.h"
 #include "Weapons.h"
 
-#define SIMON_IDLE_BBOX_WIDTH						32.0f
-#define SIMON_IDLE_BBOX_HEIGHT						62.0f
-#define SIMON_CROUCHING_BBOX_WIDTH					32.0f
-#define SIMON_CROUCHING_BBOX_HEIGHT					46.0f
-#define SIMON_JUMPING_BBOX_WIDTH					32.0f
-#define SIMON_JUMPING_BBOX_HEIGHT					54.0f
 
-#define SIMON_STAIR_SPEED_X							0.051f
-#define SIMON_STAIR_SPEED_Y							0.051f
-#define SIMON_AUTO_STAIR_TIME						300
+#define SIMON_IDLE_BBOX_WIDTH			32.0f
+#define SIMON_IDLE_BBOX_HEIGHT			62.0f
+#define SIMON_CROUCHING_BBOX_WIDTH		32.0f
+#define SIMON_CROUCHING_BBOX_HEIGHT		46.0f
+#define SIMON_JUMPING_BBOX_WIDTH		32.0f
+#define SIMON_JUMPING_BBOX_HEIGHT		54.0f
 
-#define SIMON_WALKING_SPEED							0.12f		
-#define SIMON_JUMP_SPEED							0.4f
-#define SIMON_JUMP_GRAVITY							0.0012f
-#define SIMON_FALL_GRAVITY							0.012f 
-#define SIMON_MAX_SPEED_WITH_JUMP_GRAVITY			0.26f		// max fall down speed can get by jump gravity
-#define SIMON_MAX_SPEED_Y							1.8f
+#define SIMON_STAIR_SPEED_X				0.051f
+#define SIMON_STAIR_SPEED_Y				0.051f
+#define SIMON_AUTO_STAIR_TIME			300
 
-#define SIMON_DAMAGED_DEFLECT_X						0.1f
-#define SIMON_DAMAGED_DEFLECT_Y						-0.4f
+#define SIMON_WALKING_SPEED						0.12f		
+#define SIMON_JUMP_SPEED						0.4f
+#define SIMON_JUMP_GRAVITY						0.0012f
+#define SIMON_FALL_GRAVITY						0.012f 
+#define SIMON_MAX_SPEED_WITH_JUMP_GRAVITY		0.26f		// max fall down speed can get by jump gravity
+#define SIMON_MAX_SPEED_Y						1.8f
 
-#define ATTACK_TIME									350
-#define AUTO_CROUCH_TIME							300
-#define FREEZING_TIME_TOUCHING_ITEM					1000
-#define FLICKERING_TIME								1000
-#define UNTOUCHABLE_TIME							1000
+#define SIMON_DAMAGED_DEFLECT_X					0.1f
+#define SIMON_DAMAGED_DEFLECT_Y					-0.4f
 
-#define SIMON_ATTACK_BY_ROPE						0
-#define SIMON_ATTACK_BY_ITEM						1
+#define SIMON_ATTACK_TIME						350
+#define SIMON_AUTO_CROUCH_TIME					300
+#define SIMON_TOUCH_ITEM_FREEZING_TIME			1000
+#define SIMON_FLICKERING_TIME					1000
+#define SIMON_UNTOUCHABLE_TIME					1000
+
+#define SIMON_ATTACK_BY_ROPE					0
+#define SIMON_ATTACK_BY_ITEM					1
 
 // For flickering while being untouchable.
-#define SIMON_UNTOUCHABLE_ALPHA_VALUE				100	
+#define SIMON_UNTOUCHABLE_ALPHA_VALUE			100	
 
 
 enum class SimonAniID
@@ -64,7 +65,8 @@ enum class SimonAniID
 	UP_STAIR_ATTACK_RIGHT,
 	UP_STAIR_ATTACK_LEFT,
 	GO_IN,
-	DIE, 
+	DIE_LEFT, 
+	DIE_RIGHT, 
 	DAMAGING_LEFT,
 	DAMAGING_RIGHT
 };
@@ -85,6 +87,7 @@ class CSimon : public CActiveObject
 	bool autoMove;	   
 	bool jumping;	   
 	bool crouching;	   
+	bool dying = false;
 
 	// Assigned to -1 if going downstairs
 	// Assigned to 1 if going upstairs
@@ -97,11 +100,11 @@ class CSimon : public CActiveObject
 	// Assigned to unsigned number		: the timer is working
 	DWORD attack_start;					
 	DWORD auto_crouch_start;			
-	DWORD untouchable_start;
 	DWORD auto_start;
 
+	int numberOfHearts;
 	AutoInfo autoInfo;
-	Weapon secondWeapon;
+	Weapon secondaryWeapon;
 	CRope * rope;
 	CWeapons * weapons;
 	vector<LPGAMEOBJECT> ovObjects;		// overlapping objects
@@ -117,6 +120,7 @@ public:
 	void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents) override;
 	void SetAction(Action action);
 	void SetFreezing(bool freezing) override;
+	void ProceedBeingUntouchable() override;
 	
 	void PickAnimation();
 	void CalibrateCameraPosition();		// To keep Simon at center of camera
@@ -128,7 +132,6 @@ public:
 	void OnGetDamaged(LPCOLLISIONEVENT e);
 	void ProceedAutoMove();
 	void ProceedFlickering();
-	void ProceedBeingUntouchable();
 	void ProceedAttacking();
 	void ProceedAutoCrouching();
 	void ProceedJumping();
@@ -136,6 +139,7 @@ public:
 	void ProceedOnStairs();
 	void StartAutoMove(float vx, float xDestination);
 	void StartAutoMove(float vx, float vy, DWORD time);
+	bool IsAbleToUseWeapon();
 
 	void MoveRight();
 	void MoveLeft();
@@ -146,6 +150,8 @@ public:
 	void UseWeapon();
 	void Upstairs();
 	void Downstairs();
+
+	Weapon GetSecondaryWeapon() { return this->secondaryWeapon; }
 
 	// DEBUGGING: Delete me
 	void RemoveOnStairs() {

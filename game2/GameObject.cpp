@@ -5,8 +5,10 @@
 #include "Flames.h"
 #include "Items.h"
 #include "Rope.h"
+#include "Board.h"
 #include "debug.h"
 
+CCamera * CGameObject::cameraInstance = CCamera::GetInstance();
 
 void CGameObject::RenderBoundingBox()
 {
@@ -34,7 +36,7 @@ void CGameObject::RenderBoundingBox()
 bool CGameObject::IsInViewport()
 {
 	float vpLeft, vpRight, vpTop, vpBottom;
-	CGame::GetInstance()->GetViewportBoundingBox(vpLeft, vpTop, vpRight, vpBottom);
+	cameraInstance->GetBoundingBox(vpLeft, vpTop, vpRight, vpBottom);
 	
 	float left, top, right, bottom;
 	this->GetBoundingBox(left, top, right, bottom);
@@ -44,6 +46,11 @@ bool CGameObject::IsInViewport()
 		return false;
 
 	return true;
+}
+
+void CGameObject::BeHit(int damage)
+{
+	this->Destroy();
 }
 
 bool CGameObject::IsOverlapping(LPGAMEOBJECT obj)
@@ -106,6 +113,7 @@ void CGameObject::Render()
 void CGameObject::Destroy()
 {
 	CFlames::GetInstance()->ShowAFlame(this);
+	CBoard::GetInstance()->AddScore(point);
 	this->SetState(STATE_INVISIBLE);
 }
 

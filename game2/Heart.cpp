@@ -91,6 +91,8 @@ void CHeart::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 
 CHeart::CHeart()
 {
+	point = HEART_POINT_AWARD;
+
 	this->velocity_x = HEART_VECLOCITY_X;
 	this->currentAniID = (int)HeartAniID::IDLE;
 

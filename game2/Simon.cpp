@@ -1,7 +1,7 @@
 #include <algorithm>
 
 #include "Simon.h"
-#include "Game.h"
+#include "Camera.h"
 #include "Animations.h"
 #include "BigCandle.h"
 #include "ItemRope.h"
@@ -18,6 +18,7 @@
 #include "StairsDown.h"
 #include "Panther.h"
 #include "PinkBat.h"
+#include "Board.h"
 
 #include "debug.h"
 
@@ -29,13 +30,16 @@ CSimon::CSimon()
 	this->jumping = false;
 	this->crouching = false;
 	this->autoMove = false;
-	this->secondWeapon = Weapon::NONE;
+	this->secondaryWeapon = Weapon::NONE;
 
 	this->auto_crouch_start = 0;
 	this->attack_start = 0;
 	this->flicker_start = 0;
 	this->auto_start = 0;
 	this->onStairs = 0;
+
+	this->health = PLAYER_HEALTH_DEFAULT;
+	this->numberOfHearts = HEART_DEFAULT;
 
 	// ready to be used
 	rope = CRope::GetInstance();
@@ -126,9 +130,11 @@ void CSimon::PickAnimation()
 	}
 
 	else if (untouchable_start == -1)
+	{
 		currentAniID = (nx > 0) ?
-		(int)SimonAniID::DAMAGING_RIGHT :
-		(int)SimonAniID::DAMAGING_LEFT;
+			(int)SimonAniID::DAMAGING_RIGHT :
+			(int)SimonAniID::DAMAGING_LEFT;
+	}		
 
 	// these two action use the same animation
 	else if (crouching || jumping)
@@ -141,6 +147,14 @@ void CSimon::PickAnimation()
 			currentAniID = (nx > 0) ?
 			(int)SimonAniID::IDLE_RIGHT :
 			(int)SimonAniID::IDLE_LEFT;
+	}
+
+	//else if (health <= 0)
+	else if (dying)
+	{
+		currentAniID = (nx > 0) ?
+			(int)SimonAniID::DIE_RIGHT :
+			(int)SimonAniID::DIE_LEFT;
 	}
 
 	else if (vx > 0)
@@ -211,6 +225,14 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		ProceedOnStairs();
 
 
+	// Simon's death
+	if (health <= 0 && !jumping)	// Simon has landed on the ground
+	{
+		vx = vy = 0;
+		dying = true;
+	}
+
+
 	PickAnimation();
 
 
@@ -225,9 +247,10 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vector<LPCOLLISIONEVENT> coEvents;
 	coEvents.clear();
 
-	if (true) // TO-DO: if not dead
+	if (dying == false)
 		CalcPotentialCollisions(coObjects, coEvents);
 
+	
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
@@ -241,12 +264,14 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 	
 
+	
+
 	CalibrateCameraPosition();
 }
 
 void CSimon::ProceedFlickering()
 {
-	if (GetTickCount() - flicker_start >= FLICKERING_TIME)
+	if (GetTickCount() - flicker_start >= SIMON_FLICKERING_TIME)
 	{
 		this->argb = ARGB();
 		flicker_start = TIMER_IDLE;
@@ -255,7 +280,7 @@ void CSimon::ProceedFlickering()
 
 void CSimon::ProceedBeingUntouchable()
 {
-	if (GetTickCount() - untouchable_start > UNTOUCHABLE_TIME)
+	if (GetTickCount() - untouchable_start > SIMON_UNTOUCHABLE_TIME)
 	{
 		// Stop flickering effect
 		this->argb = ARGB();
@@ -267,13 +292,13 @@ void CSimon::ProceedBeingUntouchable()
 
 void CSimon::ProceedAttacking()
 {
-	if (GetTickCount() - attack_start > ATTACK_TIME)
+	if (GetTickCount() - attack_start > SIMON_ATTACK_TIME)
 	{
 		// If attacking by rope
 		if (this->rope->GetState() == STATE_VISIBLE) 
 			this->rope->SetState(STATE_INVISIBLE);
 		else
-			weapons->UseWeapon(secondWeapon, this);
+			weapons->UseWeapon(secondaryWeapon, this);
 
 		// Stop timer
 		attack_start = TIMER_IDLE;
@@ -286,7 +311,7 @@ void CSimon::ProceedAttacking()
 
 void CSimon::ProceedAutoCrouching()
 {
-	if (GetTickCount() - auto_crouch_start >= AUTO_CROUCH_TIME)
+	if (GetTickCount() - auto_crouch_start >= SIMON_AUTO_CROUCH_TIME)
 	{
 		this->StandUp();
 
@@ -459,28 +484,32 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			if (e->ny != 0)	y += (1 - min_ty) * dy;
 		}
 
-		else if (dynamic_cast<CBigHeart *>(e->obj))
-		{
-			DebugOut(L"\n[INFO] Touch Big Heart");
-
-			e->obj->SetState(STATE_INVISIBLE);
-		}
-
 		else if (dynamic_cast<CItemRope *>(e->obj))
 		{
 			DebugOut(L"\n[INFO] Touch Item Rope");
 
-			e->obj->SetState(STATE_INVISIBLE);
 			this->rope->LevelUp();
 			this->Flicker();
-			CTimer::GetInstance()->Freeze(FREEZING_TIME_TOUCHING_ITEM);
+			CTimer::GetInstance()->Freeze(SIMON_TOUCH_ITEM_FREEZING_TIME);
+			e->obj->SetState(STATE_INVISIBLE);
+		}
+
+		else if (dynamic_cast<CBigHeart *>(e->obj))
+		{
+			DebugOut(L"\n[INFO] Touch Big Heart");
+			e->obj->SetState(STATE_INVISIBLE);
+
+			numberOfHearts += e->obj->GetPoint();
+			CBoard::GetInstance()->SetHeart(numberOfHearts);
 		}
 
 		else if (dynamic_cast<CHeart *>(e->obj))
 		{
 			DebugOut(L"\n[INFO] Touch Heart");
-
 			e->obj->SetState(STATE_INVISIBLE);
+
+			numberOfHearts += e->obj->GetPoint();
+			CBoard::GetInstance()->SetHeart(numberOfHearts);
 		}
 
 		else if (dynamic_cast<CItemDagger *>(e->obj))
@@ -488,7 +517,7 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			DebugOut(L"\n[INFO] Touch Dagger");
 
 			e->obj->SetState(STATE_INVISIBLE);
-			secondWeapon = Weapon::DAGGER;
+			secondaryWeapon = Weapon::DAGGER;
 			weapons->AddToStock(Weapon::DAGGER);
 		}
 
@@ -528,8 +557,8 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			if (e->ny < 0)
 			{
 				// Regain the control
-				// In case Simon is not "auto move"
-				if (!autoMove)
+				// In case Simon is not "auto move" and alive
+				if (!autoMove && health > 0)
 					controllable = true;
 
 
@@ -540,14 +569,18 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 				}
 
 
-				// When falls from too high place or gets damaged
-				if (vy == SIMON_MAX_SPEED_Y || 
-					untouchable_start == TIMER_ETERNAL)
+				// When falls from too high place
+				if (vy == SIMON_MAX_SPEED_Y)
+					AutoCrouch();
+					 
+
+				// When getting damage and landing on the ground
+				if (untouchable_start == TIMER_ETERNAL)
 				{
 					AutoCrouch();
+					BeUntouchable();
 
-					if (untouchable_start == TIMER_ETERNAL)
-						this->BeUntouchable();
+					if (health > 0) Flicker();
 				}
 
 
@@ -580,9 +613,7 @@ void CSimon::StandUp()
 	{
 		crouching = false;
 		y += SIMON_CROUCHING_BBOX_HEIGHT - SIMON_IDLE_BBOX_HEIGHT;
-	}
-
-		
+	}		
 }
 
 void CSimon::AutoCrouch()
@@ -603,7 +634,6 @@ void CSimon::BeUntouchable()
 		untouchable_start == TIMER_ETERNAL)
 	{
 		untouchable_start = GetTickCount();
-		this->Flicker();
 	}
 }
 
@@ -632,6 +662,12 @@ void CSimon::OnGetDamaged(LPCOLLISIONEVENT e)
 		untouchable_start = GetTickCount();
 		flicker_start = GetTickCount();
 	}	
+
+	// Update Simon's health
+	CBoard * board = CBoard::GetInstance();
+	int objDamage = e->obj->GetDamage();
+	board->AddPlayerLife(-objDamage);
+	health -= objDamage;
 }
 
 void CSimon::MoveRight()
@@ -722,15 +758,25 @@ void CSimon::Idle()
 */
 void CSimon::UseWeapon()
 {
-	if (secondWeapon == Weapon::NONE)
+	if (secondaryWeapon == Weapon::NONE)
 		this->Attack(SIMON_ATTACK_BY_ROPE);
+	else
+	{
+		if (!IsAbleToUseWeapon())
+			return;
 
-	else if (secondWeapon == Weapon::DAGGER)
+		//if (This is a watch)
+		// ....
+
 		this->Attack(SIMON_ATTACK_BY_ITEM);
+	}
 }
 
 void CSimon::Upstairs()
 {
+	if (jumping || attack_start != TIMER_IDLE)
+		return;
+
 	// Check if Simon is on stairs
 	// If not, try to get into the stair
 	if (onStairs == 0)
@@ -776,6 +822,9 @@ void CSimon::Upstairs()
 
 void CSimon::Downstairs()
 {
+	if (jumping || attack_start != TIMER_IDLE)
+		return;
+
 	// Check if Simon is onStairs
 	// If not, try to get into the stairs
 	if (onStairs == 0)
@@ -850,6 +899,25 @@ void CSimon::StartAutoMove(float vx, float vy, DWORD time)
 	}
 }
 
+bool CSimon::IsAbleToUseWeapon()
+{
+	int heartsCost = 0;
+	switch (secondaryWeapon)
+	{
+	case Weapon::DAGGER:
+		heartsCost = 1;
+	}
+
+	if (numberOfHearts - heartsCost >= 0)
+	{
+		numberOfHearts -= heartsCost;
+		CBoard::GetInstance()->SetHeart(numberOfHearts);
+		return true;
+	}
+	
+	return false;
+}
+
 void CSimon::Jump()
 {
 	if (!jumping && !crouching
@@ -883,27 +951,41 @@ void CSimon::Attack(int choice)
 
 void CSimon::CalibrateCameraPosition()
 {
-	float xCam, yCam;
+	// Get camera's information
+	//CCamera * camera = CCamera::GetInstance();
+	float vpWidth, vpHeight;		// vp: Viewport
+	cameraInstance->GetViewportSize(vpWidth, vpHeight);
+
+
+	// Get simon's central point
 	float l, t, r, b;
 	this->GetBoundingBox(l, t, r, b);
-
-	// get simon's central point
 	float xCentral = (l + r) / 2;
 	float yCentral = (t + b) / 2;
 
-	float viewportWidth;
-	float viewportHeight;
-	CGame::GetInstance()->GetViewportSize(viewportWidth, viewportHeight);
 
-	xCam = xCentral - viewportWidth / 2;
-	yCam = 0;
+	// Calculate the camera position that is supposed to be
+	float xCam = xCentral - vpWidth / 2;
+	float yCam = yCentral - vpHeight / 2;
 
-	if (xCam < 0)		
-		xCam = 0;
-	if (xCam + viewportWidth > 4320)	// TO-DO: 1536...
-		xCam = 4320 - viewportWidth;
 
-	CGame::GetInstance()->SetCameraPosition(xCam, yCam);
+	// Get the limit bound
+	float limitLeft, limitRight, limitTop, limitBottom;
+	cameraInstance->GetLimitBound(limitLeft, limitTop, limitRight, limitBottom);
+
+
+	// Limit the camera position
+	if (xCam < limitLeft)		
+		xCam = limitLeft;
+	if (xCam + vpWidth > limitRight)	
+		xCam = limitRight - vpWidth;
+
+	if (yCam < limitTop)
+		yCam = limitTop;
+	if (yCam + vpHeight > limitBottom)
+		yCam = limitBottom - vpHeight;
+
+	cameraInstance->SetPosition(xCam, yCam);
 }
 
 void CSimon::GetBoundingBox(float & left, float & top, float & right, float & bottom)
@@ -943,7 +1025,7 @@ void CSimon::GetBoundingBox(float & left, float & top, float & right, float & bo
 */
 void CSimon::SetAction(Action action)
 {
-	if (controllable)
+	if (controllable && freezing == false)
 	{
 		switch (action)
 		{

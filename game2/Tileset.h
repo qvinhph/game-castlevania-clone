@@ -13,11 +13,12 @@ using namespace std;
 */
 class CTileset
 {
-	unordered_map<int, LPTILE> tiles;
+	//unordered_map<int, LPTILE> tiles;
+	vector<LPTILE> tiles;
 	int tileHeight;							// height of a single tile
 	int tileWidth;							// width of a single tile
 
-	int colums;
+	int columns;
 	int rows;
 	int firstGrid;
 
@@ -32,7 +33,7 @@ public:
 	CTileset(int textureID, string jsonFilePath, int firstGrid);
 
 	void Init();
-	LPTILE Get(int grid);
+	void CTileset::Get(int grid, LPTILE &tile);
 	int GetFirstGrid()	{ return this->firstGrid; }
 	int GetTileHeight() { return this->tileHeight; }
 	int GetTileWidth()	{ return this->tileWidth; }

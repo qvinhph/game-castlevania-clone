@@ -38,15 +38,17 @@ void CTileset::Init()
 		tileHeight = root[TILESET_KEY_TILEHEIGHT].get<int>();
 		tileWidth = root[TILESET_KEY_TILEWIDTH].get<int>();
 		rows = root[TILESET_KEY_IMAGEHEIGHT].get<int>() / tileHeight;
-		colums = root[TILESET_KEY_IMAGEWIDTH].get<int>() / tileWidth;
+		columns = root[TILESET_KEY_IMAGEWIDTH].get<int>() / tileWidth;
 
 		LPTILE tile;
 		int gridID = firstGrid;
-		for (UINT i = 0; i < rows; i++)
-			for (UINT j = 0; j < colums; j++)
+		tiles.resize(rows * columns + firstGrid);
+
+		for (UINT row = 0; row < rows; row++)
+			for (UINT col = 0; col < columns; col++)
 			{
-				tile = new CTile(j * tileWidth, i * tileHeight,
-					(j + 1) * tileWidth, (i + 1) * tileHeight, texture);
+				tile = new CTile(col * tileWidth, row * tileHeight,
+								(col + 1) * tileWidth, (row + 1) * tileHeight, texture);
 
 				tiles[gridID] = tile;
 				gridID++;
@@ -54,7 +56,7 @@ void CTileset::Init()
 	}
 }
 
-LPTILE CTileset::Get(int grid)
+void CTileset::Get(int grid, LPTILE &tile)
 {
-	return tiles[grid];
+	tile = tiles[grid];
 }

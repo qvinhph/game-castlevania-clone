@@ -12,7 +12,7 @@ bool CInvisibleWall::IsInViewport()
 {
 	// The viewport bounding box
 	float vpLeft, vpTop, vpRight, vpBottom;
-	CGame::GetInstance()->GetViewportBoundingBox(vpLeft, vpTop, vpRight, vpBottom);
+	cameraInstance->GetBoundingBox(vpLeft, vpTop, vpRight, vpBottom);
 	
 	// The object bounding box
 	float left, top, right, bottom;

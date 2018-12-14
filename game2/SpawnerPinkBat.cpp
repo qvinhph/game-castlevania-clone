@@ -51,7 +51,7 @@ void CSpawnerPinkBat::SetupBatInfo(float & x, float & y, int & nx, float & line)
 
 	// Set x
 	float leftV, topV, rightV, bottomV;
-	CGame::GetInstance()->GetViewportBoundingBox(leftV, topV, rightV, bottomV);
+	cameraInstance->GetBoundingBox(leftV, topV, rightV, bottomV);
 	x = (nx > 0) ?
 		leftV : rightV - BAT_BBOX_WIDTH;
 

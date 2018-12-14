@@ -59,4 +59,8 @@ CPinkBat::CPinkBat()
 {
 	vx = BAT_SPEED_VX;
 	vy = BAT_SPEED_VY;
+
+	point = PINK_BAT_POINT_AWARD;
+	health = PINK_BAT_DEFAULT_HEALTH;
+	damage = PINK_BAT_DAMAGE;
 }

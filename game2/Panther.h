@@ -12,6 +12,10 @@
 #define PANTHER_FALL_GRAVITY		0.0012f
 #define PANTHER_FIND_RADIUS			112.0f
 
+#define PANTHER_DEFAULT_HEALTH		1
+#define PANTHER_DAMAGE				2
+#define PANTHER_POINT_AWARD			200
+
 
 enum class PantherAniID
 {
@@ -43,6 +47,5 @@ public:
 	void ProceedCollisions(vector<LPCOLLISIONEVENT> & coEvents);
 
 	CPanther();
-
 };
 

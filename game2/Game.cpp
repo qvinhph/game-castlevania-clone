@@ -68,6 +68,9 @@ void CGame::Init(HWND hWnd)
 */
 void CGame::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, ARGB& argb)
 {
+	float xCamera, yCamera;
+	camera->GetPosition(xCamera, yCamera);
+
 	// Get the viewport position
 	float xv = x - xCamera;
 	float yv = y - yCamera;
@@ -105,14 +108,6 @@ void CGame::DrawString(float x, float y, std::string text, ARGB argb)
 int CGame::IsKeyDown(int keyCode)
 {
 	return (keyStates[keyCode] & 0x80) > 0;
-}
-
-void CGame::GetViewportBoundingBox(float & left, float & top, float & right, float & bottom)
-{
-	left = xCamera;
-	top = yCamera;
-	right = left + viewportWidth;
-	bottom = top + viewportHeight;
 }
 
 void CGame::InitKeyboard(LPKEY_EVENT_HANDLER handler)

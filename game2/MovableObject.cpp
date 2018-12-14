@@ -18,6 +18,11 @@ CActiveObject::CActiveObject()
 
 void CActiveObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	// Being Untouchable
+	if (untouchable_start != TIMER_IDLE &&
+		untouchable_start != TIMER_ETERNAL)
+		ProceedBeingUntouchable();
+
 	this->dt = dt;
 	this->dx = vx * dt;
 	this->dy = vy * dt;
@@ -66,11 +71,30 @@ void CActiveObject::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 	}
 }
 
-void CActiveObject::SetState(int state)
+void CActiveObject::ProceedBeingUntouchable()
 {
-	CGameObject::SetState(state);
-	//if (state == STATE_INVISIBLE)
-	//	vx = vy = dx = dy = 0;
+	if (GetTickCount() - untouchable_start > UNTOUCHABLE_TIME)
+		untouchable_start = TIMER_IDLE;
+	else vx = vy = 0;
+}
+
+void CActiveObject::BeHit(int damage)
+{
+	if (untouchable_start == TIMER_IDLE)
+	{
+		if (health > 0)
+			health -= damage;
+
+		// If killed..
+		if (health <= 0)
+		{
+			this->Destroy();
+		}
+
+		// If the object is still alive
+		else 
+			untouchable_start = GetTickCount();
+	}
 }
 
 /*
