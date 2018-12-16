@@ -25,6 +25,9 @@ public:
 	*/
 	void UseWeapon(Weapon weaponName, LPGAMEOBJECT obj);
 
+	void UseDagger(const LPGAMEOBJECT &obj);
+	void UseFireBall(const LPGAMEOBJECT &obj);
+
 	/*
 		Get a weapon with given name to manipulate with, if it's available
 	*/

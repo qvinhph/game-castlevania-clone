@@ -20,6 +20,8 @@
 #include "PinkBat.h"
 #include "Board.h"
 #include "Portals.h"
+#include "Fish.h"
+#include "FireBall.h"
 
 #include "debug.h"
 
@@ -216,11 +218,6 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		ProceedFlickering();
 
 
-	// Auto Move: this will re-calculate the dx, dy
-	if (autoMove)
-		ProceedAutoMove();
-
-
 	// Being On Stairs
 	if (onStairs != 0)
 		ProceedOnStairs();
@@ -234,6 +231,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 
+	// Choose matched animation
 	PickAnimation();
 
 
@@ -243,6 +241,9 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (this->IsOverlapping(coObjects->at(i)))
 			ovObjects.push_back(coObjects->at(i));
 
+	if (ovObjects.size() != 0)
+		ProceedOverlapping();
+
 
 	// Collisions
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -250,6 +251,11 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (dying == false)
 		CalcPotentialCollisions(coObjects, coEvents);
+
+
+	// Auto Move: this will re-calculate the dx, dy
+	if (autoMove)
+		ProceedAutoMove();
 
 	
 	// No collision occured, proceed normally
@@ -263,8 +269,6 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
-	
-
 	
 
 	CalibrateCameraPosition();
@@ -289,6 +293,23 @@ void CSimon::ProceedBeingUntouchable()
 
 		untouchable_start = TIMER_IDLE;
 	}
+}
+
+bool CSimon::IsInViewport()
+{
+	// The viewport bounding box
+	float vpLeft, vpTop, vpRight, vpBottom;
+	cameraInstance->GetBoundingBox(vpLeft, vpTop, vpRight, vpBottom);
+
+	// The object bounding box
+	float left, top, right, bottom;
+	this->GetBoundingBox(left, top, right, bottom);
+
+	if (vpLeft > right || vpTop > bottom
+		|| vpRight < left || vpBottom < top)
+		return false;
+
+	return true;
 }
 
 void CSimon::ProceedAttacking()
@@ -403,6 +424,33 @@ void CSimon::ProceedOnStairs()
 
 			autoMove = false;
 			vx = vy = 0;
+		}
+	}
+}
+
+void CSimon::ProceedOverlapping()
+{
+	LPGAMEOBJECT obj;
+	for (UINT i = 0; i < ovObjects.size(); i++)
+	{
+		obj = ovObjects[i];
+		
+		// To use the portals effectly by avoid Simon overlapping on a Portal object
+		if (dynamic_cast<CPortal *>(obj))
+		{
+			if (this->attack_start != TIMER_IDLE ||
+				this->untouchable_start != TIMER_IDLE ||
+				this->crouching == true ||
+				this->jumping == true)
+				continue;
+
+			if (onStairs == 1)
+				this->Upstairs();
+			else if (onStairs == -1)
+				this->Downstairs();
+			else if (onStairs == 0)
+				this->StartAutoMove(this->nx * SIMON_AUTO_MOVE_SPEED_X, 
+								SIMON_MAX_SPEED_WITH_JUMP_GRAVITY, SIMON_AUTO_MOVE);
 		}
 	}
 }
@@ -524,7 +572,9 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 
 		else if (dynamic_cast<CZombie *>(e->obj) ||
 				dynamic_cast<CPanther *>(e->obj) ||
-				dynamic_cast<CPinkBat *>(e->obj))
+				dynamic_cast<CPinkBat *>(e->obj) ||
+				dynamic_cast<CFish *>(e->obj) ||
+				dynamic_cast<CFireBall *>(e->obj))
 		{
 			DebugOut(L"\n[INFO] Touch a monster !!");
 
@@ -959,7 +1009,6 @@ void CSimon::Attack(int choice)
 void CSimon::CalibrateCameraPosition()
 {
 	// Get camera's information
-	//CCamera * camera = CCamera::GetInstance();
 	float vpWidth, vpHeight;		// vp: Viewport
 	cameraInstance->GetViewportSize(vpWidth, vpHeight);
 
@@ -979,6 +1028,10 @@ void CSimon::CalibrateCameraPosition()
 	// Get the limit bound
 	float limitLeft, limitRight, limitTop, limitBottom;
 	cameraInstance->GetLimitBound(limitLeft, limitTop, limitRight, limitBottom);
+
+
+	// Focus the camera on Simon
+	cameraInstance->ChangeLimitBound(this->x, this->y);
 
 
 	// Limit the camera position

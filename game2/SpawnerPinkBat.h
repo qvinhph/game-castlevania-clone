@@ -1,7 +1,7 @@
 #pragma once
 #include "MovableObject.h"
 
-#define PAUSE_TIME			3000
+#define ZOMBIE_SPAWNER_PAUSE_TIME			3000
 
 /*
 	The class describes an invisible object.

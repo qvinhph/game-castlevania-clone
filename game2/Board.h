@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "Camera.h"
 
 #define SCORE_DEFAULT		0
 #define SCORE_DIGITS		6	

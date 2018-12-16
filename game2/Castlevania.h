@@ -36,6 +36,9 @@
 #include "Camera.h"
 #include "Portal.h"
 #include "Portals.h"
+#include "Fish.h"
+#include "FireBall.h"	
+#include "SpawnerFish.h"
 
 #define ID_TEX_SIMON		0
 #define ID_TEX_ROPE			1
@@ -49,3 +52,6 @@
 #define NUMBER_OF_HEART		5
 #define NUMBER_OF_PANTHER	3
 #define NUMBER_OF_ZOMBIE	3
+#define NUMBER_OF_FIREBALL	4
+#define NUMBER_OF_PINKBAT	2
+#define NUMBER_OF_FISH		2

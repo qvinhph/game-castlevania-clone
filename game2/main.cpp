@@ -70,17 +70,10 @@ void CInputHandler::OnKeyDown(int keyCode)
 		CSimon::GetInstance()->SetAction(Action::WALK_LEFT);
 		break;
 
-	//case DIK_UP:
-	//	CSimon::GetInstance()->SetAction(Action::UPSTAIRS);
-	//	break;
-	//
-	//case DIK_DOWN:
-	//	CSimon::GetInstance()->SetAction(Action::DOWNSTAIRS);
-	//	break;
-
 		// DEBUGGING
 	case DIK_1:
 		CSimon::GetInstance()->SetPosition(0.0f, 0.0f);
+		CCamera::GetInstance()->ChangeLimitBound(1, 1);
 		break;
 	case DIK_O:
 		CSimon::GetInstance()->RemoveOnStairs();
@@ -205,8 +198,9 @@ void TestInit()
 void InitDefaultObjects()
 {
 	CItems * items = CItems::GetInstance();			// For adding and managing the item-type objects
-	CFlames * flames = CFlames::GetInstance();		
+	CFlames * flames = CFlames::GetInstance();
 	CWeapons * weapons = CWeapons::GetInstance();
+	CMonsters * monsters = CMonsters::GetInstance();
 	board = CBoard::GetInstance();
 
 	gameObject = CSimon::GetInstance();
@@ -224,7 +218,7 @@ void InitDefaultObjects()
 	gameObject = new CItemDagger();
 	defaultObjects.push_back(gameObject);
 	items->Add(Item::ITEMDAGGER, gameObject);
-	
+
 	gameObject = new CBigHeart();
 	defaultObjects.push_back(gameObject);
 	items->Add(Item::BIGHEART, gameObject);
@@ -252,6 +246,13 @@ void InitDefaultObjects()
 		CWeapons::GetInstance()->Add(Weapon::DAGGER, gameObject);
 	}
 
+	for (int i = 0; i < NUMBER_OF_FIREBALL; ++i)
+	{
+		gameObject = new CFireBall();
+		defaultObjects.push_back(gameObject);
+		CWeapons::GetInstance()->Add(Weapon::FIREBALL, gameObject);
+	}
+
 
 	// Monsters
 	for (int i = 0; i < NUMBER_OF_ZOMBIE; ++i)
@@ -268,11 +269,18 @@ void InitDefaultObjects()
 		CMonsters::GetInstance()->Add(Monster::PANTHER, gameObject);
 	}
 
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < NUMBER_OF_PINKBAT; ++i)
 	{
 		gameObject = new CPinkBat();
 		defaultObjects.push_back(gameObject);
 		CMonsters::GetInstance()->Add(Monster::PINKBAT, gameObject);
+	}
+
+	for (int i = 0; i < NUMBER_OF_FISH; ++i)
+	{
+		gameObject = new CFish();
+		defaultObjects.push_back(gameObject);
+		monsters->Add(Monster::FISH, gameObject);
 	}
 }
 
@@ -647,6 +655,18 @@ void LoadResources()
 	ani->AddFrame(18100);		
 	animations->Add((int)DaggerAniID::IDLE_LEFT, ani);
 
+	// fire ball
+	sprites->Add(19000, 163, 112, 177, 124, texMisc);		// flying right
+	sprites->Add(19100, 147, 112, 161, 124, texMisc);		// flying left
+
+	ani = new CAnimation(100);
+	ani->AddFrame(19000);
+	animations->Add((int)FireBallAniID::FLYING_RIGHT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(19100);
+	animations->Add((int)FireBallAniID::FLYING_LEFT, ani);
+
 #pragma endregion
 
 #pragma region Loading monsters resources
@@ -728,6 +748,41 @@ void LoadResources()
 	ani->AddFrame(53102);
 	ani->AddFrame(53103);
 	animations->Add((int)PinkBatAniID::FLYING_LEFT, ani);
+
+	// Fish
+	sprites->Add(54100, 64, 66, 96, 130, texMonsters);		// IDLE LEFT
+	sprites->Add(54101, 32, 66, 64, 130, texMonsters);		// WALK LEFT
+	sprites->Add(54102, 0, 66, 32, 130, texMonsters);		// ATTACK
+
+	sprites->Add(54000, 230, 246, 262, 310, texMonsters);	// IDLE RIGHT
+	sprites->Add(54001, 262, 246, 294, 310, texMonsters);	// WALK RIGHT
+	sprites->Add(54002, 294, 246, 326, 310, texMonsters);	// ATTACK RIGHT
+
+	ani = new CAnimation(100);
+	ani->AddFrame(54000);
+	animations->Add((int)FishAniID::IDLE_RIGHT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(54100);
+	animations->Add((int)FishAniID::IDLE_LEFT, ani);
+
+	ani = new CAnimation(200);
+	ani->AddFrame(54000);
+	ani->AddFrame(54001);
+	animations->Add((int)FishAniID::MOVE_RIGHT, ani);
+
+	ani = new CAnimation(200);
+	ani->AddFrame(54100);
+	ani->AddFrame(54101);
+	animations->Add((int)FishAniID::MOVE_LEFT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(54002);
+	animations->Add((int)FishAniID::ATTACK_RIGHT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(54102);
+	animations->Add((int)FishAniID::ATTACK_LEFT, ani);
 
 #pragma endregion
 

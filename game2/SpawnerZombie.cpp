@@ -42,13 +42,13 @@ void CSpawnerZombie::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 			}
 			else
-				if (GetTickCount() - rest_start > REST_TIME)
+				if (GetTickCount() - rest_start > ZOMBIE_SPAWNER_REST_TIME)
 					rest_start = TIMER_IDLE;
 		}
 
 		// Pausing spawning
 		else
-			if (GetTickCount() - pause_start > PAUSE_TIME)
+			if (GetTickCount() - pause_start > ZOMBIE_SPAWNER_PAUSE_TIME)
 				pause_start = TIMER_IDLE;
 	}
 }

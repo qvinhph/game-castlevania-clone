@@ -25,7 +25,7 @@ LPACTIVEOBJECT CMonsters::Spawn(Monster monsterName)
 	vector<LPACTIVEOBJECT> monstersByName = monsters[monsterName];
 
 	if (monstersByName.empty())
-		DebugOut(L"\n[ERROR] No monster with the given name found (Monster enum: %d)", (int)monsterName);
+		DebugOut(L"\n[INFO] No monster with the given name found (Monster enum: %d)", (int)monsterName);
 
 	else
 	{

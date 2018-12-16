@@ -11,16 +11,15 @@
 #define SIMON_JUMPING_BBOX_WIDTH		32.0f
 #define SIMON_JUMPING_BBOX_HEIGHT		54.0f
 
-#define SIMON_STAIR_SPEED_X				0.051f
-#define SIMON_STAIR_SPEED_Y				0.051f
-#define SIMON_AUTO_STAIR_TIME			300
-
+#define SIMON_STAIR_SPEED_X						0.051f
+#define SIMON_STAIR_SPEED_Y						0.051f
 #define SIMON_WALKING_SPEED						0.12f		
 #define SIMON_JUMP_SPEED						0.4f
 #define SIMON_JUMP_GRAVITY						0.0012f
 #define SIMON_FALL_GRAVITY						0.012f 
 #define SIMON_MAX_SPEED_WITH_JUMP_GRAVITY		0.26f		// max fall down speed can get by jump gravity
 #define SIMON_MAX_SPEED_Y						1.8f
+#define SIMON_AUTO_MOVE_SPEED_X					0.06f
 
 #define SIMON_DAMAGED_DEFLECT_X					0.1f
 #define SIMON_DAMAGED_DEFLECT_Y					-0.4f
@@ -30,6 +29,9 @@
 #define SIMON_TOUCH_ITEM_FREEZING_TIME			1000
 #define SIMON_FLICKERING_TIME					1000
 #define SIMON_UNTOUCHABLE_TIME					1000
+#define SIMON_AUTO_STAIR_TIME					300
+#define SIMON_AUTO_MOVE							400  // sum of a full animation moving time
+
 
 #define SIMON_ATTACK_BY_ROPE					0
 #define SIMON_ATTACK_BY_ITEM					1
@@ -118,12 +120,13 @@ public:
 	void Render() override;
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
 	void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents) override;
-	void SetAction(Action action);
 	void SetFreezing(bool freezing) override;
 	void ProceedBeingUntouchable() override;
+	bool IsInViewport() override;
 	
 	void PickAnimation();
 	void CalibrateCameraPosition();		// To keep Simon at center of camera
+	void SetAction(Action action);
 
 	void Flicker();
 	void StandUp();
@@ -137,6 +140,7 @@ public:
 	void ProceedJumping();
 	void ProceedGravity();
 	void ProceedOnStairs();
+	void ProceedOverlapping();
 	void StartAutoMove(float vx, float xDestination);
 	void StartAutoMove(float vx, float vy, DWORD time);
 	bool IsAbleToUseWeapon();

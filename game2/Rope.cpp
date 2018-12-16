@@ -6,6 +6,8 @@
 #include "Zombie.h"
 #include "Panther.h"
 #include "PinkBat.h"
+#include "Fish.h"
+#include "FireBall.h"
 #include "debug.h"
 
 
@@ -37,7 +39,9 @@ void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						dynamic_cast<CCandle *>(coObjects->at(i)) || 
 						dynamic_cast<CZombie *>(coObjects->at(i)) || 
 						dynamic_cast<CPanther *>(coObjects->at(i)) || 
-						dynamic_cast<CPinkBat *>(coObjects->at(i)))
+						dynamic_cast<CPinkBat *>(coObjects->at(i)) ||
+						dynamic_cast<CFish *>(coObjects->at(i)) ||
+						dynamic_cast<CFireBall *>(coObjects->at(i)))
 						coObjects->at(i)->BeHit(this->damage);
 
 		// clean up collision events

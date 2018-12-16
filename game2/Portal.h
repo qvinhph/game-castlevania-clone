@@ -20,6 +20,7 @@ public:
 
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
 	void Render() override { /* Render nothing because this is an invisible object */ }
+	bool IsInViewport() override;
 
 	void SetIDPort(int index) { this->idPort = index; }
 	int GetIDPort() { return this->idPort; }

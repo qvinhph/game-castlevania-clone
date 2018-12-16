@@ -30,7 +30,7 @@ void CSpawnerPinkBat::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		else
 		{
-			if (GetTickCount() - spawn_pause > PAUSE_TIME)
+			if (GetTickCount() - spawn_pause > ZOMBIE_SPAWNER_PAUSE_TIME)
 				spawn_pause = TIMER_IDLE;
 		}			
 	}

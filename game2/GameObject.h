@@ -36,6 +36,7 @@ enum class Weapon
 {
 	NONE,
 	DAGGER,
+	FIREBALL, // of CFish
 };
 
 // Monsters' name

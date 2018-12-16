@@ -1,48 +1,89 @@
 #include "Weapons.h"
 #include "debug.h"
 #include "Simon.h"
+#include "Fish.h"
 
 // To adjusting the Dagger position for similar to origin game
 #define Y_DISTANCE_DAGGER_LOWER_SIMON			4.0f
+
+// To adjusting the Fireball position for similar to origin game
+#define Y_DISTANCE_FIREBALL_LOWER_FISH			8.0f
 
 CWeapons * CWeapons::__instance = NULL;
 
 void CWeapons::UseWeapon(Weapon weaponName, LPGAMEOBJECT obj)
 {
-	float left, top, right, bottom;
-	LPGAMEOBJECT weapon = GetWeapon(weaponName);
-
-	if (weapon == NULL)
-	{
-		DebugOut(L"\n[ERROR] Failed to get weapon (Weapon enum: %d)", weaponName);
-		return;
-	}
-
 	switch (weaponName)
 	{
 	case Weapon::DAGGER:
-		// Only simon can use this dagger weapon.
-		if (dynamic_cast<CSimon *>(obj))
-		{
-			CSimon * simon = dynamic_cast<CSimon *>(obj);
-
-			// Get the direction depending on Simon's direction
-			weapon->SetDirection(simon->GetDirection());
-			obj->GetBoundingBox(left, top, right, bottom);
-
-			// Set the weapon position depending on Simon's position
-			if (weapon->GetDirection() > 0)
-				weapon->SetPosition(right, 
-					top + Y_DISTANCE_DAGGER_LOWER_SIMON);
-			else
-				weapon->SetPosition(left - DAGGER_BBOX_WIDTH, 
-					top + Y_DISTANCE_DAGGER_LOWER_SIMON);
-
-			// Set the weapon visible
-			weapon->SetState(STATE_VISIBLE);
-		}
+		UseDagger(obj);
+		break;
+	case Weapon::FIREBALL:
+		UseFireBall(obj);
+		break;
 	default:
 		break;
+	}
+}
+
+void CWeapons::UseDagger(const LPGAMEOBJECT &obj)
+{
+	LPGAMEOBJECT weapon = GetWeapon(Weapon::DAGGER);
+
+	if (weapon == NULL)
+	{
+		DebugOut(L"\n[ERROR] Failed to get dagger weapon");
+		return;
+	}
+
+	// Only simon can use this dagger weapon.
+	if (dynamic_cast<CSimon *>(obj))
+	{
+		CSimon * simon = dynamic_cast<CSimon *>(obj);
+		float left, top, right, bottom;
+
+		// Get the direction depending on Simon's direction
+		weapon->SetDirection(simon->GetDirection());
+		simon->GetBoundingBox(left, top, right, bottom);
+
+		// Set the weapon position depending on Simon's position
+		if (weapon->GetDirection() > 0)
+			weapon->SetPosition(right,
+				top + Y_DISTANCE_DAGGER_LOWER_SIMON);
+		else
+			weapon->SetPosition(left - DAGGER_BBOX_WIDTH,
+				top + Y_DISTANCE_DAGGER_LOWER_SIMON);
+
+		// Set the weapon visible
+		weapon->SetState(STATE_VISIBLE);
+	}
+}
+
+void CWeapons::UseFireBall(const LPGAMEOBJECT & obj)
+{
+	LPGAMEOBJECT weapon = GetWeapon(Weapon::FIREBALL);
+
+	if (weapon == NULL)
+	{
+		DebugOut(L"\n[ERROR] Failed to get fireball");
+		return;
+	}
+
+	// Only simon can use this dagger weapon.
+	if (dynamic_cast<CFish *>(obj))
+	{
+		CFish * fish = dynamic_cast<CFish *>(obj);
+		float xFish, yFish;
+		fish->GetPosition(xFish, yFish);
+
+		// Change nx
+		weapon->SetDirection(fish->GetDirection());
+
+		// Set the position
+		weapon->SetPosition(xFish, yFish + Y_DISTANCE_FIREBALL_LOWER_FISH);
+
+		// Set the weapon visible
+		weapon->SetState(STATE_VISIBLE);
 	}
 }
 

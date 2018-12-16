@@ -1,8 +1,8 @@
 #pragma once
 #include "MovableObject.h"
 
-#define REST_TIME						500			// Rest time before spawn another zombie
-#define PAUSE_TIME						5000		// Pause time before another spawn-season starts
+#define ZOMBIE_SPAWNER_REST_TIME		500			// Rest time before spawn another zombie
+#define ZOMBIE_SPAWNER_PAUSE_TIME		5000		// Pause time before another spawn-season starts
 #define NUMBER_OF_ZOMBIES				3			// Number of zombies will be spawn in a single spawn-season
 
 /*

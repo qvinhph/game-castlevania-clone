@@ -96,7 +96,7 @@ void CGameObject::Render()
 	if (currentAniID != lastAniID)
 		if (lastAniID != -1)
 			this->ResetAnimationTimer(lastAniID);
-
+	
 	lastAniID = currentAniID;
 
 	if (state == STATE_VISIBLE)

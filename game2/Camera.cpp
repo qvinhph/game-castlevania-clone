@@ -14,14 +14,6 @@ void CCamera::AddLimitBound(float left, float top, float right, float bottom)
 	limitBounds.push_back(limitBound);
 }
 
-void CCamera::NextLimitBound()
-{
-}
-
-void CCamera::BackLimitBound()
-{
-}
-
 void CCamera::GetLimitBound(float & left, float & top, float & right, float & bottom)
 {
 	RECT bound = limitBounds[currentLimitBound];
@@ -42,10 +34,18 @@ void CCamera::GetBoundingBox(float & left, float & top, float & right, float & b
 
 void CCamera::ChangeLimitBound(float x, float y)
 {
+	//float left, top, right, bottom;
 	RECT bound;
+	//obj->GetBoundingBox(left, top, right, bottom);
+
 	for (UINT i = 0; i < limitBounds.size(); i++)
 	{
 		bound = limitBounds[i];
+
+		/*if (left > bound.right || right < bound.left ||
+			top > bound.bottom || bottom < bound.top)
+			continue;*/
+
 		if (x < bound.right && x > bound.left
 			&& y < bound.bottom && y > bound.top)
 		{
