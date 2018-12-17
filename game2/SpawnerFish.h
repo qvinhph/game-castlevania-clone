@@ -15,7 +15,6 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT> * coObjects = NULL) override;
 	void Render() override { /* Render nothing */ }
 
-	void SetupFish(LPGAMEOBJECT const &fish);
 	void SetupFish(CFish * const &fish);
 	bool IsReadyToSpawn();
 

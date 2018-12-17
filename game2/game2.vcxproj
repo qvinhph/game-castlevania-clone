@@ -23,9 +23,12 @@
     <ClInclude Include="AnimationFrame.h" />
     <ClInclude Include="Animations.h" />
     <ClInclude Include="Board.h" />
+    <ClInclude Include="Bubble.h" />
+    <ClInclude Include="Bubbles.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="FireBall.h" />
     <ClInclude Include="Fish.h" />
+    <ClInclude Include="InvisibleWater.h" />
     <ClInclude Include="PinkBat.h" />
     <ClInclude Include="BigHeart.h" />
     <ClInclude Include="Candle.h" />
@@ -74,9 +77,12 @@
     <ClCompile Include="AnimationFrame.cpp" />
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="Bubble.cpp" />
+    <ClCompile Include="Bubbles.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="FireBall.cpp" />
     <ClCompile Include="Fish.cpp" />
+    <ClCompile Include="InvisibleWater.cpp" />
     <ClCompile Include="PinkBat.cpp" />
     <ClCompile Include="BigHeart.cpp" />
     <ClCompile Include="Candle.cpp" />

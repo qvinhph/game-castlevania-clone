@@ -1,7 +1,9 @@
 #include "Fish.h"
 #include "InvisibleWall.h"
 #include "Simon.h"
-
+#include "Bubbles.h"
+#include "debug.h"
+#include "InvisibleWater.h"
 
 void CFish::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
@@ -79,11 +81,6 @@ void CFish::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 
 		if (dynamic_cast<CInvisibleWall *>(e->obj))
 		{
-			if (e->nx != 0)
-			{
-				x += nx * DEFLECTION_AVOID_OVERLAPPING;
-			}
-
 			if (e->ny < 0)
 			{
 				// Remove jumping flag
@@ -94,11 +91,25 @@ void CFish::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 				vy = 0;
 			}
 		}
+
+		else if (dynamic_cast<CInvisibleWater *>(e->obj))
+		{
+			// Disappearance's effect
+			float positionX = x + FISH_BBOX_WIDTH / 2;
+			float positionY = y + FISH_BBOX_HEIGHT;
+			CBubbles::GetInstance()->ShowSomeBubblesForFish(positionX, positionY);
+
+			this->SetState(STATE_INVISIBLE);
+		}
+
+		// Collisions with other objects
 		else
 		{
 			// Ignore other objects by completing the rest of dx / dy
-			if (e->nx != 0)	x += (1 - min_tx) * dx;
-			if (e->ny < 0)	y += (1 - min_ty) * dy;
+			if (e->nx != 0)	
+				x += (1 - min_tx) * dx;
+			if (e->ny < 0)	
+				y += (1 - min_ty) * dy;
 		}
 	}
 

@@ -1,6 +1,7 @@
 #include "SpawnerFish.h"
 #include "Simon.h"
 #include "Monsters.h"
+#include "Bubbles.h"
 
 
 void CSpawnerFish::GetBoundingBox(float & left, float & top, float & right, float & bottom)
@@ -24,7 +25,7 @@ void CSpawnerFish::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		fish = CMonsters::GetInstance()->Spawn(Monster::FISH);
 		if (fish != NULL)
 		{
-			SetupFish(fish);
+			SetupFish((CFish *)fish);
 			spawning_pause_start = GetTickCount();
 		}
 			
@@ -40,17 +41,12 @@ void CSpawnerFish::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 }
 
-void CSpawnerFish::SetupFish(LPGAMEOBJECT const &fish)
-{
-	CFish * f = dynamic_cast<CFish *>(fish);
-	SetupFish(f);
-}
-
 void CSpawnerFish::SetupFish(CFish * const & fish)
 {
 	float xSimon, ySimon;
 	CSimon::GetInstance()->GetPosition(xSimon, ySimon);
 
+	CBubbles::GetInstance()->ShowSomeBubblesForFish(this->x, this->y);
 	fish->SetPosition(this->x, this->y);
 	fish->ReDirect(xSimon);
 	fish->SetSpeed(0, 0);

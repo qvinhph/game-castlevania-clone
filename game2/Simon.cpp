@@ -22,6 +22,8 @@
 #include "Portals.h"
 #include "Fish.h"
 #include "FireBall.h"
+#include "InvisibleWater.h"
+#include "Bubbles.h"
 
 #include "debug.h"
 
@@ -594,8 +596,19 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 
 		else if (dynamic_cast<CPortal *>(e->obj))
 		{
-			CPortal * portal = dynamic_cast<CPortal *>(e->obj);
-			CPortals::GetInstance()->Teleport(portal, this->x, this->y);
+			CPortals::GetInstance()->Teleport((CPortal *)e->obj, this->x, this->y);
+		}
+
+		else if (dynamic_cast<CInvisibleWater *>(e->obj))
+		{
+			// Death's effect
+			float pX = this->x + SIMON_IDLE_BBOX_WIDTH / 2;
+			float pY = this->y + SIMON_IDLE_BBOX_HEIGHT;
+			CBubbles::GetInstance()->ShowSomeBubblesForFish(this->x, this->y);
+
+			// Simon's death
+			this->SetState(STATE_INVISIBLE);
+			this->dying = true;
 		}
 
 		// block with ground objects

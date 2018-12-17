@@ -33,7 +33,7 @@ CCells *cells;
 CBoard *board;
 
 vector<LPGAMEOBJECT> updateObjects;			// The objects need be updated
-vector<LPGAMEOBJECT> defaultObjects;		// Always need be Updated objects
+vector<LPGAMEOBJECT> defaultObjects;		// Base objects
 
 #pragma region Player input
 
@@ -201,6 +201,7 @@ void InitDefaultObjects()
 	CFlames * flames = CFlames::GetInstance();
 	CWeapons * weapons = CWeapons::GetInstance();
 	CMonsters * monsters = CMonsters::GetInstance();
+	CBubbles * bubbles = CBubbles::GetInstance();
 	board = CBoard::GetInstance();
 
 	gameObject = CSimon::GetInstance();
@@ -208,7 +209,6 @@ void InitDefaultObjects()
 
 	gameObject = CRope::GetInstance();
 	defaultObjects.push_back(gameObject);
-
 
 	// Dropable things
 	gameObject = new CItemRope();
@@ -234,7 +234,14 @@ void InitDefaultObjects()
 	{
 		gameObject = new CFlame();
 		defaultObjects.push_back(gameObject);
-		CFlames::GetInstance()->Add((CFlame *)gameObject);
+		flames->Add((CFlame *)gameObject);
+	}
+
+	for (int i = 0; i < 6; ++i)
+	{
+		gameObject = new CBubble();
+		defaultObjects.push_back(gameObject);
+		bubbles->Add((CBubble *)gameObject);
 	}
 
 
@@ -243,14 +250,14 @@ void InitDefaultObjects()
 	{
 		gameObject = new CDagger();
 		defaultObjects.push_back(gameObject);
-		CWeapons::GetInstance()->Add(Weapon::DAGGER, gameObject);
+		weapons->Add(Weapon::DAGGER, gameObject);
 	}
 
 	for (int i = 0; i < NUMBER_OF_FIREBALL; ++i)
 	{
 		gameObject = new CFireBall();
 		defaultObjects.push_back(gameObject);
-		CWeapons::GetInstance()->Add(Weapon::FIREBALL, gameObject);
+		weapons->Add(Weapon::FIREBALL, gameObject);
 	}
 
 
@@ -259,21 +266,21 @@ void InitDefaultObjects()
 	{
 		gameObject = new CZombie();
 		defaultObjects.push_back(gameObject);
-		CMonsters::GetInstance()->Add(Monster::ZOMBIE, gameObject);
+		monsters->Add(Monster::ZOMBIE, gameObject);
 	}
 
 	for (int i = 0; i < NUMBER_OF_PANTHER; ++i)
 	{
 		gameObject = new CPanther();
 		defaultObjects.push_back(gameObject);
-		CMonsters::GetInstance()->Add(Monster::PANTHER, gameObject);
+		monsters->Add(Monster::PANTHER, gameObject);
 	}
 
 	for (int i = 0; i < NUMBER_OF_PINKBAT; ++i)
 	{
 		gameObject = new CPinkBat();
 		defaultObjects.push_back(gameObject);
-		CMonsters::GetInstance()->Add(Monster::PINKBAT, gameObject);
+		monsters->Add(Monster::PINKBAT, gameObject);
 	}
 
 	for (int i = 0; i < NUMBER_OF_FISH; ++i)
@@ -666,6 +673,13 @@ void LoadResources()
 	ani = new CAnimation(100);
 	ani->AddFrame(19100);
 	animations->Add((int)FireBallAniID::FLYING_LEFT, ani);
+
+	// bubble
+	sprites->Add(20000, 85, 34, 99, 62, texMisc);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(20000);
+	animations->Add((int)BubbleAniID::IDLE, ani);
 
 #pragma endregion
 

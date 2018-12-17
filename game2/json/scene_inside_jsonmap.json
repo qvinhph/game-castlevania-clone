@@ -1125,7 +1125,7 @@
                  "name":"camerabound",
                  "rotation":0,
                  "type":"",
-                 "visible":true,
+                 "visible":false,
                  "width":1024.25,
                  "x":4736,
                  "y":448
@@ -1928,6 +1928,17 @@
                  "width":16,
                  "x":5303.33333333333,
                  "y":356.666666666667
+                }, 
+                {
+                 "height":25.5,
+                 "id":190,
+                 "name":"invisiblewater",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1030.5,
+                 "x":4738,
+                 "y":832
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1936,7 +1947,7 @@
          "y":0
         }],
  "nextlayerid":42,
- "nextobjectid":190,
+ "nextobjectid":192,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.0",

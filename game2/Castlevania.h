@@ -39,6 +39,9 @@
 #include "Fish.h"
 #include "FireBall.h"	
 #include "SpawnerFish.h"
+#include "Bubble.h"
+#include "Bubbles.h"
+#include "InvisibleWater.h"
 
 #define ID_TEX_SIMON		0
 #define ID_TEX_ROPE			1

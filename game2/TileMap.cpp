@@ -173,6 +173,8 @@ void CTileMap::CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo)
 		// Invisiblewall
 		else if (info->name == "invisiblewall")		obj = new CInvisibleWall(info->width, info->height);
 
+		// Invisible Water
+		else if (info->name == "invisiblewater")	obj = new CInvisibleWater(info->width, info->height);
 
 		// Camera Limit Bounds
 		else if (info->name == "camerabound")

@@ -177,19 +177,28 @@
     <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Portal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Portals.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="SpawnerFish.h">
+      <Filter>Header Files\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Fish.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="FireBall.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="SpawnerFish.h">
+    <ClInclude Include="Portal.h">
+      <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Portals.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Bubble.h">
+      <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Bubbles.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="InvisibleWater.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -326,19 +335,28 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Portal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Portals.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="FireBall.cpp">
+      <Filter>Source Files\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Fish.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="FireBall.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Portal.cpp">
+      <Filter>Source Files\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Portals.cpp">
+      <Filter>Source Files\Managers</Filter>
     </ClCompile>
     <ClCompile Include="SpawnerFish.cpp">
+      <Filter>Source Files\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Bubbles.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Bubble.cpp">
+      <Filter>Source Files\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="InvisibleWater.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
