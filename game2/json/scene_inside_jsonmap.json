@@ -997,7 +997,7 @@
                  "name":"camerabound",
                  "rotation":0,
                  "type":"",
-                 "visible":false,
+                 "visible":true,
                  "width":5636.66666666667,
                  "x":1534,
                  "y":0
@@ -1338,17 +1338,6 @@
                  "width":112,
                  "x":5360.72727272727,
                  "y":432.909090909091
-                }, 
-                {
-                 "height":62,
-                 "id":145,
-                 "name":"simon",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":5485,
-                 "y":630.333333333333
                 }, 
                 {
                  "height":112,
@@ -1939,6 +1928,28 @@
                  "width":1030.5,
                  "x":4738,
                  "y":832
+                }, 
+                {
+                 "height":54,
+                 "id":193,
+                 "name":"bossbat",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":94,
+                 "x":6854,
+                 "y":92
+                }, 
+                {
+                 "height":62,
+                 "id":194,
+                 "name":"simon",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":3784,
+                 "y":225
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1947,7 +1958,7 @@
          "y":0
         }],
  "nextlayerid":42,
- "nextobjectid":192,
+ "nextobjectid":195,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.0",

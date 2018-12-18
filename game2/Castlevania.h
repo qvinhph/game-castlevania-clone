@@ -42,6 +42,7 @@
 #include "Bubble.h"
 #include "Bubbles.h"
 #include "InvisibleWater.h"
+#include "BossBat.h"
 
 #define ID_TEX_SIMON		0
 #define ID_TEX_ROPE			1

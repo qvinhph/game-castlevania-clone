@@ -77,7 +77,7 @@ void CPanther::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 
 	// If the panther runs out the viewport
-	if (this->IsInViewport() == false && vx != 0)
+	if (this->IsInViewport() == false)
 		SetState(STATE_INVISIBLE);
 }
 

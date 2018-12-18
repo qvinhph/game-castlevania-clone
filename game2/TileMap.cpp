@@ -160,7 +160,7 @@ void CTileMap::CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo)
 		//else if (info->name == "zombie")			obj = new CZombie();
 		//else if (info->name == "panther")			obj = new CPanther();
 		//else if (info->name == "pinkbat")			obj = new CPinkBat();
-		else if (info->name == "fish")				obj = new CFish();
+		//else if (info->name == "fish")				obj = new CFish();
 
 
 		// Monsters' spawner
@@ -169,12 +169,6 @@ void CTileMap::CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo)
 		else if (info->name == "spawnerpanther")	obj = new CSpawnerPanther();
 		else if (info->name == "spawnerfish")		obj = new CSpawnerFish();
 
-
-		// Invisiblewall
-		else if (info->name == "invisiblewall")		obj = new CInvisibleWall(info->width, info->height);
-
-		// Invisible Water
-		else if (info->name == "invisiblewater")	obj = new CInvisibleWater(info->width, info->height);
 
 		// Camera Limit Bounds
 		else if (info->name == "camerabound")
@@ -187,6 +181,7 @@ void CTileMap::CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo)
 			continue;
 		}
 
+
 		// Teleport
 		else if (info->name == "portal")
 		{
@@ -198,6 +193,15 @@ void CTileMap::CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo)
 			obj = new CPortal(info->width, info->height, indicator);
 			CPortals::GetInstance()->Add(obj);
 		}
+
+		// Invisiblewall
+		else if (info->name == "invisiblewall")		obj = new CInvisibleWall(info->width, info->height);
+
+		// Invisible Water
+		else if (info->name == "invisiblewater")	obj = new CInvisibleWater(info->width, info->height);
+
+		// Boss Bat
+		else if (info->name == "bossbat")		obj = new CBossBat();
 
 
 		// Simon

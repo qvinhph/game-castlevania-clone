@@ -798,6 +798,20 @@ void LoadResources()
 	ani->AddFrame(54102);
 	animations->Add((int)FishAniID::ATTACK_LEFT, ani);
 
+	// BOSS BAT
+	sprites->Add(55000, 182, 132, 278, 176, texMonsters);
+	sprites->Add(55001, 99, 132, 195, 176, texMonsters);
+	sprites->Add(55002, 1, 133, 97, 177, texMonsters);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(55000);
+	animations->Add((int)BossBatAniID::SLEEP, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(55001);
+	ani->AddFrame(55002);
+	animations->Add((int)BossBatAniID::FLY, ani);
+
 #pragma endregion
 
 #pragma region Loading board resources
