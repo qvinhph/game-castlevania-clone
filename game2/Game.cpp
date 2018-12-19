@@ -69,7 +69,7 @@ void CGame::Init(HWND hWnd)
 void CGame::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, ARGB& argb)
 {
 	float xCamera, yCamera;
-	camera->GetPosition(xCamera, yCamera);
+	cameraInstance->GetPosition(xCamera, yCamera);
 
 	// Get the viewport position
 	float xv = x - xCamera;

@@ -53,7 +53,6 @@ public:
 
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL) override;
-	bool IsInViewport() override;
 	void BeHit(int damage) override;
 
 	void CalculateCentralPosition();

@@ -50,7 +50,7 @@ class CGame
 
 	LPKEY_EVENT_HANDLER keyEventHandler;
 
-	CCamera * camera = CCamera::GetInstance();
+	CCamera * cameraInstance = CCamera::GetInstance();
 
 	static CGame * __instance;
 	CGame() = default;

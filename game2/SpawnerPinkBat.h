@@ -9,9 +9,6 @@
 */
 class CSpawnerPinkBat: public CActiveObject
 {
-	float width;
-	float height;
-
 	DWORD spawn_pause;
 public:
 
@@ -20,7 +17,5 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT> * coObjects) override;
 
 	void SetupBatInfo(float &x, float &y, int &nx, float & line);
-
-	CSpawnerPinkBat(float width, float height);
 };
 

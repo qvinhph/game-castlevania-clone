@@ -35,7 +35,8 @@ void CGameObject::RenderBoundingBox()
 */
 bool CGameObject::IsInViewport()
 {
-	float vpLeft, vpRight, vpTop, vpBottom;
+	// DELETE ME
+	/*float vpLeft, vpRight, vpTop, vpBottom;
 	cameraInstance->GetBoundingBox(vpLeft, vpTop, vpRight, vpBottom);
 	
 	float left, top, right, bottom;
@@ -43,6 +44,20 @@ bool CGameObject::IsInViewport()
 
 	if (vpLeft > left || vpTop > top 
 		|| vpRight < right || vpBottom < bottom)
+		return false;
+
+	return true;*/
+
+	// The viewport bounding box
+	float vpLeft, vpTop, vpRight, vpBottom;
+	cameraInstance->GetBoundingBox(vpLeft, vpTop, vpRight, vpBottom);
+
+	// The object bounding box
+	float left, top, right, bottom;
+	this->GetBoundingBox(left, top, right, bottom);
+
+	if (vpLeft > right || vpTop > bottom
+		|| vpRight < left || vpBottom < top)
 		return false;
 
 	return true;

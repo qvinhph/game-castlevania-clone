@@ -725,7 +725,7 @@ void LoadResources()
 	sprites->Add(24002, 97, 131, 177, 227, texMisc);	// opening
 
 	ani = new CAnimation(100);
-	ani->AddFrame(24000, 1000);
+	//ani->AddFrame(24000, 1000);
 	ani->AddFrame(24001, 500);
 	ani->AddFrame(24002, 500);
 	ani->AddFrame(24000);		// close again

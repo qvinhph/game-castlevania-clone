@@ -21,6 +21,6 @@ public:
 	void Render() override;
 
 	bool GetClosing() { return this->closing; }
-	void SetClosing(bool closing) { closing =  this->closing; }
+	void SetClosing(bool closing) {  this->closing = closing; }
 };
 

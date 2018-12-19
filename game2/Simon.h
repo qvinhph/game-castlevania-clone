@@ -30,7 +30,7 @@
 #define SIMON_FLICKERING_TIME					1000
 #define SIMON_UNTOUCHABLE_TIME					1000
 #define SIMON_AUTO_STAIR_TIME					300
-#define SIMON_AUTO_MOVE							400  // sum of a full animation moving time
+#define SIMON_AUTO_MOVE_TIME							400  // sum of a full animation moving time
 
 
 #define SIMON_ATTACK_BY_ROPE					0
@@ -122,10 +122,9 @@ public:
 	void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents) override;
 	void SetFreezing(bool freezing) override;
 	void ProceedBeingUntouchable() override;
-	bool IsInViewport() override;
 	
 	void PickAnimation();
-	void CalibrateCameraPosition();		// To keep Simon at center of camera
+	void CalibrateCameraPosition();		// To keep Simon at center of camera and not go outside
 	void SetAction(Action action);
 
 	void Flicker();

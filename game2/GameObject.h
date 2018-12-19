@@ -144,12 +144,13 @@ public:
 	void FreezeAnimation();
 	void ReDirect(float posisionX);
 	void ResetAnimationTimer(int aniID);
+	bool IsInViewport();
+
 
 	virtual bool IsOverlapping(LPGAMEOBJECT obj);
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
 	virtual void Render();
 	virtual void Destroy();		
-	virtual bool IsInViewport();
 	virtual void BeHit(int damage);
 
 	CGameObject();

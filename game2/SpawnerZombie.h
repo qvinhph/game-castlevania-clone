@@ -12,9 +12,6 @@
 */
 class CSpawnerZombie: public CActiveObject
 {
-	float width;
-	float height;
-
 	// The number of zombie that has already spawned in the spawn-season
 	static int spawnCounter;	
 
@@ -33,6 +30,5 @@ public:
 
 	bool IsFarEnoughToSpawn();
 	void SetupZombieInfo(float &x, float &y, int &nx);
-	CSpawnerZombie(float width, float height);
 };
 

@@ -160,12 +160,12 @@ void CTileMap::CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo)
 		//else if (info->name == "zombie")			obj = new CZombie();
 		//else if (info->name == "panther")			obj = new CPanther();
 		//else if (info->name == "pinkbat")			obj = new CPinkBat();
-		//else if (info->name == "fish")				obj = new CFish();
+		//else if (info->name == "fish")			obj = new CFish();
 
 
 		// Monsters' spawner
-		else if (info->name == "spawnerzombie")		obj = new CSpawnerZombie(info->width, info->height);
-		else if (info->name == "spawnerpinkbat")	obj = new CSpawnerPinkBat(info->width, info->height);
+		else if (info->name == "spawnerzombie")		obj = new CSpawnerZombie();
+		else if (info->name == "spawnerpinkbat")	obj = new CSpawnerPinkBat();
 		else if (info->name == "spawnerpanther")	obj = new CSpawnerPanther();
 		else if (info->name == "spawnerfish")		obj = new CSpawnerFish();
 

@@ -11,8 +11,8 @@ void CSpawnerZombie::GetBoundingBox(float & left, float & top, float & right, fl
 {
 	left = x;
 	top = y;
-	right = left + width;
-	bottom = top + height;
+	right = left + 1;
+	bottom = top + 1;
 }
 
 void CSpawnerZombie::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -139,9 +139,4 @@ void CSpawnerZombie::SetupZombieInfo(float & x, float & y, int & nx)
 
 	y = this->y;
 	nx = this->nx;
-}
-
-CSpawnerZombie::CSpawnerZombie(float width, float height) : width(width), height(height)
-{
-	spawnCounter = 0;
 }

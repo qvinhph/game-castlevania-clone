@@ -45,7 +45,6 @@ public:
 	void ChangeDirectonToSimon();
 	void PickAnimation();
 	void ProceedCollisions(vector<LPCOLLISIONEVENT> & coEvents);
-	bool IsInViewport() override;
 
 	CPanther();
 };

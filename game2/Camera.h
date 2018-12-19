@@ -4,6 +4,9 @@
 
 using namespace std;
 
+/*
+	Manage the camera limit bounds of the map
+*/
 class CCamera
 {
 	static CCamera * __instance;
@@ -28,10 +31,8 @@ public:
 	void SetViewportSize(float width, float height) { this->viewportWidth = width; this->viewportHeight = height; }
 	void GetViewportSize(float &width, float &height) { width = this->viewportWidth; height = this->viewportHeight; }
 
-
 	void GetLimitBound(float &left, float &top, float &right, float &bottom);
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
-
 
 	// Change the current camera limit bound to the bound contain the given object
 	void ChangeLimitBound(float x, float y);

@@ -114,7 +114,7 @@ void CWeapons::Add(Weapon weaponName, LPGAMEOBJECT weapon)
 {
 	weapon->SetState(STATE_INVISIBLE);
 	weapons[weaponName].push_back(weapon);
-	stock[weaponName];
+	//stock[weaponName];
 }
 
 void CWeapons::AddToStock(Weapon weaponName)

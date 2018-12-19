@@ -27,6 +27,7 @@
 #include "ItemMeat.h"
 #include "AutoMoveZone.h"
 #include "Gate.h"
+#include "SecretBrick.h"
 
 #include "debug.h"
 
@@ -300,23 +301,6 @@ void CSimon::ProceedBeingUntouchable()
 	}
 }
 
-bool CSimon::IsInViewport()
-{
-	// The viewport bounding box
-	float vpLeft, vpTop, vpRight, vpBottom;
-	cameraInstance->GetBoundingBox(vpLeft, vpTop, vpRight, vpBottom);
-
-	// The object bounding box
-	float left, top, right, bottom;
-	this->GetBoundingBox(left, top, right, bottom);
-
-	if (vpLeft > right || vpTop > bottom
-		|| vpRight < left || vpBottom < top)
-		return false;
-
-	return true;
-}
-
 void CSimon::ProceedAttacking()
 {
 	if (GetTickCount() - attack_start > SIMON_ATTACK_TIME)
@@ -454,8 +438,7 @@ void CSimon::ProceedOverlapping()
 			else if (onStairs == -1)
 				this->Downstairs();
 			else if (onStairs == 0)
-				this->StartAutoMove(this->nx * SIMON_AUTO_MOVE_SPEED_X, 
-								SIMON_MAX_SPEED_WITH_JUMP_GRAVITY, SIMON_AUTO_MOVE);
+				this->StartAutoMove(this->nx * SIMON_AUTO_MOVE_SPEED_X, 0, SIMON_AUTO_MOVE_TIME);
 		}
 	}
 }
@@ -588,6 +571,13 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 		{
 			DebugOut(L"\n[INFO] Touch Gate");
 			dynamic_cast<CGate *>(e->obj)->SetClosing(false);
+
+			// Block
+			if (e->nx != 0)
+			{
+				x += nx * DEFLECTION_AVOID_OVERLAPPING;
+				vx = 0;
+			}
 		}
 
 		else if (dynamic_cast<CZombie *>(e->obj) ||
@@ -630,6 +620,15 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 		}
 
 		// block with ground objects
+		else if (dynamic_cast<CSecretBrick *>(e->obj))
+		{
+			if (e->nx != 0) x += nx * DEFLECTION_AVOID_OVERLAPPING;
+			if (e->ny < 0)
+			{
+				y += ny * DEFLECTION_AVOID_OVERLAPPING;
+				vy = 0;
+			}
+		}
 		else if (dynamic_cast<CInvisibleWall *>(e->obj))
 		{
 			// Simon ignores the ground while on stairs
@@ -1056,25 +1055,31 @@ void CSimon::CalibrateCameraPosition()
 	float yCam = yCentral - vpHeight / 2;
 
 
-	// Get the limit bound
-	float limitLeft, limitRight, limitTop, limitBottom;
-	cameraInstance->GetLimitBound(limitLeft, limitTop, limitRight, limitBottom);
-
-
 	// Focus the camera on Simon
 	cameraInstance->ChangeLimitBound(this->x, this->y);
 
 
+	// Get the limit bound
+	float limitLeft, limitRight, limitTop, limitBottom;
+	cameraInstance->GetLimitBound(limitLeft, limitTop, limitRight, limitBottom);
+	
+
 	// Limit the camera position
-	if (xCam < limitLeft)		
+	if (xCam < limitLeft)
 		xCam = limitLeft;
-	if (xCam + vpWidth > limitRight)	
+	if (xCam + vpWidth > limitRight)
 		xCam = limitRight - vpWidth;
 
 	if (yCam < limitTop)
 		yCam = limitTop;
 	if (yCam + vpHeight > limitBottom)
 		yCam = limitBottom - vpHeight;
+
+	if (this->x < limitLeft)
+		this->x = limitLeft;
+	if (this->x + SIMON_IDLE_BBOX_WIDTH > limitRight)
+		this->x = limitRight - SIMON_IDLE_BBOX_WIDTH;
+
 
 	cameraInstance->SetPosition(xCam, yCam);
 }

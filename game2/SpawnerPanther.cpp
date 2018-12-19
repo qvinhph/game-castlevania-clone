@@ -52,6 +52,8 @@ void CSpawnerPanther::SetupPantherInfo(float & x, float & y, int & nx)
 CSpawnerPanther::CSpawnerPanther()
 {
 	panther = CMonsters::GetInstance()->Spawn(Monster::PANTHER);
+
+	// To mark that this panther has been already used by a spawner.
 	panther->SetState(STATE_VISIBLE);
 }
 

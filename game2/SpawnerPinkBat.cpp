@@ -8,13 +8,13 @@ void CSpawnerPinkBat::GetBoundingBox(float & left, float & top, float & right, f
 {
 	left = x;
 	top = y;
-	right = x + width;
-	bottom = y + height;
+	right = x + 1;
+	bottom = y + 1;
 }
 
 void CSpawnerPinkBat::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (this->IsOverlapping(CSimon::GetInstance()))
+	if (this->IsInViewport())
 	{
 		if (spawn_pause == TIMER_IDLE)
 		{
@@ -59,10 +59,5 @@ void CSpawnerPinkBat::SetupBatInfo(float & x, float & y, int & nx, float & line)
 	// Set the line 
 	line = (top + bottom) / 2;
 
-}
-
-CSpawnerPinkBat::CSpawnerPinkBat(float width, float height)
-	:width(width), height(height)
-{
 }
 

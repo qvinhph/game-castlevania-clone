@@ -84,23 +84,6 @@ void CBossBat::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	y += dy;
 }
 
-bool CBossBat::IsInViewport()
-{
-	// The viewport bounding box
-	float vpLeft, vpTop, vpRight, vpBottom;
-	cameraInstance->GetBoundingBox(vpLeft, vpTop, vpRight, vpBottom);
-
-	// The object bounding box
-	float left, top, right, bottom;
-	this->GetBoundingBox(left, top, right, bottom);
-
-	if (vpLeft > right || vpTop > bottom
-		|| vpRight < left || vpBottom < top)
-		return false;
-
-	return true;
-}
-
 void CBossBat::BeHit(int damage)
 {
 	if (untouchable_start == TIMER_IDLE)

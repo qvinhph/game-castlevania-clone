@@ -46,7 +46,6 @@ public:
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
 	void SetState(int state) override;
 	bool IsOverlapping(LPGAMEOBJECT obj) override;
-	bool IsInViewport() override;
 
 	void UpdateRopePosition(int aniID);
 	void SetMatchedAnimation();
