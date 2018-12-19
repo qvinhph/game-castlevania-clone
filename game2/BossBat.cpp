@@ -1,5 +1,6 @@
 #include "BossBat.h"
 #include "Simon.h"
+#include "Board.h"
 #include "Camera.h"
 
 void CBossBat::GetBoundingBox(float & left, float & top, float & right, float & bottom)
@@ -100,6 +101,14 @@ bool CBossBat::IsInViewport()
 	return true;
 }
 
+void CBossBat::BeHit(int damage)
+{
+	if (untouchable_start == TIMER_IDLE)
+		CBoard::GetInstance()->AddEnemyLife(-damage);
+
+	CActiveObject::BeHit(damage);
+}
+
 /*
 	Try to turn off the timer attack if it ran out
 */
@@ -174,6 +183,13 @@ void CBossBat::Rest()
 		rest_start = GetTickCount();
 		vx = vy = 0;
 	}
+}
+
+CBossBat::CBossBat()
+{
+	health = BOSSBAT_DEFAULT_HEALTH;
+	damage = BOSSBAT_DAMAGE;
+	point = BOSSBAT_POINT_AWARD;
 }
 
 /*

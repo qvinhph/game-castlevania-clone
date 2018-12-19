@@ -106,10 +106,8 @@ void CFish::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 		else
 		{
 			// Ignore other objects by completing the rest of dx / dy
-			if (e->nx != 0)	
-				x += (1 - min_tx) * dx;
-			if (e->ny < 0)	
-				y += (1 - min_ty) * dy;
+			if (e->nx != 0)		x += (1 - min_tx) * dx;
+			if (e->ny < 0)		y += (1 - min_ty) * dy;
 		}
 	}
 

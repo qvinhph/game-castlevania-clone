@@ -87,6 +87,7 @@ class CBoard
 	// Assigned to TIMER_ETERNAL		: the timer is working and the action is not going to stop
 	// Assigned to unsigned number		: the timer is working
 	DWORD player_health_pause_start = TIMER_IDLE;
+	DWORD enemy_health_pause_start = TIMER_IDLE;
 
 	static CBoard * __instance;
 	static CGame * gameInstance;
@@ -138,10 +139,11 @@ public:
 	void AddHeart(int number) { this->heart += number; }
 	void AddLifePoint(int number) { this->lifePoint += number; }
 	void AddStage(int number) { this->stage += number; }
-	void AddEnemyLife(int number) { this->enemyHealth += number; }
+	void AddEnemyLife(int number) { this->enemyHealthTemp += number; }
 	void AddPlayerLife(int number) { this->playerHealthTemp += number; }
 
 	void ChangePlayerHealthGradually();
+	void ChangeEnemyHealthGradually();
 	void CalcWeaponInsidePosition(float weaponWidth, float weaponHeight, float &x, float &y);
 
 	static CBoard * GetInstance();

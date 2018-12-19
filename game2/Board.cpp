@@ -26,6 +26,10 @@ void CBoard::Update()
 {
 	if (playerHealthTemp != 0)
 		ChangePlayerHealthGradually();
+
+	if (enemyHealthTemp != 0)
+		ChangeEnemyHealthGradually();
+
 }
 
 void CBoard::RenderScore()
@@ -192,12 +196,24 @@ void CBoard::ChangePlayerHealthGradually()
 		{
 			playerHealthTemp--;
 			playerHealth++;
+
+			if (playerHealth >= PLAYER_HEALTH_DEFAULT)
+			{
+				playerHealthTemp = 0;
+				playerHealth = PLAYER_HEALTH_DEFAULT;
+			}
 		}
 
-		if (playerHealthTemp < 0)
+		else if (playerHealthTemp < 0)
 		{
 			playerHealthTemp++;
 			playerHealth--;
+
+			if (playerHealth <= 0)
+			{
+				playerHealthTemp = 0;
+				playerHealth = 0;
+			}
 		}
 
 		player_health_pause_start = GetTickCount();
@@ -208,6 +224,31 @@ void CBoard::ChangePlayerHealthGradually()
 			player_health_pause_start = TIMER_IDLE;
 	}
 	
+}
+
+void CBoard::ChangeEnemyHealthGradually()
+{
+	if (enemy_health_pause_start == TIMER_IDLE)
+	{
+		if (enemyHealthTemp > 0)
+		{
+			enemyHealthTemp--;
+			enemyHealth++;
+		}
+
+		if (enemyHealthTemp < 0)
+		{
+			enemyHealthTemp++;
+			enemyHealth--;
+		}
+
+		enemy_health_pause_start = GetTickCount();
+	}
+	else
+	{
+		if (GetTickCount() - enemy_health_pause_start > HEALTH_PAUSE_TIME)
+			enemy_health_pause_start = TIMER_IDLE;
+	}
 }
 
 void CBoard::CalcWeaponInsidePosition(float weaponWidth, float weaponHeight, float & x, float & y)

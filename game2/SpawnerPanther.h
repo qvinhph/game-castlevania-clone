@@ -7,7 +7,7 @@
 */
 class CSpawnerPanther: public CActiveObject
 {
-	bool spawning;
+	bool spawning = true;
 	LPACTIVEOBJECT panther;		// the panther that has been spawned by this spawner
 
 public:
@@ -15,6 +15,7 @@ public:
 	void Render() override { /* Nothing here */ }
 	void Update(DWORD dt, vector<LPGAMEOBJECT> * coObjects) override;
 	void SetupPantherInfo(float &x, float &y, int &nx);
+
 	CSpawnerPanther();
 };
 

@@ -194,15 +194,27 @@ void CTileMap::CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo)
 			CPortals::GetInstance()->Add(obj);
 		}
 
+		// Gate
+		else if (info->name == "gate")				obj = new CGate();
+
 		// Invisiblewall
 		else if (info->name == "invisiblewall")		obj = new CInvisibleWall(info->width, info->height);
 
 		// Invisible Water
 		else if (info->name == "invisiblewater")	obj = new CInvisibleWater(info->width, info->height);
 
+		// Auto move zone
+		else if (info->name == "automovezone")		obj = new CAutoMoveZone(info->width, info->height);
+
 		// Boss Bat
 		else if (info->name == "bossbat")		obj = new CBossBat();
 
+		// Secret bricks
+		else if (info->name == "secretbrick")
+		{
+			if (info->type == "type1")	obj = new CSecretBrick((int)SecretBrickAniID::IDLE_TYPE_1);
+			else						obj = new CSecretBrick((int)SecretBrickAniID::IDLE_TYPE_2);
+		}
 
 		// Simon
 		else if (info->name == "simon")
@@ -337,6 +349,7 @@ Item CTileMap::GetHoldingItem(string string)
 	if (string == "bigheart")		return Item::BIGHEART;
 	if (string == "heart")			return Item::HEART;
 	if (string == "itemdagger")		return Item::ITEMDAGGER;
+	if (string == "itemmeat")		return Item::ITEMMEAT;
 
 	return Item::NONE;
 }

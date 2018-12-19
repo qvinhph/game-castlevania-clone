@@ -29,6 +29,7 @@ enum class Item
 	HEART,
 	BIGHEART,
 	ITEMDAGGER,
+	ITEMMEAT
 };
 
 // Weapon name used for second attacking 

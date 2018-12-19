@@ -24,6 +24,9 @@
 #include "FireBall.h"
 #include "InvisibleWater.h"
 #include "Bubbles.h"
+#include "ItemMeat.h"
+#include "AutoMoveZone.h"
+#include "Gate.h"
 
 #include "debug.h"
 
@@ -438,14 +441,14 @@ void CSimon::ProceedOverlapping()
 		obj = ovObjects[i];
 		
 		// To use the portals effectly by avoid Simon overlapping on a Portal object
-		if (dynamic_cast<CPortal *>(obj))
+		if (dynamic_cast<CAutoMoveZone *>(obj))
 		{
 			if (this->attack_start != TIMER_IDLE ||
 				this->untouchable_start != TIMER_IDLE ||
 				this->crouching == true ||
 				this->jumping == true)
 				continue;
-
+		
 			if (onStairs == 1)
 				this->Upstairs();
 			else if (onStairs == -1)
@@ -570,6 +573,21 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			e->obj->SetState(STATE_INVISIBLE);
 			secondaryWeapon = Weapon::DAGGER;
 			weapons->AddToStock(Weapon::DAGGER);
+		}
+
+		else if (dynamic_cast<CItemMeat *>(e->obj))
+		{
+			DebugOut(L"\n[INFO] Touch Meat");
+			e->obj->SetState(STATE_INVISIBLE);
+
+			this->health += e->obj->GetPoint();
+			CBoard::GetInstance()->AddPlayerLife(e->obj->GetPoint());
+		}
+
+		else if (dynamic_cast<CGate *>(e->obj))
+		{
+			DebugOut(L"\n[INFO] Touch Gate");
+			dynamic_cast<CGate *>(e->obj)->SetClosing(false);
 		}
 
 		else if (dynamic_cast<CZombie *>(e->obj) ||

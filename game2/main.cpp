@@ -202,6 +202,7 @@ void InitDefaultObjects()
 	CWeapons * weapons = CWeapons::GetInstance();
 	CMonsters * monsters = CMonsters::GetInstance();
 	CBubbles * bubbles = CBubbles::GetInstance();
+	CRocks * rocks = CRocks::GetInstance();
 	board = CBoard::GetInstance();
 
 	gameObject = CSimon::GetInstance();
@@ -223,6 +224,10 @@ void InitDefaultObjects()
 	defaultObjects.push_back(gameObject);
 	items->Add(Item::BIGHEART, gameObject);
 
+	gameObject = new CItemMeat();
+	defaultObjects.push_back(gameObject);
+	items->Add(Item::ITEMMEAT, gameObject);
+
 	for (int i = 0; i < NUMBER_OF_HEART; ++i)
 	{
 		gameObject = new CHeart();
@@ -237,11 +242,18 @@ void InitDefaultObjects()
 		flames->Add((CFlame *)gameObject);
 	}
 
-	for (int i = 0; i < 6; ++i)
+	for (int i = 0; i < NUMBER_OF_BUBBLE; ++i)
 	{
 		gameObject = new CBubble();
 		defaultObjects.push_back(gameObject);
 		bubbles->Add((CBubble *)gameObject);
+	}
+
+	for (int i = 0; i < NUMBER_OF_ROCK; ++i)
+	{
+		gameObject = new CRock();
+		defaultObjects.push_back(gameObject);
+		rocks->Add((CRock *)gameObject);
 	}
 
 
@@ -680,6 +692,49 @@ void LoadResources()
 	ani = new CAnimation(100);
 	ani->AddFrame(20000);
 	animations->Add((int)BubbleAniID::IDLE, ani);
+
+	// secret bricks
+	sprites->Add(21000, 129, 67, 161, 99, texMisc);
+	sprites->Add(21001, 173, 67, 205, 99, texMisc);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(21000);
+	animations->Add((int)SecretBrickAniID::IDLE_TYPE_1, ani); 
+	
+	ani = new CAnimation(100);
+	ani->AddFrame(21001);
+	animations->Add((int)SecretBrickAniID::IDLE_TYPE_2, ani);
+
+	// rock 
+	sprites->Add(22000, 229, 45, 243, 61, texMisc);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(22000);
+	animations->Add((int)RockAniID::IDLE, ani);
+
+	// item meat
+	sprites->Add(23000, 132, 228, 164, 254, texMisc);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(23000);
+	animations->Add((int)ItemMeatAniID::IDLE, ani);
+
+	// gate
+	sprites->Add(24000, 4, 131, 20, 227, texMisc);		// closing
+	sprites->Add(24001, 49, 131, 81, 227, texMisc);		// opening
+	sprites->Add(24002, 97, 131, 177, 227, texMisc);	// opening
+
+	ani = new CAnimation(100);
+	ani->AddFrame(24000, 1000);
+	ani->AddFrame(24001, 500);
+	ani->AddFrame(24002, 500);
+	ani->AddFrame(24000);		// close again
+	animations->Add((int)GateAniID::OPENING, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(24000);
+	animations->Add((int)GateAniID::CLOSING, ani);
+
 
 #pragma endregion
 

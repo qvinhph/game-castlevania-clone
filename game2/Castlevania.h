@@ -43,6 +43,12 @@
 #include "Bubbles.h"
 #include "InvisibleWater.h"
 #include "BossBat.h"
+#include "SecretBrick.h"
+#include "Rock.h"
+#include "Rocks.h"
+#include "ItemMeat.h"
+#include "AutoMoveZone.h"
+#include "Gate.h"
 
 #define ID_TEX_SIMON		0
 #define ID_TEX_ROPE			1
@@ -59,3 +65,5 @@
 #define NUMBER_OF_FIREBALL	4
 #define NUMBER_OF_PINKBAT	2
 #define NUMBER_OF_FISH		2
+#define NUMBER_OF_ROCK		8
+#define NUMBER_OF_BUBBLE	9		

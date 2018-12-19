@@ -14,6 +14,10 @@
 #define BOSSBAT_MAX_SPEED_VY			0.3f
 #define BOSSBAT_FLY_UP_SPEED_VY			-0.004f
 
+#define BOSSBAT_POINT_AWARD				1000
+#define BOSSBAT_DEFAULT_HEALTH			16
+#define BOSSBAT_DAMAGE					2
+
 // Minimum space between Simon and the boss while it is resting
 #define BOSSBAT_MINIMUM_DISTANCE_WITH_SIMON		150
 
@@ -50,17 +54,20 @@ public:
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL) override;
 	bool IsInViewport() override;
-	void ProceedAttacking();
+	void BeHit(int damage) override;
 
 	void CalculateCentralPosition();
 	void CalculateRestPlace();
 	void FindTarget();
 	bool CanWakeUp();
 	bool ReachedRestPlace();
-
-
+	void ProceedAttacking();
+	   
+	// Main actions
 	void StartAttack();
 	void GoToRest();
 	void Rest();
+
+	CBossBat();
 };
 
