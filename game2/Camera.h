@@ -19,6 +19,7 @@ class CCamera
 
 	int currentLimitBound = 0;
 	vector<RECT> limitBounds;
+	
 
 public:
 

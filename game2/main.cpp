@@ -296,6 +296,13 @@ void InitDefaultObjects()
 		weapons->Add(Weapon::AXE, gameObject);
 	}
 
+	for (int i = 0; i < 2; ++i)
+	{
+		gameObject = new CHolyWater();
+		defaultObjects.push_back(gameObject);
+		weapons->Add(Weapon::HOLYWATER, gameObject);
+	}
+
 	for (int i = 0; i < NUMBER_OF_FIREBALL; ++i)
 	{
 		gameObject = new CFireBall();
@@ -797,10 +804,10 @@ void LoadResources()
 	animations->Add((int)ItemAxeAniID::IDLE, ani);
 
 	// axe 
-	sprites->Add(27001, 2, 256, 32, 284, texMisc);
-	sprites->Add(27002, 32, 256, 62, 284, texMisc);
-	sprites->Add(27003, 62, 256, 92, 284, texMisc);
-	sprites->Add(27004, 92, 256, 122, 284, texMisc);
+	sprites->Add(27001, 2, 256, 32, 284, texMisc);		   // flying
+	sprites->Add(27002, 32, 256, 62, 284, texMisc);		   // flying
+	sprites->Add(27003, 62, 256, 92, 284, texMisc);		   // flying
+	sprites->Add(27004, 92, 256, 122, 284, texMisc);	   // flying
 	ani = new CAnimation(100);
 	ani->AddFrame(27001);
 	ani->AddFrame(27002);
@@ -813,6 +820,25 @@ void LoadResources()
 	ani = new CAnimation(100);
 	ani->AddFrame(28000);
 	animations->Add((int)ItemHolyWaterAniID::IDLE, ani);
+
+	// holy water
+	sprites->Add(28101, 43, 233, 59, 249, texMisc);			// idle left
+	sprites->Add(28001, 18, 232, 34, 248, texMisc);			// idle right
+	sprites->Add(28002, 67, 229, 99, 255, texMisc);			// exploding
+	sprites->Add(28003, 99, 229, 131, 255, texMisc);		// exploding
+
+	ani = new CAnimation(100);
+	ani->AddFrame(28001);
+	animations->Add((int)HolyWaterAniID::IDLE_RIGHT, ani);
+
+	ani = new CAnimation(100);
+	ani->AddFrame(28101);
+	animations->Add((int)HolyWaterAniID::IDLE_LEFT, ani);
+
+	ani = new CAnimation(200);
+	ani->AddFrame(28002);
+	ani->AddFrame(28003);
+	animations->Add((int)HolyWaterAniID::EXPLODE, ani);
 
 #pragma endregion
 
@@ -1042,6 +1068,7 @@ void Update(DWORD dt)
 	// Help freezing time in game
 	CTimer::GetInstance()->Update(dt, &updateObjects);
 	CBoard::GetInstance()->Update();
+	//CCamera::GetInstance()->Update(dt);
 }
 
 

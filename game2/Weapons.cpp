@@ -24,6 +24,9 @@ void CWeapons::UseWeapon(Weapon weaponName, LPGAMEOBJECT obj)
 	case Weapon::AXE:
 		UseAxe(obj);
 		break;
+	case Weapon::HOLYWATER:
+		UseHolyWater(obj);
+		break;
 	default:
 		break;
 	}
@@ -31,17 +34,18 @@ void CWeapons::UseWeapon(Weapon weaponName, LPGAMEOBJECT obj)
 
 void CWeapons::UseDagger(const LPGAMEOBJECT &obj)
 {
-	LPGAMEOBJECT weapon = GetWeapon(Weapon::DAGGER);
-
-	if (weapon == NULL)
-	{
-		DebugOut(L"\n[ERROR] Failed to get dagger weapon");
-		return;
-	}
-
 	// Only simon can use this dagger weapon.
 	if (dynamic_cast<CSimon *>(obj))
 	{
+		LPGAMEOBJECT weapon = GetWeapon(Weapon::DAGGER);
+
+		if (weapon == NULL)
+		{
+			DebugOut(L"\n[ERROR] Failed to get dagger weapon");
+			return;
+		}
+
+
 		CSimon * simon = dynamic_cast<CSimon *>(obj);
 		float left, top, right, bottom;
 
@@ -64,17 +68,18 @@ void CWeapons::UseDagger(const LPGAMEOBJECT &obj)
 
 void CWeapons::UseFireBall(const LPGAMEOBJECT & obj)
 {
-	LPGAMEOBJECT weapon = GetWeapon(Weapon::FIREBALL);
-
-	if (weapon == NULL)
-	{
-		DebugOut(L"\n[ERROR] Failed to get fireball");
-		return;
-	}
-
 	// Only simon can use this dagger weapon.
 	if (dynamic_cast<CFish *>(obj))
 	{
+		LPGAMEOBJECT weapon = GetWeapon(Weapon::FIREBALL);
+
+		if (weapon == NULL)
+		{
+			DebugOut(L"\n[ERROR] Failed to get fireball");
+			return;
+		}
+
+
 		CFish * fish = dynamic_cast<CFish *>(obj);
 		float xFish, yFish;
 		fish->GetPosition(xFish, yFish);
@@ -92,17 +97,47 @@ void CWeapons::UseFireBall(const LPGAMEOBJECT & obj)
 
 void CWeapons::UseAxe(const LPGAMEOBJECT & obj)
 {
-	LPGAMEOBJECT weapon = GetWeapon(Weapon::AXE);
-
-	if (weapon == NULL)
-	{
-		DebugOut(L"\n[ERROR] Failed to get dagger weapon");
-		return;
-	}
-
 	// Only simon can use this axe weapon.
 	if (dynamic_cast<CSimon *>(obj))
 	{
+		CSimon * simon = dynamic_cast<CSimon *>(obj);
+		float left, top, right, bottom;
+
+		LPGAMEOBJECT weapon = GetWeapon(Weapon::AXE);
+
+		if (weapon == NULL)
+		{
+			DebugOut(L"\n[ERROR] Failed to get dagger weapon");
+			return;
+		}
+
+		// Get the direction depending on Simon's direction
+		weapon->SetDirection(simon->GetDirection());
+		simon->GetBoundingBox(left, top, right, bottom);
+
+		// Set the weapon position depending on Simon's position
+		// Axe will be appear above simon's head
+		weapon->SetPosition((left + right) / 2, top);
+
+		// Set the weapon visible
+		weapon->SetState(STATE_VISIBLE);
+	}
+}
+
+void CWeapons::UseHolyWater(const LPGAMEOBJECT & obj)
+{
+	// Only simon can use this holy water weapon.
+	if (dynamic_cast<CSimon *>(obj))
+	{
+		LPGAMEOBJECT weapon = GetWeapon(Weapon::HOLYWATER);
+
+		if (weapon == NULL)
+		{
+			DebugOut(L"\n[ERROR] Failed to get dagger weapon");
+			return;
+		}
+
+
 		CSimon * simon = dynamic_cast<CSimon *>(obj);
 		float left, top, right, bottom;
 
@@ -111,7 +146,7 @@ void CWeapons::UseAxe(const LPGAMEOBJECT & obj)
 		simon->GetBoundingBox(left, top, right, bottom);
 
 		// Set the weapon position depending on Simon's position
-		// Axe will be appear above simon's head
+		// Holy water will be appear above simon's head
 		weapon->SetPosition((left + right) / 2, top);
 
 		// Set the weapon visible

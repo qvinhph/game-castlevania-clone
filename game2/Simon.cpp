@@ -31,6 +31,8 @@
 #include "MoneyBag.h"
 #include "Axe.h"
 #include "ItemAxe.h"
+#include "ItemHolyWater.h"
+#include "Cross.h"
 
 #include "debug.h"
 
@@ -567,6 +569,14 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			secondaryWeapon = Weapon::AXE;
 		}
 
+		else if (dynamic_cast<CItemHolyWater *>(e->obj))
+		{
+			DebugOut(L"\n[INFO] Touch Item Holy Water");
+
+			e->obj->SetState(STATE_INVISIBLE);
+			secondaryWeapon = Weapon::HOLYWATER;
+		}
+
 		else if (dynamic_cast<CItemMeat *>(e->obj))
 		{
 			DebugOut(L"\n[INFO] Touch Meat");
@@ -582,6 +592,12 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			e->obj->SetState(STATE_INVISIBLE);
 
 			CBoard::GetInstance()->AddScore(e->obj->GetPoint());
+		}
+
+		else if (dynamic_cast<CCross *>(e->obj))
+		{
+			DebugOut(L"\n[INFO] Touch Cross");
+			e->obj->SetState(STATE_INVISIBLE);
 		}
 
 		else if (dynamic_cast<CGate *>(e->obj))

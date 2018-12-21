@@ -1,6 +1,8 @@
 #include "Board.h"
 #include "Heart.h"
 #include "Simon.h"
+#include "ItemHolyWater.h"
+#include "ItemAxe.h"
 #include "debug.h"
 
 CBoard * CBoard::__instance = NULL;
@@ -29,7 +31,6 @@ void CBoard::Update()
 
 	if (enemyHealthTemp != 0)
 		ChangeEnemyHealthGradually();
-
 }
 
 void CBoard::RenderScore()
@@ -182,6 +183,17 @@ void CBoard::RenderWeaponBox()
 		CalcWeaponInsidePosition(DAGGER_BBOX_WIDTH, DAGGER_BBOX_HEIGHT, xWeapon, yWeapon);
 		animations->Get((int)DaggerAniID::IDLE_RIGHT)->Render(xWeapon, yWeapon);
 		break;
+
+	case Weapon::HOLYWATER:
+		CalcWeaponInsidePosition(ITEM_HOLY_WATER_WIDTH, ITEM_HOLY_WATER_HEIGHT, xWeapon, yWeapon);
+		animations->Get((int)ItemHolyWaterAniID::IDLE)->Render(xWeapon, yWeapon);
+		break;
+
+	case Weapon::AXE:
+		CalcWeaponInsidePosition(ITEM_AXE_BBOX_WIDTH, ITEM_AXE_BBOX_HEIGHT, xWeapon, yWeapon);
+		animations->Get((int)ItemAxeAniID::IDLE)->Render(xWeapon, yWeapon);
+		break;
+
 	case Weapon::NONE:
 		break;
 	}

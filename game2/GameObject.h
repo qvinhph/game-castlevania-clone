@@ -47,6 +47,7 @@ enum class Weapon
 	NONE,
 	DAGGER,
 	AXE,
+	HOLYWATER,
 
 	FIREBALL, // of CFish
 };

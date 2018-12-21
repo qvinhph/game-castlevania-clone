@@ -1,5 +1,7 @@
 #include "Camera.h"
 #include "debug.h"
+#include "Textures.h"
+#include "Game.h"
 
 CCamera * CCamera::__instance = NULL;
 

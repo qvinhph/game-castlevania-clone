@@ -38,6 +38,7 @@ public:
 	void UseDagger(const LPGAMEOBJECT &obj);
 	void UseFireBall(const LPGAMEOBJECT &obj);
 	void UseAxe(const LPGAMEOBJECT &obj);
+	void UseHolyWater(const LPGAMEOBJECT &obj);
 
 	/*
 		Get a weapon with given name to manipulate with, if it's available

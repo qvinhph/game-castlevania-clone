@@ -16,7 +16,12 @@
 #define ARGB_WHITE(alpha)		ARGB(alpha, 255, 255, 255)
 #define ARGB_BLACK(alpha)		ARGB(alpha, 0, 0, 0)
 
+#define ARGB_ALPHA_MAX_VALUE	255
+#define ARGB_ALPHA_MIN_VALUE	0
 
+/*
+	Struct describes the ARGB color.
+*/
 struct ARGB
 {
 	ARGB() : alpha(255), red(255), green(255), blue(255) {}

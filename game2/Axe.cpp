@@ -90,3 +90,8 @@ void CAxe::SetState(int state)
 	else if (state == STATE_INVISIBLE)
 		CWeapons::GetInstance()->AddQuantity(Weapon::AXE);
 }
+
+CAxe::CAxe()
+{
+	this->damage = AXE_DAMAGE;
+}

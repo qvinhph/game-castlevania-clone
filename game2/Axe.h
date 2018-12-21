@@ -8,7 +8,8 @@
 #define AXE_INITIAL_SPEED_VY	-0.6f
 #define AXE_GRAVITY				0.0016f
 
-#define AXE_HEART_COST			1		// When use
+#define AXE_HEART_COST		1		// When use
+#define AXE_DAMAGE			2
 
 enum class AxeAniID
 {
@@ -24,5 +25,6 @@ public:
 	void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents) override;
 	void SetState(int state) override;
 
+	CAxe();
 };
 
