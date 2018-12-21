@@ -6,7 +6,7 @@
 
 #define CANNOT_BE_HIT_TIME				200
 
-enum SecretBrickAniID
+enum class SecretBrickAniID
 {
 	IDLE_TYPE_1 = 2100,
 	IDLE_TYPE_2,

@@ -128,7 +128,7 @@ void CFish::Attack()
 		attack_start = GetTickCount();
 
 		// Call the fire ball
-		CWeapons::GetInstance()->AddToStock(Weapon::FIREBALL);
+		CWeapons::GetInstance()->AddQuantity(Weapon::FIREBALL);
 		CWeapons::GetInstance()->UseWeapon(fireball, this);
 	}
 }

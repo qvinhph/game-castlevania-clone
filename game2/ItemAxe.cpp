@@ -1,6 +1,7 @@
-#include "ItemRope.h"
-	
-void CItemRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+#include "ItemAxe.h"
+
+
+void CItemAxe::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CActiveObject::Update(dt);
 	vy += GAME_GRAVITY * dt;				// simple fall down
@@ -11,7 +12,7 @@ void CItemRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 
 	// Pick animation
-	this->currentAniID = (int)ItemRopeAniID::IDLE;
+	this->currentAniID = (int)ItemAxeAniID::IDLE;
 
 
 	if (coEvents.size() == 0)
@@ -22,15 +23,14 @@ void CItemRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	else
 		CActiveObject::ProceedCollisions(coEvents);
 
-
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 
-void CItemRope::GetBoundingBox(float & left, float & top, float & right, float & bottom)
+void CItemAxe::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
 	left = x;
+	right = x + ITEM_AXE_BBOX_HEIGHT;
 	top = y;
-	right = x + ITEM_ROPE_BBOX_WIDTH;
-	bottom = y + ITEM_ROPE_BBOX_HEIGHT;
+	bottom = y + ITEM_AXE_BBOX_WIDTH;
 }

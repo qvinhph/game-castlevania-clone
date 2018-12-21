@@ -228,6 +228,30 @@ void InitDefaultObjects()
 	defaultObjects.push_back(gameObject);
 	items->Add(Item::ITEMMEAT, gameObject);
 
+	gameObject = new CMoneyBag(MoneyBagAniID::BLUE_BAG);
+	defaultObjects.push_back(gameObject);
+	items->Add(Item::MONEY_BAG_BLUE, gameObject);
+
+	gameObject = new CMoneyBag(MoneyBagAniID::WHITE_BAG);
+	defaultObjects.push_back(gameObject);
+	items->Add(Item::MONEY_BAG_WHITE, gameObject);
+
+	gameObject = new CMoneyBag(MoneyBagAniID::RED_BAG);
+	defaultObjects.push_back(gameObject);
+	items->Add(Item::MONEY_BAG_RED, gameObject);
+
+	gameObject = new CCross();
+	defaultObjects.push_back(gameObject);
+	items->Add(Item::CROSS, gameObject);
+
+	gameObject = new CItemAxe();
+	defaultObjects.push_back(gameObject);
+	items->Add(Item::ITEMAXE, gameObject);
+
+	gameObject = new CItemHolyWater();
+	defaultObjects.push_back(gameObject);
+	items->Add(Item::ITEMHOLYWATER, gameObject);
+
 	for (int i = 0; i < NUMBER_OF_HEART; ++i)
 	{
 		gameObject = new CHeart();
@@ -263,6 +287,13 @@ void InitDefaultObjects()
 		gameObject = new CDagger();
 		defaultObjects.push_back(gameObject);
 		weapons->Add(Weapon::DAGGER, gameObject);
+	}
+
+	for (int i = 0; i < 2; ++i)
+	{
+		gameObject = new CAxe();
+		defaultObjects.push_back(gameObject);
+		weapons->Add(Weapon::AXE, gameObject);
 	}
 
 	for (int i = 0; i < NUMBER_OF_FIREBALL; ++i)
@@ -301,6 +332,7 @@ void InitDefaultObjects()
 		defaultObjects.push_back(gameObject);
 		monsters->Add(Monster::FISH, gameObject);
 	}
+
 }
 
 /*
@@ -725,7 +757,6 @@ void LoadResources()
 	sprites->Add(24002, 97, 131, 177, 227, texMisc);	// opening
 
 	ani = new CAnimation(100);
-	//ani->AddFrame(24000, 1000);
 	ani->AddFrame(24001, 500);
 	ani->AddFrame(24002, 500);
 	ani->AddFrame(24000);		// close again
@@ -735,6 +766,53 @@ void LoadResources()
 	ani->AddFrame(24000);
 	animations->Add((int)GateAniID::CLOSING, ani);
 
+	// red money bag
+	sprites->Add(25000, 0, 97, 30, 127, texMisc);
+	ani = new CAnimation(100);
+	ani->AddFrame(25000);
+	animations->Add((int)MoneyBagAniID::RED_BAG, ani);
+
+	// red money bag
+	sprites->Add(25001, 30, 97, 60, 127, texMisc);
+	ani = new CAnimation(100);
+	ani->AddFrame(25001);
+	animations->Add((int)MoneyBagAniID::WHITE_BAG, ani);
+
+	// red money bag
+	sprites->Add(25002, 60, 97, 90, 127, texMisc);
+	ani = new CAnimation(100);
+	ani->AddFrame(25002);
+	animations->Add((int)MoneyBagAniID::BLUE_BAG, ani);
+
+	// cross
+	sprites->Add(26000, 212, 72, 244, 104, texMisc);
+	ani = new CAnimation(100);
+	ani->AddFrame(26000);
+	animations->Add((int)CrossAniID::IDLE, ani);
+
+	// item axe
+	sprites->Add(27000, 193, 164, 223, 192, texMisc);
+	ani = new CAnimation(100);
+	ani->AddFrame(27000);
+	animations->Add((int)ItemAxeAniID::IDLE, ani);
+
+	// axe 
+	sprites->Add(27001, 2, 256, 32, 284, texMisc);
+	sprites->Add(27002, 32, 256, 62, 284, texMisc);
+	sprites->Add(27003, 62, 256, 92, 284, texMisc);
+	sprites->Add(27004, 92, 256, 122, 284, texMisc);
+	ani = new CAnimation(100);
+	ani->AddFrame(27001);
+	ani->AddFrame(27002);
+	ani->AddFrame(27003);
+	ani->AddFrame(27004);
+	animations->Add((int)AxeAniID::FLYING, ani);
+
+	// item holy water
+	sprites->Add(28000, 209, 255, 241, 287, texMisc);
+	ani = new CAnimation(100);
+	ani->AddFrame(28000);
+	animations->Add((int)ItemHolyWaterAniID::IDLE, ani);
 
 #pragma endregion
 

@@ -43,7 +43,7 @@ void CFireBall::SetState(int state)
 
 	// Make the fireball object available again to use next time
 	if (state == STATE_INVISIBLE)
-		CWeapons::GetInstance()->AddToStock(Weapon::FIREBALL);
+		CWeapons::GetInstance()->AddQuantity(Weapon::FIREBALL);
 }
 
 CFireBall::CFireBall()

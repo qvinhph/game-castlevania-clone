@@ -13,7 +13,17 @@ using namespace std;
 class CWeapons
 {
 	unordered_map<Weapon, vector<LPGAMEOBJECT>> weapons;
-	unordered_map<Weapon, int> stock;		// current quantity of each weapon
+
+	/*
+		For keeping track the number of throwable weapons
+		can be used at a time.
+	*/
+	unordered_map<Weapon, int> remainingQuantities;		// current quantity of each weapon
+
+	/* max number of throwable weapon, to increase 
+	 this number, get the Double/Tripple Shot item */
+	int maxQuantity = 1;
+
 
 	static CWeapons * __instance;
 	CWeapons() = default;
@@ -27,6 +37,7 @@ public:
 
 	void UseDagger(const LPGAMEOBJECT &obj);
 	void UseFireBall(const LPGAMEOBJECT &obj);
+	void UseAxe(const LPGAMEOBJECT &obj);
 
 	/*
 		Get a weapon with given name to manipulate with, if it's available
@@ -34,7 +45,13 @@ public:
 	LPGAMEOBJECT GetWeapon(Weapon weapon);
 
 	void Add(Weapon weaponName, LPGAMEOBJECT weapon);
-	void AddToStock(Weapon weaponName);
+	void AddQuantity(Weapon weaponName);
+
+	/*
+		Return true if the remaining quantity of the weapon > 0.
+		Otherwise, return false.
+	*/
+	bool CheckQuantity(Weapon weaponName);
 
 	static CWeapons * GetInstance();
 

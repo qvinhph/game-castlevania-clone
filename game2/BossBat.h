@@ -24,7 +24,7 @@
 
 enum BossBatAniID
 {
-	SLEEP,
+	SLEEP = 5501,
 	FLY,
 };
 

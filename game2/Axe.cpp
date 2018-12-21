@@ -1,34 +1,31 @@
-#include "Dagger.h"
+#include "Axe.h"
 #include "Weapons.h"
-#include "InvisibleWall.h"
-#include "BigCandle.h"
-#include "Candle.h"
-#include "Panther.h"
 #include "Zombie.h"
+#include "Fish.h"
+#include "Candle.h"
+#include "BigCandle.h"
+#include "Panther.h"
 
 
-
-void CDagger::GetBoundingBox(float & left, float & top, float & right, float & bottom)
+void CAxe::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
 	left = x;
 	top = y;
-	right = left + DAGGER_BBOX_WIDTH;
-	bottom = top + DAGGER_BBOX_HEIGHT;
+	right = x + AXE_BBOX_WIDTH;
+	bottom = y + AXE_BBOX_HEIGHT;
 }
 
-void CDagger::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void CAxe::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CActiveObject::Update(dt);
 
-	// Choose speed depend on direction
-	vx = (nx > 0) ?
-		DAGGER_SPEED_X :
-		-DAGGER_SPEED_X;
+	// Falling down
+	vy += AXE_GRAVITY * this->dt;
 
-	// Choose animation matches the direction
-	currentAniID = (nx > 0) ?
-		(int)DaggerAniID::IDLE_RIGHT :
-		(int)DaggerAniID::IDLE_LEFT;
+
+	// Choose animation 
+	currentAniID = (int)AxeAniID::FLYING;
+
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	coEvents.clear();
@@ -47,10 +44,10 @@ void CDagger::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// If the dagger go out the viewport
 	if (this->IsInViewport() == false)
-		SetState(STATE_INVISIBLE);		
+		SetState(STATE_INVISIBLE);
 }
 
-void CDagger::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
+void CAxe::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 {
 	vector<LPCOLLISIONEVENT> coEventsResult;
 	float nx, ny, min_tx, min_ty;
@@ -63,14 +60,12 @@ void CDagger::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 	for (UINT i = 0; i < coEventsResult.size(); i++)
 	{
 		LPCOLLISIONEVENT e = coEvents[i];
-		if (dynamic_cast<CBigCandle *>(e->obj) || 
-			dynamic_cast<CCandle *>(e->obj) || 
-			dynamic_cast<CPanther *>(e->obj) || 
+		if (dynamic_cast<CBigCandle *>(e->obj) ||
+			dynamic_cast<CCandle *>(e->obj) ||
+			dynamic_cast<CPanther *>(e->obj) ||
 			dynamic_cast<CZombie *>(e->obj))
 		{
 			e->obj->BeHit(this->damage);
-			this->SetState(STATE_INVISIBLE);
-			break;
 		}
 		else
 		{
@@ -81,18 +76,17 @@ void CDagger::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 	}
 }
 
-void CDagger::SetState(int state)
+void CAxe::SetState(int state)
 {
-	CGameObject::SetState(state);
+	CActiveObject::SetState(state);
 
-	// Make the dagger object available again to use next time
-	if (state == STATE_INVISIBLE)
-		CWeapons::GetInstance()->AddQuantity(Weapon::DAGGER);
+	if (state == STATE_VISIBLE)
+	{
+		vx = (nx > 0) ? AXE_INITIAL_SPEED_VX : -AXE_INITIAL_SPEED_VX;
+		vy = AXE_INITIAL_SPEED_VY;
+	}
+
+	// Make the axe object available again to use next time
+	else if (state == STATE_INVISIBLE)
+		CWeapons::GetInstance()->AddQuantity(Weapon::AXE);
 }
-
-CDagger::CDagger()
-{
-	damage = DAGGER_DAMAGE;
-}
-
-

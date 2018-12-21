@@ -28,6 +28,9 @@
 #include "AutoMoveZone.h"
 #include "Gate.h"
 #include "SecretBrick.h"
+#include "MoneyBag.h"
+#include "Axe.h"
+#include "ItemAxe.h"
 
 #include "debug.h"
 
@@ -52,7 +55,7 @@ CSimon::CSimon()
 
 	// ready to be used
 	rope = CRope::GetInstance();
-	weapons = CWeapons::GetInstance();
+	weaponsInstance = CWeapons::GetInstance();
 }
 
 void CSimon::Render()
@@ -309,7 +312,7 @@ void CSimon::ProceedAttacking()
 		if (this->rope->GetState() == STATE_VISIBLE) 
 			this->rope->SetState(STATE_INVISIBLE);
 		else
-			weapons->UseWeapon(secondaryWeapon, this);
+			weaponsInstance->UseWeapon(secondaryWeapon, this);
 
 		// Stop timer
 		attack_start = TIMER_IDLE;
@@ -340,7 +343,6 @@ void CSimon::ProceedJumping()
 
 		if (crouching == true)
 			this->StandUp();
-
 	}
 	else
 		vy += SIMON_JUMP_GRAVITY * this->dt;
@@ -551,11 +553,18 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 
 		else if (dynamic_cast<CItemDagger *>(e->obj))
 		{
-			DebugOut(L"\n[INFO] Touch Dagger");
+			DebugOut(L"\n[INFO] Touch Item Dagger");
 
 			e->obj->SetState(STATE_INVISIBLE);
 			secondaryWeapon = Weapon::DAGGER;
-			weapons->AddToStock(Weapon::DAGGER);
+		}
+
+		else if (dynamic_cast<CItemAxe *>(e->obj))
+		{
+			DebugOut(L"\n[INFO] Touch Item Axe");
+
+			e->obj->SetState(STATE_INVISIBLE);
+			secondaryWeapon = Weapon::AXE;
 		}
 
 		else if (dynamic_cast<CItemMeat *>(e->obj))
@@ -565,6 +574,14 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 
 			this->health += e->obj->GetPoint();
 			CBoard::GetInstance()->AddPlayerLife(e->obj->GetPoint());
+		}
+
+		else if (dynamic_cast<CMoneyBag *>(e->obj))
+		{
+			DebugOut(L"\n[INFO] Touch MoneyBag");
+			e->obj->SetState(STATE_INVISIBLE);
+
+			CBoard::GetInstance()->AddScore(e->obj->GetPoint());
 		}
 
 		else if (dynamic_cast<CGate *>(e->obj))
@@ -992,10 +1009,18 @@ bool CSimon::IsAbleToUseWeapon()
 	switch (secondaryWeapon)
 	{
 	case Weapon::DAGGER:
-		heartsCost = 1;
+		heartsCost = DAGGER_HEART_COST;
+		break;
+	case Weapon::AXE:
+		heartsCost = AXE_HEART_COST;
+		break;
+	default:
+		break;
 	}
 
-	if (numberOfHearts - heartsCost >= 0)
+	if (numberOfHearts - heartsCost >= 0 &&
+		CWeapons::GetInstance()->CheckQuantity(secondaryWeapon) && 
+		attack_start == TIMER_IDLE)
 	{
 		numberOfHearts -= heartsCost;
 		CBoard::GetInstance()->SetHeart(numberOfHearts);

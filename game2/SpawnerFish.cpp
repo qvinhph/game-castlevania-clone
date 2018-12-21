@@ -18,8 +18,6 @@ void CSpawnerFish::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		// Get the fish and its information
 		LPGAMEOBJECT fish = NULL;
-		float xFish, yFish;
-		int nxFish;
 
 
 		fish = CMonsters::GetInstance()->Spawn(Monster::FISH);

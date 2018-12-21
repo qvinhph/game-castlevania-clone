@@ -108,7 +108,7 @@ class CSimon : public CActiveObject
 	AutoInfo autoInfo;
 	Weapon secondaryWeapon;
 	CRope * rope;
-	CWeapons * weapons;
+	CWeapons * weaponsInstance;
 	vector<LPGAMEOBJECT> ovObjects;		// overlapping objects
 
 	static CSimon * __instance;

@@ -1,4 +1,6 @@
 #include "Flames.h"
+#include "Items.h"
+#include "debug.h"
 
 CFlames * CFlames::__instance = NULL;
 
@@ -13,6 +15,7 @@ void CFlames::Add(CFlame * flame)
 */
 void CFlames::ShowAFlame(LPGAMEOBJECT obj)
 {
+	// Show at the central position of the object
 	float l, t, r, b;
 	obj->GetBoundingBox(l, t, r, b);
 	float xCentral = (l + r) / 2;

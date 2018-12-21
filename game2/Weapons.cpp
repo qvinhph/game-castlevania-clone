@@ -21,6 +21,9 @@ void CWeapons::UseWeapon(Weapon weaponName, LPGAMEOBJECT obj)
 	case Weapon::FIREBALL:
 		UseFireBall(obj);
 		break;
+	case Weapon::AXE:
+		UseAxe(obj);
+		break;
 	default:
 		break;
 	}
@@ -87,19 +90,48 @@ void CWeapons::UseFireBall(const LPGAMEOBJECT & obj)
 	}
 }
 
+void CWeapons::UseAxe(const LPGAMEOBJECT & obj)
+{
+	LPGAMEOBJECT weapon = GetWeapon(Weapon::AXE);
+
+	if (weapon == NULL)
+	{
+		DebugOut(L"\n[ERROR] Failed to get dagger weapon");
+		return;
+	}
+
+	// Only simon can use this axe weapon.
+	if (dynamic_cast<CSimon *>(obj))
+	{
+		CSimon * simon = dynamic_cast<CSimon *>(obj);
+		float left, top, right, bottom;
+
+		// Get the direction depending on Simon's direction
+		weapon->SetDirection(simon->GetDirection());
+		simon->GetBoundingBox(left, top, right, bottom);
+
+		// Set the weapon position depending on Simon's position
+		// Axe will be appear above simon's head
+		weapon->SetPosition((left + right) / 2, top);
+
+		// Set the weapon visible
+		weapon->SetState(STATE_VISIBLE);
+	}
+}
+
 LPGAMEOBJECT CWeapons::GetWeapon(Weapon weaponName)
 {
 	vector<LPGAMEOBJECT> weaponsByName = weapons[weaponName];
-	int * quantity = &stock[weaponName];
+	int * quantityOfWeapon = &remainingQuantities[weaponName];
 
 	// Check if any weapon is available
-	if (*quantity > 0)
+	if (*quantityOfWeapon > 0)
 	{
 		for (auto it = weaponsByName.begin(); it != weaponsByName.end(); ++it)
 		{
 			if ((*it)->GetState() == STATE_INVISIBLE)
 			{
-				(*quantity)--;
+				(*quantityOfWeapon)--;
 				return *it;
 			}
 		}
@@ -114,12 +146,21 @@ void CWeapons::Add(Weapon weaponName, LPGAMEOBJECT weapon)
 {
 	weapon->SetState(STATE_INVISIBLE);
 	weapons[weaponName].push_back(weapon);
-	//stock[weaponName];
+	remainingQuantities[weaponName] = maxQuantity;
 }
 
-void CWeapons::AddToStock(Weapon weaponName)
+void CWeapons::AddQuantity(Weapon weaponName)
 {
-	stock[weaponName]++;
+	if (remainingQuantities[weaponName] < maxQuantity)
+		remainingQuantities[weaponName]++;
+}
+
+bool CWeapons::CheckQuantity(Weapon weaponName)
+{
+	if (remainingQuantities[weaponName] > 0)
+		return true;
+
+	return false;
 }
 
 CWeapons * CWeapons::GetInstance()

@@ -1,18 +1,15 @@
 #pragma once
 #include "MovableObject.h"
 
-#define ITEM_ROPE_BBOX_WIDTH 32
-#define ITEM_ROPE_BBOX_HEIGHT 32
+#define ITEM_HOLY_WATER_WIDTH		32
+#define ITEM_HOLY_WATER_HEIGHT		32
 
-enum class ItemRopeAniID
+enum class ItemHolyWaterAniID
 {
-	IDLE = 1500
+	IDLE = 2800,
 };
 
-/*
-	The object when Simon touch will upgrade his Rope
-*/
-class CItemRope : public CActiveObject
+class CItemHolyWater : public CActiveObject
 {
 public:
 

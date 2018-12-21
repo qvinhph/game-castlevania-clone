@@ -49,6 +49,11 @@
 #include "ItemMeat.h"
 #include "AutoMoveZone.h"
 #include "Gate.h"
+#include "MoneyBag.h"
+#include "Cross.h"
+#include "ItemAxe.h"
+#include "ItemHolyWater.h"
+#include "Axe.h"
 
 #define ID_TEX_SIMON		0
 #define ID_TEX_ROPE			1

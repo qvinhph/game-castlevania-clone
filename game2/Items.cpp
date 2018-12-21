@@ -24,18 +24,6 @@ void CItems::CheckAndDrop(LPGAMEOBJECT object)
 		float x, y;
 		object->GetPosition(x, y);
 		Drop(item, x, y);
-
-		
-		// These code may useful for choosing what to drop
-		// According to Simon stats ( rope level, ...)
-		/*switch (item)
-		{
-		case Item::ITEMROPE:
-			GetAndSet(item, x, y);
-		case Item::HEART:
-		defautl:
-			break;
-		}*/
 	}	
 }
 

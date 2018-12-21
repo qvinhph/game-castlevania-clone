@@ -29,14 +29,25 @@ enum class Item
 	HEART,
 	BIGHEART,
 	ITEMDAGGER,
-	ITEMMEAT
+	ITEMHOLYWATER,
+	ITEMAXE,
+	ITEMMEAT,
+	MONEY_BAG_RED,
+	MONEY_BAG_WHITE,
+	MONEY_BAG_BLUE,
+	CROSS,
+	DOUBLE_SHOT,
 };
 
-// Weapon name used for second attacking 
+/* 
+	Weapon name with the according number is the cost when use it
+*/
 enum class Weapon
 {
 	NONE,
 	DAGGER,
+	AXE,
+
 	FIREBALL, // of CFish
 };
 
@@ -48,25 +59,6 @@ enum class Monster
 	PINKBAT,
 	FISH,
 };
-
-// Health of the object
-enum class HealthDefault
-{
-	ZOMBIE = 1,
-	PANTHER = 1,
-	PINKBAT = 1,
-	FISH = 1,
-};
-
-// Point that will be got when destroy the object
-enum class PointDefault
-{
-	ZOMBIE = 100,
-	PANTHER = 200,
-	PINKBAT = 200,
-	FISH = 300,
-};
-
 
 class CGameObject;
 typedef CGameObject * LPGAMEOBJECT;

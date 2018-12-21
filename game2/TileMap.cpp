@@ -216,6 +216,14 @@ void CTileMap::CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo)
 			else						obj = new CSecretBrick((int)SecretBrickAniID::IDLE_TYPE_2);
 		}
 
+		// MoneyBag
+		//else if (info->name == "moneybag")
+		//{
+		//	if		(info->type == "red")		obj = new CMoneyBag(MoneyBagAniID::RED_BAG);
+		//	else if (info->type == "blue")		obj = new CMoneyBag(MoneyBagAniID::BLUE_BAG);
+		//	else								obj = new CMoneyBag(MoneyBagAniID::WHITE_BAG);
+		//}
+
 		// Simon
 		else if (info->name == "simon")
 		{
@@ -235,7 +243,7 @@ void CTileMap::CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo)
 
 
 		obj->SetPosition(info->x, info->y);
-		obj->SetHoldingItem(info->dropableItem);
+		obj->SetHoldingItem(info->itemholding);
 
 		if (info->nx != 0)
 			obj->SetDirection(info->nx);
@@ -345,11 +353,17 @@ vector<LPOBJECTINFO> CTileMap::GetObjects(json root)
 
 Item CTileMap::GetHoldingItem(string string)
 {
-	if (string == "itemrope")		return Item::ITEMROPE;
-	if (string == "bigheart")		return Item::BIGHEART;
-	if (string == "heart")			return Item::HEART;
-	if (string == "itemdagger")		return Item::ITEMDAGGER;
-	if (string == "itemmeat")		return Item::ITEMMEAT;
+	if (string == "itemrope")			return Item::ITEMROPE;
+	else if (string == "bigheart")		return Item::BIGHEART;
+	else if (string == "heart")			return Item::HEART;
+	else if (string == "itemdagger")	return Item::ITEMDAGGER;
+	else if (string == "itemmeat")		return Item::ITEMMEAT;
+	else if (string == "moneybagblue")	return Item::MONEY_BAG_BLUE;
+	else if (string == "moneybagred")	return Item::MONEY_BAG_RED;
+	else if (string == "moneybagwhite")	return Item::MONEY_BAG_WHITE;
+	else if (string == "cross")			return Item::CROSS;
+	else if (string == "itemaxe")		return Item::ITEMAXE;
+	else if (string == "itemholywater")	return Item::ITEMHOLYWATER;
 
 	return Item::NONE;
 }

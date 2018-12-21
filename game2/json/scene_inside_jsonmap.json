@@ -92,7 +92,7 @@
                         {
                          "name":"itemholding",
                          "type":"string",
-                         "value":"itemrope"
+                         "value":"moneybagblue"
                         }],
                  "rotation":0,
                  "type":"",
@@ -279,7 +279,7 @@
                         {
                          "name":"itemholding",
                          "type":"string",
-                         "value":"heart"
+                         "value":"moneybagwhite"
                         }],
                  "rotation":0,
                  "type":"",
@@ -313,7 +313,7 @@
                         {
                          "name":"itemholding",
                          "type":"string",
-                         "value":"heart"
+                         "value":"moneybagwhite"
                         }],
                  "rotation":0,
                  "type":"",
@@ -440,23 +440,6 @@
                  "width":16,
                  "x":4406.95329861111,
                  "y":290.003298611111
-                }, 
-                {
-                 "height":32,
-                 "id":32,
-                 "name":"candle",
-                 "properties":[
-                        {
-                         "name":"itemholding",
-                         "type":"string",
-                         "value":"heart"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
-                 "x":4659.40329861111,
-                 "y":98.0032986111111
                 }, 
                 {
                  "height":32,
@@ -758,7 +741,7 @@
                         {
                          "name":"itemholding",
                          "type":"string",
-                         "value":"heart"
+                         "value":"moneybagwhite"
                         }],
                  "rotation":0,
                  "type":"",
@@ -1128,7 +1111,7 @@
                         {
                          "name":"itemholding",
                          "type":"string",
-                         "value":"heart"
+                         "value":"moneybagwhite"
                         }],
                  "rotation":0,
                  "type":"",
@@ -1179,7 +1162,7 @@
                         {
                          "name":"itemholding",
                          "type":"string",
-                         "value":"heart"
+                         "value":"moneybagwhite"
                         }],
                  "rotation":0,
                  "type":"",
@@ -1673,7 +1656,7 @@
                         {
                          "name":"itemholding",
                          "type":"string",
-                         "value":"heart"
+                         "value":"itemaxe"
                         }],
                  "rotation":0,
                  "type":"",
@@ -1917,6 +1900,12 @@
                  "height":32,
                  "id":203,
                  "name":"secretbrick",
+                 "properties":[
+                        {
+                         "name":"itemholding",
+                         "type":"string",
+                         "value":"moneybagblue"
+                        }],
                  "rotation":0,
                  "type":"type1",
                  "visible":true,
@@ -1987,15 +1976,49 @@
                  "y":220.503298611111
                 }, 
                 {
+                 "height":32,
+                 "id":232,
+                 "name":"candle",
+                 "properties":[
+                        {
+                         "name":"itemholding",
+                         "type":"string",
+                         "value":"cross"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":4662,
+                 "y":100.666666666667
+                }, 
+                {
+                 "height":32,
+                 "id":233,
+                 "name":"candle",
+                 "properties":[
+                        {
+                         "name":"itemholding",
+                         "type":"string",
+                         "value":"itemholywater"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":3254.66666666667,
+                 "y":162
+                }, 
+                {
                  "height":62,
-                 "id":229,
+                 "id":236,
                  "name":"simon",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":32,
-                 "x":4596,
-                 "y":132.333333333333
+                 "width":57.3333,
+                 "x":6523.33335,
+                 "y":115
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -2004,7 +2027,7 @@
          "y":0
         }],
  "nextlayerid":43,
- "nextobjectid":230,
+ "nextobjectid":237,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.0",

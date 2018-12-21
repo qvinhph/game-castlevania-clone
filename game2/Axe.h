@@ -1,29 +1,28 @@
 #pragma once
 #include "MovableObject.h"
 
-#define DAGGER_BBOX_HEIGHT		18.0f
-#define DAGGER_BBOX_WIDTH		32.0f
-#define DAGGER_SPEED_X			0.4f
-#define DAGGER_DAMAGE			1
+#define AXE_BBOX_WIDTH		30
+#define AXE_BBOX_HEIGHT		28
 
-#define DAGGER_HEART_COST		1		// When use
+#define AXE_INITIAL_SPEED_VX	0.2f
+#define AXE_INITIAL_SPEED_VY	-0.6f
+#define AXE_GRAVITY				0.0016f
 
-enum class DaggerAniID
+#define AXE_HEART_COST			1		// When use
+
+enum class AxeAniID
 {
-	IDLE_LEFT = 1810,
-	IDLE_RIGHT,
+	FLYING = 2701,
 };
 
-class CDagger: public CActiveObject
+class CAxe : public CActiveObject
 {
 public:
-
+	
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom) override;
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects) override;
 	void ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents) override;
 	void SetState(int state) override;
-
-	CDagger();
 
 };
 

@@ -1,19 +1,17 @@
 #pragma once
 #include "MovableObject.h"
 
-#define ITEM_ROPE_BBOX_WIDTH 32
-#define ITEM_ROPE_BBOX_HEIGHT 32
+#define ITEM_AXE_BBOX_WIDTH		30
+#define ITEM_AXE_BBOX_HEIGHT	28
 
-enum class ItemRopeAniID
+enum class ItemAxeAniID
 {
-	IDLE = 1500
+	IDLE = 2700,
 };
 
-/*
-	The object when Simon touch will upgrade his Rope
-*/
-class CItemRope : public CActiveObject
+class CItemAxe : public CActiveObject
 {
+
 public:
 
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL) override;

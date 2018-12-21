@@ -1,6 +1,6 @@
-#include "ItemRope.h"
-	
-void CItemRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+#include "ItemHolyWater.h"
+
+void CItemHolyWater::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CActiveObject::Update(dt);
 	vy += GAME_GRAVITY * dt;				// simple fall down
@@ -11,7 +11,7 @@ void CItemRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 
 	// Pick animation
-	this->currentAniID = (int)ItemRopeAniID::IDLE;
+	currentAniID = (int)ItemHolyWaterAniID::IDLE;
 
 
 	if (coEvents.size() == 0)
@@ -27,10 +27,10 @@ void CItemRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 
-void CItemRope::GetBoundingBox(float & left, float & top, float & right, float & bottom)
+void CItemHolyWater::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
 	left = x;
 	top = y;
-	right = x + ITEM_ROPE_BBOX_WIDTH;
-	bottom = y + ITEM_ROPE_BBOX_HEIGHT;
+	right = x + ITEM_HOLY_WATER_WIDTH;
+	bottom = y + ITEM_HOLY_WATER_HEIGHT;
 }
