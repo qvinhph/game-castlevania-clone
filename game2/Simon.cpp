@@ -33,6 +33,8 @@
 #include "ItemAxe.h"
 #include "ItemHolyWater.h"
 #include "Cross.h"
+#include "BossBat.h"
+#include "CameraEvent.h"
 
 #include "debug.h"
 
@@ -90,6 +92,28 @@ void CSimon::Render()
 	}
 	
 	CGameObject::Render();
+
+
+	// Render the background with flashing effect
+	if (flash_start != TIMER_IDLE )
+	{
+		if (whiteBackground == true)
+		{
+			CGame * game = CGame::GetInstance();
+			LPDIRECT3DDEVICE9 d3ddv = game->GetDirect3DDevice();
+			LPDIRECT3DSURFACE9 bb = game->GetBackBuffer();
+			LPD3DXSPRITE spriteHandler = game->GetSpriteHandler();
+
+			// Fill the background with white screen
+			d3ddv->ColorFill(bb, NULL, COLOR_WHITE(ARGB_ALPHA_MAX_VALUE));
+
+
+			// To prevent the background being white next frame.
+			whiteBackground = false;
+		}
+		else
+			whiteBackground = true;
+	}
 }
 
 void CSimon::PickAnimation()
@@ -193,6 +217,10 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	// Calculate dx, dy
 	CActiveObject::Update(dt);
+
+
+	// Save the coObjects
+	this->coObjects = coObjects;
 	
 
 	// While jumping and falling
@@ -227,6 +255,11 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Flickering
 	if (flicker_start != TIMER_IDLE)
 		ProceedFlickering();
+
+
+	// Screen flashing
+	if (flash_start != TIMER_IDLE)
+		ProceedFlashingScreen();
 
 
 	// Being On Stairs
@@ -447,6 +480,13 @@ void CSimon::ProceedOverlapping()
 	}
 }
 
+void CSimon::ProceedFlashingScreen()
+{
+	if (GetTickCount() - flash_start > SCREEN_FLASH_TIME)
+		flash_start = TIMER_IDLE;
+	else KillAllMonsters();
+}
+
 void CSimon::ProceedAutoMove()
 {
 	// Auto move and stop when reach destination
@@ -598,18 +638,43 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 		{
 			DebugOut(L"\n[INFO] Touch Cross");
 			e->obj->SetState(STATE_INVISIBLE);
+
+			// Start the flashing screen effect
+			flash_start = GetTickCount();
+
+			// Kill all the monsters
+			KillAllMonsters();
+		}
+
+		else if (dynamic_cast<CCameraEvent *>(e->obj))
+		{
+			DebugOut(L"\n[INFO] Touch Camera Event");
+			CCameraEvent * cameraEvent = dynamic_cast<CCameraEvent *>(e->obj);
+
+			float xEvent, yEvent;
+			e->obj->GetPosition(xEvent, yEvent);
+
+			if (cameraEvent->GetCameraEvent() == CameraEvent::SLOWLY_MOVE)
+				cameraInstance->StartSlowlyMoveViewport(xEvent, yEvent);
+
+			else if (cameraEvent->GetCameraEvent() == CameraEvent::LOCK)
+				cameraInstance->SetLockEffect(true);
 		}
 
 		else if (dynamic_cast<CGate *>(e->obj))
 		{
 			DebugOut(L"\n[INFO] Touch Gate");
-			dynamic_cast<CGate *>(e->obj)->SetClosing(false);
 
 			// Block
-			if (e->nx != 0)
+			if (e->nx < 0)
+			{
+				dynamic_cast<CGate *>(e->obj)->SetOpenning(true);
+			}
+			else if (e->nx > 0)
 			{
 				x += nx * DEFLECTION_AVOID_OVERLAPPING;
 				vx = 0;
+
 			}
 		}
 
@@ -617,7 +682,8 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 				dynamic_cast<CPanther *>(e->obj) ||
 				dynamic_cast<CPinkBat *>(e->obj) ||
 				dynamic_cast<CFish *>(e->obj) ||
-				dynamic_cast<CFireBall *>(e->obj))
+				dynamic_cast<CFireBall *>(e->obj) ||
+				dynamic_cast<CBossBat *>(e->obj))
 		{
 			DebugOut(L"\n[INFO] Touch a monster !!");
 
@@ -655,7 +721,12 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 		// block with ground objects
 		else if (dynamic_cast<CSecretBrick *>(e->obj))
 		{
-			if (e->nx != 0) x += nx * DEFLECTION_AVOID_OVERLAPPING;
+			if (e->nx != 0)
+			{
+				x += nx * DEFLECTION_AVOID_OVERLAPPING;
+				vx = 0;
+			}
+
 			if (e->ny < 0)
 			{
 				y += ny * DEFLECTION_AVOID_OVERLAPPING;
@@ -1046,6 +1117,17 @@ bool CSimon::IsAbleToUseWeapon()
 	return false;
 }
 
+void CSimon::KillAllMonsters()
+{
+	for (UINT i = 0; i < coObjects->size(); i++)
+	{
+		if (dynamic_cast<CZombie *>(coObjects->at(i)) ||
+			dynamic_cast<CPinkBat *>(coObjects->at(i)) ||
+			dynamic_cast<CFish *>(coObjects->at(i)))
+			coObjects->at(i)->Destroy();
+	}
+}
+
 void CSimon::Jump()
 {
 	if (!jumping && !crouching
@@ -1079,11 +1161,6 @@ void CSimon::Attack(int choice)
 
 void CSimon::CalibrateCameraPosition()
 {
-	// Get camera's information
-	float vpWidth, vpHeight;		// vp: Viewport
-	cameraInstance->GetViewportSize(vpWidth, vpHeight);
-
-
 	// Get simon's central point
 	float l, t, r, b;
 	this->GetBoundingBox(l, t, r, b);
@@ -1091,38 +1168,11 @@ void CSimon::CalibrateCameraPosition()
 	float yCentral = (t + b) / 2;
 
 
-	// Calculate the camera position that is supposed to be
-	float xCam = xCentral - vpWidth / 2;
-	float yCam = yCentral - vpHeight / 2;
-
-
-	// Focus the camera on Simon
-	cameraInstance->ChangeLimitBound(this->x, this->y);
-
-
-	// Get the limit bound
-	float limitLeft, limitRight, limitTop, limitBottom;
-	cameraInstance->GetLimitBound(limitLeft, limitTop, limitRight, limitBottom);
-	
-
-	// Limit the camera position
-	if (xCam < limitLeft)
-		xCam = limitLeft;
-	if (xCam + vpWidth > limitRight)
-		xCam = limitRight - vpWidth;
-
-	if (yCam < limitTop)
-		yCam = limitTop;
-	if (yCam + vpHeight > limitBottom)
-		yCam = limitBottom - vpHeight;
-
-	if (this->x < limitLeft)
-		this->x = limitLeft;
-	if (this->x + SIMON_IDLE_BBOX_WIDTH > limitRight)
-		this->x = limitRight - SIMON_IDLE_BBOX_WIDTH;
-
-
-	cameraInstance->SetPosition(xCam, yCam);
+	cameraInstance->Centerize(xCentral, yCentral);
+	//if (!autoMove)
+	//	cameraInstance->Centerize(xCentral, yCentral);
+	//else
+	//	cameraInstance->SlowlyMoveViewport();
 }
 
 void CSimon::GetBoundingBox(float & left, float & top, float & right, float & bottom)

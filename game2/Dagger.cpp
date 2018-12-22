@@ -5,7 +5,9 @@
 #include "Candle.h"
 #include "Panther.h"
 #include "Zombie.h"
-
+#include "PinkBat.h"
+#include "BossBat.h"
+#include "Fish.h"
 
 
 void CDagger::GetBoundingBox(float & left, float & top, float & right, float & bottom)
@@ -63,10 +65,13 @@ void CDagger::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 	for (UINT i = 0; i < coEventsResult.size(); i++)
 	{
 		LPCOLLISIONEVENT e = coEvents[i];
-		if (dynamic_cast<CBigCandle *>(e->obj) || 
-			dynamic_cast<CCandle *>(e->obj) || 
-			dynamic_cast<CPanther *>(e->obj) || 
-			dynamic_cast<CZombie *>(e->obj))
+		if (dynamic_cast<CBigCandle *>(e->obj) ||
+			dynamic_cast<CCandle *>(e->obj) ||
+			dynamic_cast<CPanther *>(e->obj) ||
+			dynamic_cast<CZombie *>(e->obj) ||
+			dynamic_cast<CPinkBat *>(e->obj) ||
+			dynamic_cast<CFish *>(e->obj) ||
+			dynamic_cast<CBossBat *>(e->obj))
 		{
 			e->obj->BeHit(this->damage);
 			this->SetState(STATE_INVISIBLE);

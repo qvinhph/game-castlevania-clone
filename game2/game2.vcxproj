@@ -29,6 +29,7 @@
     <ClInclude Include="Bubble.h" />
     <ClInclude Include="Bubbles.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraEvent.h" />
     <ClInclude Include="HolyWater.h" />
     <ClInclude Include="ItemHolyWater.h" />
     <ClInclude Include="Cross.h" />
@@ -96,6 +97,7 @@
     <ClCompile Include="Bubble.cpp" />
     <ClCompile Include="Bubbles.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraEvent.cpp" />
     <ClCompile Include="HolyWater.cpp" />
     <ClCompile Include="ItemHolyWater.cpp" />
     <ClCompile Include="Cross.cpp" />

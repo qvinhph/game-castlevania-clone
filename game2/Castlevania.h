@@ -55,6 +55,7 @@
 #include "ItemHolyWater.h"
 #include "Axe.h"
 #include "HolyWater.h"
+#include "CameraEvent.h"
 
 #define ID_TEX_SIMON		0
 #define ID_TEX_ROPE			1

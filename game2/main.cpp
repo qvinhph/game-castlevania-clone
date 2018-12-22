@@ -70,10 +70,16 @@ void CInputHandler::OnKeyDown(int keyCode)
 		CSimon::GetInstance()->SetAction(Action::WALK_LEFT);
 		break;
 
-		// DEBUGGING
+	// DEBUGGING : Delete me
 	case DIK_1:
-		CSimon::GetInstance()->SetPosition(0.0f, 0.0f);
-		CCamera::GetInstance()->ChangeLimitBound(1, 1);
+		float x, y;
+		CSimon::GetInstance()->GetPosition(x, y);
+		CSimon::GetInstance()->SetPosition(x, 0.0f);
+		CCamera::GetInstance()->ChangeLimitBound(x, 0.0f);
+		break;
+	case DIK_2:
+		CSimon::GetInstance()->SetPosition(2823, 284);
+		CCamera::GetInstance()->ChangeLimitBound(2823, 284);
 		break;
 	case DIK_O:
 		CSimon::GetInstance()->RemoveOnStairs();
@@ -366,7 +372,7 @@ void LoadResources()
 	textures->Add(ID_TEX_ROPE, L"textures\\rope.png", D3DCOLOR_XRGB(255, 0, 255));
 	textures->Add(ID_TEX_MISC, L"textures\\misc.png", D3DCOLOR_XRGB(255, 0, 255));
 	textures->Add(ID_TEX_MONSTERS, L"textures\\monsters.png", D3DCOLOR_XRGB(255, 0, 255));
-	textures->Add(ID_TEX_TILESET, L"textures\\tileset.png", NULL);
+	textures->Add(ID_TEX_TILESET, L"textures\\tileset.png", D3DCOLOR_XRGB(255, 0, 255));
 
 
 	//
@@ -765,8 +771,7 @@ void LoadResources()
 
 	ani = new CAnimation(100);
 	ani->AddFrame(24001, 500);
-	ani->AddFrame(24002, 500);
-	ani->AddFrame(24000);		// close again
+	ani->AddFrame(24002, 2000);
 	animations->Add((int)GateAniID::OPENING, ani);
 
 	ani = new CAnimation(100);
@@ -841,6 +846,7 @@ void LoadResources()
 	animations->Add((int)HolyWaterAniID::EXPLODE, ani);
 
 #pragma endregion
+
 
 #pragma region Loading monsters resources
 
@@ -973,6 +979,7 @@ void LoadResources()
 
 #pragma endregion
 
+
 #pragma region Loading board resources
 
 	// player health unit
@@ -1096,7 +1103,7 @@ void Render()
 		for (UINT i = 0; i < updateObjects.size(); i++)
 		{
 			updateObjects[i]->Render();
-			updateObjects[i]->RenderBoundingBox();
+			//updateObjects[i]->RenderBoundingBox();
 		}
 
 		board->Render();

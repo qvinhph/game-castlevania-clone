@@ -30,14 +30,16 @@
 #define SIMON_FLICKERING_TIME					1000
 #define SIMON_UNTOUCHABLE_TIME					1000
 #define SIMON_AUTO_STAIR_TIME					300
-#define SIMON_AUTO_MOVE_TIME							400  // sum of a full animation moving time
-
+#define SIMON_AUTO_MOVE_TIME					1200
 
 #define SIMON_ATTACK_BY_ROPE					0
 #define SIMON_ATTACK_BY_ITEM					1
 
 // For flickering while being untouchable.
 #define SIMON_UNTOUCHABLE_ALPHA_VALUE			100	
+#define SCREEN_FLASH_TIME						600
+
+#define COLOR_WHITE(alpha)			D3DCOLOR_XRGB(alpha, 255, 255, 255)
 
 
 enum class SimonAniID
@@ -104,12 +106,17 @@ class CSimon : public CActiveObject
 	DWORD auto_crouch_start;			
 	DWORD auto_start;
 
+	// To make the flashing screen effect
+	DWORD flash_start;
+	bool whiteBackground = false;
+
 	int numberOfHearts;
 	AutoInfo autoInfo;
 	Weapon secondaryWeapon;
 	CRope * rope;
 	CWeapons * weaponsInstance;
 	vector<LPGAMEOBJECT> ovObjects;		// overlapping objects
+	vector<LPGAMEOBJECT>* coObjects;	// for saving the current coObjects to manipulate easily
 
 	static CSimon * __instance;
 	CSimon();
@@ -140,9 +147,11 @@ public:
 	void ProceedGravity();
 	void ProceedOnStairs();
 	void ProceedOverlapping();
+	void ProceedFlashingScreen();
 	void StartAutoMove(float vx, float xDestination);
 	void StartAutoMove(float vx, float vy, DWORD time);
 	bool IsAbleToUseWeapon();
+	void KillAllMonsters();
 
 	void MoveRight();
 	void MoveLeft();

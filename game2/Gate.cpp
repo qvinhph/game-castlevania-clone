@@ -4,7 +4,7 @@
 
 void CGate::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
-	if (closing == true)
+	if (openning == false)
 	{
 		left = x;
 		top = y;
@@ -20,9 +20,17 @@ void CGate::GetBoundingBox(float & left, float & top, float & right, float & bot
 
 void CGate::Render()
 {
-	currentAniID = (closing) ?
-		(int)GateAniID::CLOSING :
-		(int)GateAniID::OPENING;
+	currentAniID = (openning) ?
+		(int)GateAniID::OPENING :
+		(int)GateAniID::CLOSING;
+
+
+	if (openning)
+		if (GetTickCount() - open_start > GATE_OPEN_TIME)
+		{
+			open_start = 0;
+			openning = false;
+		}
 
 	CGameObject::Render();
 }

@@ -16,11 +16,12 @@ void CSpawnerFish::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	if (IsReadyToSpawn() && spawning_pause_start == TIMER_IDLE)
 	{
-		// Get the fish and its information
+		// Get the fish
 		LPGAMEOBJECT fish = NULL;
-
-
 		fish = CMonsters::GetInstance()->Spawn(Monster::FISH);
+
+
+		// Check if succeed
 		if (fish != NULL)
 		{
 			SetupFish((CFish *)fish);

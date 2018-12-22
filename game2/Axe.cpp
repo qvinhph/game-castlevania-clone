@@ -5,6 +5,8 @@
 #include "Candle.h"
 #include "BigCandle.h"
 #include "Panther.h"
+#include "BossBat.h"
+#include "PinkBat.h"
 
 
 void CAxe::GetBoundingBox(float & left, float & top, float & right, float & bottom)
@@ -63,7 +65,10 @@ void CAxe::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 		if (dynamic_cast<CBigCandle *>(e->obj) ||
 			dynamic_cast<CCandle *>(e->obj) ||
 			dynamic_cast<CPanther *>(e->obj) ||
-			dynamic_cast<CZombie *>(e->obj))
+			dynamic_cast<CZombie *>(e->obj) ||
+			dynamic_cast<CPinkBat *>(e->obj) ||
+			dynamic_cast<CFish *>(e->obj) ||
+			dynamic_cast<CBossBat *>(e->obj))
 		{
 			e->obj->BeHit(this->damage);
 		}

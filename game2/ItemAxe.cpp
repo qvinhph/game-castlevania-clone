@@ -25,6 +25,11 @@ void CItemAxe::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+
+
+	// If the item axe go out the viewport
+	if (this->IsInViewport() == false)
+		SetState(STATE_INVISIBLE);
 }
 
 void CItemAxe::GetBoundingBox(float & left, float & top, float & right, float & bottom)

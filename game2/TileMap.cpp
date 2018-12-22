@@ -216,6 +216,16 @@ void CTileMap::CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo)
 			else						obj = new CSecretBrick((int)SecretBrickAniID::IDLE_TYPE_2);
 		}
 
+		// Camera event
+		else if (info->name == "cameraevent")
+		{
+			CameraEvent cameraEvent;
+			if (info->type == "slowlymove")		cameraEvent = CameraEvent::SLOWLY_MOVE;
+			else cameraEvent = CameraEvent::LOCK;
+
+			obj = new CCameraEvent(info->width, info->height, cameraEvent);
+		}
+
 		// MoneyBag
 		//else if (info->name == "moneybag")
 		//{

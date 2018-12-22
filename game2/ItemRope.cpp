@@ -25,6 +25,10 @@ void CItemRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+
+	// If the item rope goes out the viewport
+	if (this->IsInViewport() == false)
+		SetState(STATE_INVISIBLE);
 }
 
 void CItemRope::GetBoundingBox(float & left, float & top, float & right, float & bottom)

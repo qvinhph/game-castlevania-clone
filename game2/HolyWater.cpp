@@ -7,6 +7,7 @@
 #include "Fish.h"
 #include "Panther.h"
 #include "InvisibleWall.h"
+#include "BossBat.h"
 
 void CHolyWater::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
@@ -87,8 +88,9 @@ void CHolyWater::ProceedCollisions(vector<LPCOLLISIONEVENT>& coEvents)
 			dynamic_cast<CCandle *>(e->obj) ||
 			dynamic_cast<CPanther *>(e->obj) ||
 			dynamic_cast<CZombie *>(e->obj) ||
+			dynamic_cast<CPinkBat *>(e->obj) ||
 			dynamic_cast<CFish *>(e->obj) ||
-			dynamic_cast<CPinkBat *>(e->obj))
+			dynamic_cast<CBossBat *>(e->obj))
 		{
 			e->obj->BeHit(this->damage);
 		}
