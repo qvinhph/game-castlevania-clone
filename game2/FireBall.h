@@ -2,7 +2,7 @@
 #include "MovableObject.h"
 
 #define FIRE_BALL_BBOX_WIDTH		14
-#define FIRE_BALL_BBOX_HEIGHT		12
+#define FIRE_BALL_BBOX_HEIGHT		10
 
 #define FIRE_BALL_SPEED_VX			0.18
 

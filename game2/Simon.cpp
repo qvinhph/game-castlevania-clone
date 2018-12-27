@@ -1,4 +1,4 @@
-#include <algorithm>
+//#include <algorithm>
 
 #include "Simon.h"
 #include "Camera.h"
@@ -35,6 +35,7 @@
 #include "Cross.h"
 #include "BossBat.h"
 #include "CameraEvent.h"
+#include "ItemSuperPotion.h"
 
 #include "debug.h"
 
@@ -64,56 +65,58 @@ CSimon::CSimon()
 
 void CSimon::Render()
 {	
-	if (flicker_start != 0)
+	// Flicker by getting damaged.
+	if (untouchable_start != 0)
 	{
-		// Flicker by getting damaged.
-		if (untouchable_start != 0)
-		{
-			if (this->argb.alpha != SIMON_UNTOUCHABLE_ALPHA_VALUE)
-				this->argb.alpha = SIMON_UNTOUCHABLE_ALPHA_VALUE;
-			else 
-				this->argb = ARGB();
-		}
-
-		// Flicker by touching item-rope.
+		if (this->argb.alpha != SIMON_UNTOUCHABLE_ALPHA_VALUE)
+			this->argb.alpha = SIMON_UNTOUCHABLE_ALPHA_VALUE;
 		else
-		{
+			this->argb = ARGB();
+	}
+
+
+	// Flicker by touching item-rope
+	else if (flicker_start != 0)
+	{
 		// Animation frame will be rendered with
 		// these 3 colors defined by change the argb value
-			if (this->argb.blue != 0)
-				this->argb.blue = 0;
+		if (this->argb.blue != 0)
+			this->argb.blue = 0;
 
-			else if (argb.green != 0)
-				this->argb.green = 0;
+		else if (argb.green != 0)
+			this->argb.green = 0;
 
-			else
-				this->argb = ARGB();
-		}		
+		else
+			this->argb = ARGB();	
 	}
-	
-	CGameObject::Render();
 
 
 	// Render the background with flashing effect
 	if (flash_start != TIMER_IDLE )
+		ProceedBackgroundColor();
+
+
+	CGameObject::Render();
+}
+
+void CSimon::ProceedBackgroundColor()
+{
+	if (whiteBackground == true)
 	{
-		if (whiteBackground == true)
-		{
-			CGame * game = CGame::GetInstance();
-			LPDIRECT3DDEVICE9 d3ddv = game->GetDirect3DDevice();
-			LPDIRECT3DSURFACE9 bb = game->GetBackBuffer();
-			LPD3DXSPRITE spriteHandler = game->GetSpriteHandler();
+		CGame * game = CGame::GetInstance();
+		LPDIRECT3DDEVICE9 d3ddv = game->GetDirect3DDevice();
+		LPDIRECT3DSURFACE9 bb = game->GetBackBuffer();
+		LPD3DXSPRITE spriteHandler = game->GetSpriteHandler();
 
-			// Fill the background with white screen
-			d3ddv->ColorFill(bb, NULL, COLOR_WHITE(ARGB_ALPHA_MAX_VALUE));
+		// Fill the background with white screen
+		d3ddv->ColorFill(bb, NULL, COLOR_WHITE(ARGB_ALPHA_MAX_VALUE));
 
 
-			// To prevent the background being white next frame.
-			whiteBackground = false;
-		}
-		else
-			whiteBackground = true;
+		// To prevent the background being white next frame.
+		whiteBackground = false;
 	}
+	else
+		whiteBackground = true;
 }
 
 void CSimon::PickAnimation()
@@ -329,13 +332,14 @@ void CSimon::ProceedFlickering()
 
 void CSimon::ProceedBeingUntouchable()
 {
-	if (GetTickCount() - untouchable_start > SIMON_UNTOUCHABLE_TIME)
+	if (GetTickCount() - untouchable_start > untouchable_time)
 	{
 		// Stop flickering effect
 		this->argb = ARGB();
 		flicker_start = TIMER_IDLE;
 
 		untouchable_start = TIMER_IDLE;
+		untouchable_time = 0;
 	}
 }
 
@@ -499,7 +503,7 @@ void CSimon::ProceedAutoMove()
 			vx = nx * autoInfo.vx;
 			dx = vx * dt;
 
-			// Calibrate the dx if object is moving far away from the destination
+			// Calibrate the dx if Simon has passed and is moving far away from the destination
 			if (dx > 0)
 			{
 				if (x + dx > autoInfo.xDes)
@@ -519,7 +523,7 @@ void CSimon::ProceedAutoMove()
 		}
 	}
 
-	// Auto move and stop when reach the time
+	// Auto move and stop when run out of automoving time
 	else
 	{
 		if (GetTickCount() - auto_start > autoInfo.autoTimeLast)
@@ -531,6 +535,7 @@ void CSimon::ProceedAutoMove()
 		}
 		else
 		{
+			// Calculate the dx, dy while moving automatically
 			vx = autoInfo.vx;
 			vy = autoInfo.vy;
 			dx = vx * dt;
@@ -624,6 +629,14 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 
 			this->health += e->obj->GetPoint();
 			CBoard::GetInstance()->AddPlayerLife(e->obj->GetPoint());
+		}
+
+		else if (dynamic_cast<CItemSuperPotion *>(e->obj))
+		{
+			DebugOut(L"\n[INFO] Touch Item Super Potion");
+			e->obj->SetState(STATE_INVISIBLE);
+
+			this->BeUntouchableByItem();
 		}
 
 		else if (dynamic_cast<CMoneyBag *>(e->obj))
@@ -825,7 +838,17 @@ void CSimon::BeUntouchable()
 		untouchable_start == TIMER_ETERNAL)
 	{
 		untouchable_start = GetTickCount();
+		untouchable_time = SIMON_UNTOUCHABLE_TIME;
 	}
+}
+
+void CSimon::BeUntouchableByItem()
+{
+	this->BeUntouchable();
+	this->Flicker();
+
+	// With different untouchable time
+	untouchable_time = SIMON_UNTOUCHABLE_BY_ITEM_TIME;
 }
 
 void CSimon::OnGetDamaged(LPCOLLISIONEVENT e)
@@ -845,7 +868,8 @@ void CSimon::OnGetDamaged(LPCOLLISIONEVENT e)
 		jumping = true;
 		controllable = false;
 
-		// Simon is being untouchable but not going to stop being untouchable
+		// Simon is being untouchable but 
+		// not going to stop being untouchable ( because of being on-air )
 		untouchable_start = TIMER_ETERNAL;
 	}
 	else
@@ -1078,6 +1102,7 @@ void CSimon::StartAutoMove(float vx, float xDestination)
 void CSimon::StartAutoMove(float vx, float vy, DWORD time)
 {
 	// Can only perform one auto-move at a time
+	// NOTE: this autoMove flag will be turned off in Update() -> ProceedAutoMove()
 	if (!autoMove)
 	{
 		autoInfo.vx = vx;

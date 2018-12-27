@@ -39,6 +39,7 @@
     <ClInclude Include="InvisibleWater.h" />
     <ClInclude Include="ItemAxe.h" />
     <ClInclude Include="ItemMeat.h" />
+    <ClInclude Include="ItemSuperPotion.h" />
     <ClInclude Include="MoneyBag.h" />
     <ClInclude Include="PinkBat.h" />
     <ClInclude Include="BigHeart.h" />
@@ -107,6 +108,7 @@
     <ClCompile Include="InvisibleWater.cpp" />
     <ClCompile Include="ItemAxe.cpp" />
     <ClCompile Include="ItemMeat.cpp" />
+    <ClCompile Include="ItemSuperPotion.cpp" />
     <ClCompile Include="MoneyBag.cpp" />
     <ClCompile Include="PinkBat.cpp" />
     <ClCompile Include="BigHeart.cpp" />
@@ -232,7 +234,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>d3dx9.lib;d3d9.lib;dxguid.lib;dxerr.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>

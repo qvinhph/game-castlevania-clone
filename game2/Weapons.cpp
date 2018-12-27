@@ -7,7 +7,7 @@
 #define Y_DISTANCE_DAGGER_LOWER_SIMON			4.0f
 
 // To adjusting the Fireball position for similar to origin game
-#define Y_DISTANCE_FIREBALL_LOWER_FISH			2.0f
+#define Y_DISTANCE_FIREBALL_LOWER_FISH			4.0f
 
 CWeapons * CWeapons::__instance = NULL;
 

@@ -258,6 +258,10 @@ void InitDefaultObjects()
 	defaultObjects.push_back(gameObject);
 	items->Add(Item::ITEMHOLYWATER, gameObject);
 
+	gameObject = new CItemSuperPotion();
+	defaultObjects.push_back(gameObject);
+	items->Add(Item::ITEMSUPERPOTION, gameObject);
+
 	for (int i = 0; i < NUMBER_OF_HEART; ++i)
 	{
 		gameObject = new CHeart();
@@ -844,6 +848,12 @@ void LoadResources()
 	ani->AddFrame(28002);
 	ani->AddFrame(28003);
 	animations->Add((int)HolyWaterAniID::EXPLODE, ani);
+
+	// item super potion
+	sprites->Add(29000, 4, 290, 30, 322, texMisc);
+	ani = new CAnimation(100);
+	ani->AddFrame(29000);
+	animations->Add((int)ItemSuperPotionAniID::IDLE, ani);
 
 #pragma endregion
 

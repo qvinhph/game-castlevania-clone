@@ -29,6 +29,7 @@
 #define SIMON_TOUCH_ITEM_FREEZING_TIME			1000
 #define SIMON_FLICKERING_TIME					1000
 #define SIMON_UNTOUCHABLE_TIME					1000
+#define SIMON_UNTOUCHABLE_BY_ITEM_TIME			5000
 #define SIMON_AUTO_STAIR_TIME					300
 #define SIMON_AUTO_MOVE_TIME					1200
 
@@ -93,21 +94,28 @@ class CSimon : public CActiveObject
 	bool crouching;	   
 	bool dying = false;
 
+
 	// Assigned to -1 if going downstairs
 	// Assigned to 1 if going upstairs
 	// Assigned to 0 if not on stairs
-	int onStairs;
+	int onStairs = 0;
+
 
 	// Timers, also be used as FLAG for the action when assigned to TIMER_IDLE(false) or non-TIMER_IDLE(true)
 	// Assigned to TIMER_IDLE			: the timer is not working,
 	// Assigned to TIMER_ETERNAL		: the timer is working and the action is not going to stop
 	// Assigned to unsigned number		: the timer is working
-	DWORD attack_start;					
-	DWORD auto_crouch_start;			
-	DWORD auto_start;
+	DWORD attack_start = TIMER_IDLE;					
+	DWORD auto_crouch_start = TIMER_IDLE;			
+	DWORD auto_start = TIMER_IDLE;
+
+
+	// The time that untouchable state of Simon will last
+	DWORD untouchable_time = 0;
+
 
 	// To make the flashing screen effect
-	DWORD flash_start;
+	DWORD flash_start = TIMER_IDLE;
 	bool whiteBackground = false;
 
 	int numberOfHearts;
@@ -116,7 +124,7 @@ class CSimon : public CActiveObject
 	CRope * rope;
 	CWeapons * weaponsInstance;
 	vector<LPGAMEOBJECT> ovObjects;		// overlapping objects
-	vector<LPGAMEOBJECT>* coObjects;	// for saving the current coObjects to manipulate easily
+	vector<LPGAMEOBJECT>* coObjects;	// for saving the coObjects at the current frame to manipulate easily
 
 	static CSimon * __instance;
 	CSimon();
@@ -137,7 +145,8 @@ public:
 	void Flicker();
 	void StandUp();
 	void AutoCrouch();
-	void BeUntouchable();
+	void BeUntouchable();					// After getting damaged
+	void BeUntouchableByItem();				// By item's effect ( super potion item)
 	void OnGetDamaged(LPCOLLISIONEVENT e);
 	void ProceedAutoMove();
 	void ProceedFlickering();
@@ -147,7 +156,8 @@ public:
 	void ProceedGravity();
 	void ProceedOnStairs();
 	void ProceedOverlapping();
-	void ProceedFlashingScreen();
+	void ProceedFlashingScreen();			// For flashing screen effect
+	void ProceedBackgroundColor();
 	void StartAutoMove(float vx, float xDestination);
 	void StartAutoMove(float vx, float vy, DWORD time);
 	bool IsAbleToUseWeapon();

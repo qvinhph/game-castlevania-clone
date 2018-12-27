@@ -7,7 +7,7 @@
 using namespace std;
 
 /*
-	A class help managing all the weapon that can be throwed or used
+	A class help managing all the weapon that can be throwed or used ( fire ball, axe, ... )
 	by living objects (such as Simon, Fish,...)
 */
 class CWeapons

@@ -50,6 +50,7 @@ void CBoard::RenderTime()
 {
 	CGame * game = CGame::GetInstance();
 
+
 	// Format the string to draw to the screen
 	std::string number = std::to_string(time);
 	number.insert(number.begin(), TIME_DIGITS - number.size(), '0');

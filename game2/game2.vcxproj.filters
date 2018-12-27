@@ -243,6 +243,9 @@
     <ClInclude Include="CameraEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ItemSuperPotion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Rope.cpp">
@@ -442,6 +445,9 @@
     </ClCompile>
     <ClCompile Include="HolyWater.cpp">
       <Filter>Source Files\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemSuperPotion.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

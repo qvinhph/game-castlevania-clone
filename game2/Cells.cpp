@@ -40,7 +40,9 @@ void CCells::Init(CTileMap * tileMap, int cellWidth, int cellHeight)
 
 }
 
-void CCells::GetObjectsInRectangle(float & left, float & top, float & right, float & bottom, vector<LPGAMEOBJECT>& objects)
+void CCells::GetObjectsInRectangle(float const & left, float const & top, 
+								float const & right, float const & bottom, 
+								vector<LPGAMEOBJECT>& objects)
 {
 	// Find the top-left and bottom-right cell that contains the viewport's area
 	int firstCellColumn, firstCellRow;		// the left-top cell that containing the rectangle's area
@@ -91,8 +93,10 @@ void CCells::Classify(LPGAMEOBJECT obj)
 		}
 }
 
-void CCells::GetCellsContainRectangle(float & left, float & top, float & right, float & bottom, 
-	int & firstCellColumn, int & firstCellRow, int & lastCellColumn, int & lastCellRow)
+void CCells::GetCellsContainRectangle(float const & left, float const & top, 
+									float const & right, float const & bottom, 
+									int & firstCellColumn, int & firstCellRow, 
+									int & lastCellColumn, int & lastCellRow)
 {
 	firstCellColumn = (left < 0) ? 0 : left / cellWidth;
 	firstCellRow = (top < 0) ? 0 : top / cellHeight;

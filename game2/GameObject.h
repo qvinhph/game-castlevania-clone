@@ -37,6 +37,7 @@ enum class Item
 	MONEY_BAG_BLUE,
 	CROSS,
 	DOUBLE_SHOT,
+	ITEMSUPERPOTION,
 };
 
 /* 

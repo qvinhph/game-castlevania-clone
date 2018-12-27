@@ -1021,7 +1021,7 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":288,
+                 "width":284.5,
                  "x":5504.00329861111,
                  "y":704.003298611111
                 }, 
@@ -1707,7 +1707,7 @@
                         {
                          "name":"itemholding",
                          "type":"string",
-                         "value":"heart"
+                         "value":"itemsuperpotion"
                         }],
                  "rotation":0,
                  "type":"",
@@ -2207,40 +2207,6 @@
                 }, 
                 {
                  "height":64,
-                 "id":260,
-                 "name":"spawnerzombie",
-                 "properties":[
-                        {
-                         "name":"Direction",
-                         "type":"int",
-                         "value":1
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":6286.41666666667,
-                 "y":222
-                }, 
-                {
-                 "height":64,
-                 "id":261,
-                 "name":"spawnerzombie",
-                 "properties":[
-                        {
-                         "name":"Direction",
-                         "type":"int",
-                         "value":-1
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":6310.91666666667,
-                 "y":222
-                }, 
-                {
-                 "height":64,
                  "id":262,
                  "name":"spawnerzombie",
                  "properties":[
@@ -2285,15 +2251,43 @@
                  "y":0
                 }, 
                 {
+                 "height":440.167,
+                 "id":272,
+                 "name":"invisiblewall",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32.0833,
+                 "x":5872.21,
+                 "y":447.958166666667
+                }, 
+                {
+                 "height":64,
+                 "id":277,
+                 "name":"spawnerzombie",
+                 "properties":[
+                        {
+                         "name":"Direction",
+                         "type":"int",
+                         "value":-1
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":5842.66666666667,
+                 "y":158
+                }, 
+                {
                  "height":62,
-                 "id":268,
+                 "id":279,
                  "name":"simon",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":147,
-                 "y":321
+                 "x":6118,
+                 "y":142
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -2302,7 +2296,7 @@
          "y":0
         }],
  "nextlayerid":44,
- "nextobjectid":269,
+ "nextobjectid":280,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.0",
