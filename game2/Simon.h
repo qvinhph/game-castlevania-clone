@@ -175,8 +175,10 @@ public:
 	void UseWeapon();
 	void Upstairs();
 	void Downstairs();
+	void Revive();
 
 	Weapon GetSecondaryWeapon() { return this->secondaryWeapon; }
+	void SetSecondaryWeapon(Weapon weapon) { this->secondaryWeapon = weapon; }
 
 	// DEBUGGING: Delete me
 	void RemoveOnStairs() {

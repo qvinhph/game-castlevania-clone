@@ -1040,8 +1040,8 @@ void CSimon::OnGetDamaged(LPCOLLISIONEVENT e)
 	}
 	else
 	{
-		untouchable_start = GetTickCount();
-		flicker_start = GetTickCount();
+		BeUntouchable();
+		Flicker();
 	}	
 
 	// Update Simon's health
@@ -1070,8 +1070,8 @@ void CSimon::OnGetDamaged(LPGAMEOBJECT monster)
 	}
 	else
 	{
-		untouchable_start = GetTickCount();
-		flicker_start = GetTickCount();
+		BeUntouchable();
+		Flicker();
 	}
 
 	// Update Simon's health
@@ -1278,6 +1278,15 @@ void CSimon::Downstairs()
 		StartAutoMove(nx * SIMON_STAIR_SPEED_X, SIMON_STAIR_SPEED_Y, SIMON_AUTO_STAIR_TIME);
 	}
 
+}
+
+void CSimon::Revive()
+{
+	this->health = PLAYER_HEALTH_DEFAULT;
+	CBoard::GetInstance()->SetPlayerLife(this->health);
+	dying = false;
+	this->state = STATE_VISIBLE;
+	this->controllable = true;
 }
 
 /*

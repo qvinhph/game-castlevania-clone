@@ -82,6 +82,21 @@ void CInputHandler::OnKeyDown(int keyCode)
 		CSimon::GetInstance()->SetPosition(2823, 284);
 		CCamera::GetInstance()->ChangeLimitBound(2823, 284);
 		break;
+	case DIK_3:
+		CSimon::GetInstance()->SetSecondaryWeapon(Weapon::AXE);
+		break;
+	case DIK_4:
+		CSimon::GetInstance()->SetSecondaryWeapon(Weapon::DAGGER);
+		break;
+	case DIK_5:
+		CSimon::GetInstance()->SetSecondaryWeapon(Weapon::HOLYWATER);
+		break;
+	case DIK_6:
+		CSimon::GetInstance()->SetSecondaryWeapon(Weapon::WATCH);
+		break;
+	case DIK_P:
+		CSimon::GetInstance()->Revive();
+		break;
 	case DIK_O:
 		CSimon::GetInstance()->RemoveOnStairs();
 		break;
