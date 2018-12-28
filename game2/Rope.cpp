@@ -32,7 +32,6 @@ void CRope::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (coEvents.size() != 0)
 			ProceedCollisions(coEvents);
 
-		// TO-DO:...
 		// Check overlapping
 		if (animations->Get(currentAniID)->GetCurrentFrame() == 2)
 			for (UINT i = 0; i < coObjects->size(); i++)
@@ -97,7 +96,7 @@ void CRope::SetMatchedAnimation()
 	}
 }
 
-// TO-DO: Consider about this function for Rope object
+
 void CRope::ProceedCollisions(std::vector<LPCOLLISIONEVENT> &coEvents)
 {
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -105,7 +104,7 @@ void CRope::ProceedCollisions(std::vector<LPCOLLISIONEVENT> &coEvents)
 	float min_tx, min_ty, nx, ny;
 	FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
-	// TO-DO: ...
+
 	for (UINT i = 0; i < coEventsResult.size(); i++)
 	{
 		// empty now

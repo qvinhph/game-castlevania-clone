@@ -6,7 +6,7 @@
 
 enum class ItemRopeAniID
 {
-	IDLE = 1500
+	IDLE = 1400
 };
 
 /*

@@ -1,0 +1,146 @@
+ID	left	top	right	bottom
+
+// Big Candle sprites
+BEGIN
+12000	0	0	32	64
+12001	32	0	64	64
+END
+
+// Small Candle sprites
+BEGIN
+13000	67	0	83	32
+13001	83	0	99	32
+END
+
+// Item Rope sprite
+BEGIN
+14000	61	64	93	96
+END
+
+// Destroying Flame sprites
+BEGIN
+15000	156	7	172	37
+15001	198	7	214	37
+15002	113	7	129	37
+END
+
+// Big Heart sprite
+BEGIN
+16000	95	105	119	125
+END
+
+// Heart sprite
+BEGIN
+17000	126	110	142	126
+END
+ 
+// Dagger / ItemDagger sprite
+BEGIN
+18000	153	46	185	64
+18100	192	46	224	64
+END
+
+// Fire Ball sprites
+BEGIN
+19000	163	112	177	124
+19100	147	112	161	124
+END
+
+// Bubble sprites
+BEGIN
+20000	85	34	99	62
+END
+
+// Secret Bricks sprites
+BEGIN
+21000	129	67	161	99
+21001	173	67	205	99
+END
+
+// Rock sprites
+BEGIN
+22000	229	45	243	61
+END
+
+// Item Meat sprites
+BEGIN
+23000	132	228	164	254
+END
+
+// Gate sprites
+
+BEGIN
+24000	4	131	20	227
+24001	49	131	81	227
+24002	97	131	177	227
+END
+
+// Money bag sprites
+BEGIN
+25000	0	97	30	127
+25001	30	97	60	127
+25002	60	97	90	127
+END
+
+// Cross sprites
+BEGIN
+26000	212	72	244	104
+END
+
+// Item Axe sprites
+BEGIN
+27000	193	164	223	192
+END
+
+// Axe sprites
+BEGIN
+27001	2	256	32	284 
+27002	32	256	62	284
+27003	62	256	92	284
+27004	92	256	122	284
+END
+
+// Item Holy Water sprite
+BEGIN
+28000	209	255	241	287
+END
+
+// Holy Water sprites
+BEGIN
+28101	43	233	59	249
+28001	18	232	34	248
+28002	67	229	99	255
+28003	99	229	131	255
+END
+
+// Item Super Potion sprite
+BEGIN
+29000	4	290	30	322
+END
+
+ID	left	top	right	bottom
+
+// Player Health Unit
+BEGIN
+97001	112	45	120	59
+END
+
+// Enemy Health Unit
+BEGIN
+97002	123	45	131	59
+END
+
+// Empty Health Unit
+BEGIN
+97003	134	45	142	59
+END
+
+// Item Box
+BEGIN
+97004	179	116	243	160
+END
+
+// Heart
+BEGIN
+97005	228	162	244	188
+END

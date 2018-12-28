@@ -1,0 +1,11 @@
+ID	Resource	TransparentColor
+
+BEGIN
+0	textures\\simon.png	255 0 255
+2	textures\\ground1.png	255 0 255
+-100	textures\\bbox.png	255 0 255
+1	textures\\rope.png	255 0 255
+3	textures\\misc.png	255 0 255
+4	textures\\monsters.png	255 0 255
+5	textures\\tileset.png	255 0 255
+END

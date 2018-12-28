@@ -19,12 +19,13 @@
 
 enum class PantherAniID
 {
-	IDLE_LEFT = 5200,
-	IDLE_RIGHT,
-	RUN_LEFT,
+	IDLE_RIGHT = 5200,
+	IDLE_LEFT ,	
 	RUN_RIGHT,
+	RUN_LEFT,
+	JUMP_RIGHT,
 	JUMP_LEFT,
-	JUMP_RIGHT
+	
 };
 
 class CPanther : public CActiveObject

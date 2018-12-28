@@ -75,3 +75,5 @@
 #define NUMBER_OF_FISH		2
 #define NUMBER_OF_ROCK		8
 #define NUMBER_OF_BUBBLE	9		
+#define NUMBER_OF_HOLYWATER	2
+#define NUMBER_OF_AXE		2

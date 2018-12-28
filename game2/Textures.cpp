@@ -2,6 +2,7 @@
 
 #include <d3d9.h>
 #include <d3dx9.h>
+#include <fstream>
 
 #include "debug.h"
 #include "Game.h"
@@ -53,6 +54,63 @@ void CTextures::Add(int id, LPCWSTR filePath, D3DCOLOR transparentColor)
 	textures[id] = texture;
 
 	DebugOut(L"[INFO] Texture loaded Ok: id=%d, %s \n", id, filePath);
+}
+
+void CTextures::Add(int id, string filePath, D3DCOLOR transparentColor)
+{
+	std::wstring stemp = std::wstring(filePath.begin(), filePath.end());
+	LPCWSTR convertedString = stemp.c_str();
+
+	this->Add(id, convertedString, transparentColor);
+}
+
+void CTextures::AddTexturesFromFile(LPCWSTR filePath)
+{
+	ifstream inputFile(filePath);
+	string data = "";
+	inputFile >> data;
+
+	// Find the begin of the data
+	while (inputFile >> data)
+	{
+		if (data == "BEGIN")
+		{
+			int texID = 0;
+			string path = "";
+			int rgbRed = 0;
+			int rgbBlue = 0;
+			int rgbGreen = 0;
+
+			// Read the infomation of texture
+			while (inputFile >> data)
+			{
+				if (data == "END")
+					return;
+
+				// Get the texture ID
+				texID = atoi(data.c_str());
+
+				// Get the path
+				inputFile >> data;
+				path = data;
+
+				// Get the rgb-red 
+				inputFile >> data;
+				rgbRed = atoi(data.c_str());
+
+				// Get the rgb-green 
+				inputFile >> data;
+				rgbGreen = atoi(data.c_str());
+
+				// Get the rgb-blue 
+				inputFile >> data;
+				rgbBlue = atoi(data.c_str());
+
+				// Add texture
+				this->Add(texID, path, D3DCOLOR_XRGB(rgbRed, rgbGreen, rgbBlue));
+			}
+		}
+	}	
 }
 
 LPDIRECT3DTEXTURE9 CTextures::Get(unsigned int i)

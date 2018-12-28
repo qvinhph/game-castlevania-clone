@@ -38,6 +38,7 @@ enum class Item
 	CROSS,
 	DOUBLE_SHOT,
 	ITEMSUPERPOTION,
+	WATCH,
 };
 
 /* 

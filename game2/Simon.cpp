@@ -274,6 +274,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (health <= 0 && !jumping)	// Simon has landed on the ground
 	{
 		vx = vy = 0;
+		controllable = false;
 		dying = true;
 	}
 

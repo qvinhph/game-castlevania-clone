@@ -8,7 +8,7 @@
 
 enum class FlameAniID
 {
-	IDLE = 1400
+	IDLE = 1500
 };
 
 /*

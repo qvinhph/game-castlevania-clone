@@ -6,7 +6,6 @@ CTimer * CTimer::__instance = NULL;
 
 void CTimer::Update(WORD dt, vector<LPGAMEOBJECT>* objects)
 {
-	// TO-DO: Consider to move this to CBoard
 	TimeCount(dt);
 
 	if (freezing)

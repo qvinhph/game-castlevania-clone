@@ -18,12 +18,14 @@
 
 enum class FishAniID
 {
-	IDLE_LEFT = 5400,
-	IDLE_RIGHT,
-	MOVE_LEFT,
+	IDLE_RIGHT = 5400,
+	IDLE_LEFT,
+	
 	MOVE_RIGHT,
-	ATTACK_LEFT,
+	MOVE_LEFT,
+	
 	ATTACK_RIGHT,
+	ATTACK_LEFT,
 };
 
 class CFish: public CActiveObject

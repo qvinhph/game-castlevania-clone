@@ -31,21 +31,21 @@ void CMoneyBag::GetBoundingBox(float & left, float & top, float & right, float &
 
 CMoneyBag::CMoneyBag(int MoneyBagAniID)
 {
-	if (MoneyBagAniID == MoneyBagAniID::BLUE_BAG)
+	if (MoneyBagAniID == (int)MoneyBagAniID::BLUE_BAG)
 	{
-		currentAniID = MoneyBagAniID::BLUE_BAG;
+		currentAniID = (int)MoneyBagAniID::BLUE_BAG;
 		point = BLUE_BAG_POINT_AWARD;
 	}
 
-	else if (MoneyBagAniID == MoneyBagAniID::WHITE_BAG)
+	else if (MoneyBagAniID == (int)MoneyBagAniID::WHITE_BAG)
 	{
-		currentAniID = MoneyBagAniID::WHITE_BAG;
+		currentAniID = (int)MoneyBagAniID::WHITE_BAG;
 		point = WHITE_BAG_POINT_AWARD;
 	}
 
-	else if (MoneyBagAniID == MoneyBagAniID::RED_BAG)
+	else if (MoneyBagAniID == (int)MoneyBagAniID::RED_BAG)
 	{
-		currentAniID = MoneyBagAniID::RED_BAG;
+		currentAniID = (int)MoneyBagAniID::RED_BAG;
 		point = RED_BAG_POINT_AWARD;
 	}
 }

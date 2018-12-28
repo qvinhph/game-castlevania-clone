@@ -17,6 +17,7 @@ class CAnimation
 	vector<LPANIMATION_FRAME> frames;
 
 public:
+	CAnimation();
 	CAnimation(int defaultTime);
 	void AddFrame(int spriteID, DWORD time = 0);
 	void Render(float x, float y, ARGB &argb = ARGB());

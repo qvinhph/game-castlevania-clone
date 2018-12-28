@@ -6,7 +6,7 @@
 
 enum class ItemSuperPotionAniID
 {
-	IDLE
+	IDLE = 2900,
 };
 
 class CItemSuperPotion : public CActiveObject

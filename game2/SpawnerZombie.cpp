@@ -108,25 +108,6 @@ bool CSpawnerZombie::IsFarEnoughToSpawn()
 
 void CSpawnerZombie::SetupZombieInfo(float & x, float & y, int & nx)
 {
-	//// Simon bounding box
-	//float leftS, topS, rightS, bottomS;
-	//CSimon::GetInstance()->GetBoundingBox(leftS, topS, rightS, bottomS);
-
-	//// Viewport bounding box
-	//float leftV, topV, rightV, bottomV;
-	//cameraInstance->GetBoundingBox(leftV, topV, rightV, bottomV);
-
-	//// TO-DO: Setup a random nx
-	//// Because somehow zombie may appear from the left of the viewport
-	//// And the probability of that case seem to be less.
-	//nx = -1;
-
-	//if (nx != 1)
-	//{
-	//	x = rightV - ZOMBIE_BBOX_WIDTH;
-	//	y = bottomS - ZOMBIE_BBOX_HEIGHT;
-	//}
-
 
 	// Appear at the edge of the viewport
 	float leftV, topV, rightV, bottomV;

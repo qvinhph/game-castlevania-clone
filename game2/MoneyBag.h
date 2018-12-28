@@ -1,18 +1,18 @@
 #pragma once
 #include "MovableObject.h"
 
-#define MONEY_BAG_BBOX_WIDTH		32
-#define MONEY_BAG_BBOX_HEIGHT		32
+#define MONEY_BAG_BBOX_WIDTH		30
+#define MONEY_BAG_BBOX_HEIGHT		30
 
 #define RED_BAG_POINT_AWARD			100
 #define WHITE_BAG_POINT_AWARD		700
 #define BLUE_BAG_POINT_AWARD		400
 
-enum MoneyBagAniID
+enum class MoneyBagAniID
 {
 	RED_BAG = 2500,
+	WHITE_BAG,
 	BLUE_BAG,
-	WHITE_BAG
 };
 
 class CMoneyBag : public CActiveObject

@@ -17,6 +17,7 @@ class CAnimations
 
 public:
 	void Add(int id, LPANIMATION ani);
+	void AddAnimationsFromFile(LPCWSTR filePath);
 	LPANIMATION Get(int id);
 
 	static CAnimations * GetInstance();

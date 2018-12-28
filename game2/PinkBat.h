@@ -14,8 +14,8 @@
 
 enum class PinkBatAniID
 {
-	FLYING_LEFT = 5301,
-	FLYING_RIGHT = 5302,
+	FLYING_RIGHT = 5301,
+	FLYING_LEFT = 5302,
 };
 
 /*

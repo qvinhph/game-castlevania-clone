@@ -2,6 +2,12 @@
 #include "Animation.h"
 
 
+CAnimation::CAnimation()
+{
+	frameStartTime = -1;
+	currentFrame = -1;
+}
+
 CAnimation::CAnimation(int defaultTime)
 {
 	this->defaultTime = defaultTime; 

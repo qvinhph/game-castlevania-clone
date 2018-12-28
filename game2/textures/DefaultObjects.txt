@@ -1,0 +1,40 @@
+Name	Quantity
+
+// ITEM
+BEGIN
+itemrope	1
+itemdagger	1
+bigheart	1
+itemmeat	1
+moneybagblue	1
+moneybagred	1
+moneybagwhite	1
+cross		1
+itemaxe		1
+itemholywater	1
+itemsuperpotion	1
+heart		5
+END
+
+// EFFECT OBJECTS
+BEGIN
+flame		6
+bubble		9
+rock		8
+END
+
+// THROWABLE WEAPONS
+BEGIN
+dagger		2
+axe		2
+holywater	2
+fireball	4
+END
+
+// MONSTERS
+BEGIN
+zombie		3
+panther		3
+pinkbat		2
+fish		2
+END

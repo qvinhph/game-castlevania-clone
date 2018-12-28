@@ -2280,14 +2280,14 @@
                 }, 
                 {
                  "height":62,
-                 "id":279,
+                 "id":281,
                  "name":"simon",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":6118,
-                 "y":142
+                 "x":1928,
+                 "y":225
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -2296,7 +2296,7 @@
          "y":0
         }],
  "nextlayerid":44,
- "nextobjectid":280,
+ "nextobjectid":282,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.0",
