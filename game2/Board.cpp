@@ -3,6 +3,7 @@
 #include "Simon.h"
 #include "ItemHolyWater.h"
 #include "ItemAxe.h"
+#include "Watch.h"
 #include "debug.h"
 
 CBoard * CBoard::__instance = NULL;
@@ -193,6 +194,11 @@ void CBoard::RenderWeaponBox()
 	case Weapon::AXE:
 		CalcWeaponInsidePosition(ITEM_AXE_BBOX_WIDTH, ITEM_AXE_BBOX_HEIGHT, xWeapon, yWeapon);
 		animations->Get((int)ItemAxeAniID::IDLE)->Render(xWeapon, yWeapon);
+		break;
+
+	case Weapon::WATCH:
+		CalcWeaponInsidePosition(WATCH_BBOX_WIDTH, WATCH_BBOX_HEIGHT, xWeapon, yWeapon);
+		animations->Get((int)WatchAniID::IDLE)->Render(xWeapon, yWeapon);
 		break;
 
 	case Weapon::NONE:

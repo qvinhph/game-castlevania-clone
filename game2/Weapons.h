@@ -47,6 +47,7 @@ public:
 
 	void Add(Weapon weaponName, LPGAMEOBJECT weapon);
 	void AddQuantity(Weapon weaponName);
+	void UpgradeToDoubleShot();
 
 	/*
 		Return true if the remaining quantity of the weapon > 0.

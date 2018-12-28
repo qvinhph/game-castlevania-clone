@@ -30,6 +30,7 @@
     <ClInclude Include="Bubbles.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraEvent.h" />
+    <ClInclude Include="DoubleShot.h" />
     <ClInclude Include="HolyWater.h" />
     <ClInclude Include="ItemHolyWater.h" />
     <ClInclude Include="Cross.h" />
@@ -40,6 +41,7 @@
     <ClInclude Include="ItemAxe.h" />
     <ClInclude Include="ItemMeat.h" />
     <ClInclude Include="ItemSuperPotion.h" />
+    <ClInclude Include="MagicBall.h" />
     <ClInclude Include="MoneyBag.h" />
     <ClInclude Include="PinkBat.h" />
     <ClInclude Include="BigHeart.h" />
@@ -84,6 +86,7 @@
     <ClInclude Include="TileMap.h" />
     <ClInclude Include="Tileset.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Watch.h" />
     <ClInclude Include="Weapons.h" />
     <ClInclude Include="Zombie.h" />
   </ItemGroup>
@@ -99,6 +102,7 @@
     <ClCompile Include="Bubbles.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraEvent.cpp" />
+    <ClCompile Include="DoubleShot.cpp" />
     <ClCompile Include="HolyWater.cpp" />
     <ClCompile Include="ItemHolyWater.cpp" />
     <ClCompile Include="Cross.cpp" />
@@ -109,6 +113,7 @@
     <ClCompile Include="ItemAxe.cpp" />
     <ClCompile Include="ItemMeat.cpp" />
     <ClCompile Include="ItemSuperPotion.cpp" />
+    <ClCompile Include="MagicBall.cpp" />
     <ClCompile Include="MoneyBag.cpp" />
     <ClCompile Include="PinkBat.cpp" />
     <ClCompile Include="BigHeart.cpp" />
@@ -129,6 +134,7 @@
     <ClCompile Include="Portal.cpp" />
     <ClCompile Include="Portals.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Watch.cpp" />
     <ClCompile Include="Weapons.cpp" />
     <ClCompile Include="Dagger.cpp" />
     <ClCompile Include="ItemDagger.cpp" />

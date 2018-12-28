@@ -12,6 +12,7 @@
 
 #define HOLYWATER_EXPLODE_TIME				900
 #define HOLYWATER_DAMAGE					2
+#define HOLYWATER_HEART_COST				1
 
 enum class HolyWaterAniID
 {

@@ -126,7 +126,7 @@
                         {
                          "name":"itemholding",
                          "type":"string",
-                         "value":"itemdagger"
+                         "value":"watch"
                         }],
                  "rotation":0,
                  "type":"",
@@ -1357,8 +1357,8 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":34.333333333333,
-                 "x":7260.00329861111,
+                 "width":30.333333333333,
+                 "x":7264.00329861111,
                  "y":0.00329861111110996
                 }, 
                 {
@@ -1850,12 +1850,6 @@
                  "height":54,
                  "id":193,
                  "name":"bossbat",
-                 "properties":[
-                        {
-                         "name":"itemholding",
-                         "type":"string",
-                         "value":"magicball"
-                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -2134,7 +2128,7 @@
                         {
                          "name":"itemholding",
                          "type":"string",
-                         "value":"doubleshot"
+                         "value":"moneybagblue"
                         }],
                  "rotation":0,
                  "type":"type1",
@@ -2286,14 +2280,14 @@
                 }, 
                 {
                  "height":62,
-                 "id":282,
+                 "id":281,
                  "name":"simon",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":6401,
-                 "y":157
+                 "x":1928,
+                 "y":225
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -2302,7 +2296,7 @@
          "y":0
         }],
  "nextlayerid":44,
- "nextobjectid":283,
+ "nextobjectid":282,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.0",

@@ -118,7 +118,21 @@ BEGIN
 29000	4	290	30	322
 END
 
-ID	left	top	right	bottom
+// Watch sprite
+BEGIN
+30000	95	64	125	96
+END
+
+// DoubleShot sprite
+BEGIN
+31000	31	65	59	93
+END
+
+// Magic Ball sprite
+BEGIN
+32001	210	222	238	254
+32002	182	222	210	254
+END
 
 // Player Health Unit
 BEGIN

@@ -2,12 +2,16 @@
 #include "debug.h"
 #include "Simon.h"
 #include "Fish.h"
+#include "Timer.h"
 
 // To adjusting the Dagger position for similar to origin game
 #define Y_DISTANCE_DAGGER_LOWER_SIMON			4.0f
 
 // To adjusting the Fireball position for similar to origin game
 #define Y_DISTANCE_FIREBALL_LOWER_FISH			4.0f
+
+#define DOUBLESHOT_MAX_QUANTITY		2
+#define TRIPLESHOT_MAX_QUANTITY		3
 
 CWeapons * CWeapons::__instance = NULL;
 
@@ -188,6 +192,15 @@ void CWeapons::AddQuantity(Weapon weaponName)
 {
 	if (remainingQuantities[weaponName] < maxQuantity)
 		remainingQuantities[weaponName]++;
+}
+
+void CWeapons::UpgradeToDoubleShot()
+{
+	maxQuantity = DOUBLESHOT_MAX_QUANTITY;
+	for (auto it = remainingQuantities.begin(); it != remainingQuantities.end(); ++it)
+	{
+		(*it).second = maxQuantity;
+	}		
 }
 
 bool CWeapons::CheckQuantity(Weapon weaponName)

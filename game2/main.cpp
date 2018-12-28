@@ -248,23 +248,23 @@ void LoadListDefaultObjects(LPCWSTR filePath, vector<LPGAMEOBJECT> &defaultObjec
 					if (objName == "itemrope")
 					{
 						obj = new CItemRope();
-						items->Add(Item::ITEMROPE, obj);
+						items->Add(Item::ITEM_ROPE, obj);
 					}
 					else if (objName == "itemdagger")
 					{
 						obj = new CItemDagger();
-						items->Add(Item::ITEMDAGGER, obj);
+						items->Add(Item::ITEM_DAGGER, obj);
 
 					}
 					else if (objName == "bigheart")
 					{
 						obj = new CBigHeart();
-						items->Add(Item::BIGHEART, obj);
+						items->Add(Item::BIG_HEART, obj);
 					}
 					else if (objName == "itemmeat")
 					{
 						obj = new CItemMeat();
-						items->Add(Item::ITEMMEAT, obj);
+						items->Add(Item::ITEM_MEAT, obj);
 					}
 					else if (objName == "cross")
 					{
@@ -274,17 +274,32 @@ void LoadListDefaultObjects(LPCWSTR filePath, vector<LPGAMEOBJECT> &defaultObjec
 					else if (objName == "itemaxe")
 					{
 						obj = new CItemAxe();
-						items->Add(Item::ITEMAXE, obj);
+						items->Add(Item::ITEM_AXE, obj);
 					}
 					else if (objName == "itemholywater")
 					{
 						obj = new CItemHolyWater();
-						items->Add(Item::ITEMHOLYWATER, obj);
+						items->Add(Item::ITEM_HOLY_WATER, obj);
 					}
 					else if (objName == "itemsuperpotion")
 					{
 						obj = new CItemSuperPotion();
-						items->Add(Item::ITEMSUPERPOTION, obj);
+						items->Add(Item::ITEM_SUPER_POTION, obj);
+					}
+					else if (objName == "watch")
+					{
+						obj = new CWatch();
+						items->Add(Item::WATCH, obj);
+					}
+					else if (objName == "doubleshot")
+					{
+						obj = new CDoubleShot();
+						items->Add(Item::DOUBLE_SHOT, obj);
+					}
+					else if (objName == "magicball")
+					{
+						obj = new CMagicBall();
+						items->Add(Item::MAGIC_BALL, obj);
 					}
 					else if (objName == "heart")
 					{

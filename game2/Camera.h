@@ -54,7 +54,7 @@ public:
 	void ChangeLimitBound(float x, float y);
 
 	// Make the given point to be center of the camera
-	void Centerize(float x, float y);
+	void FocusOnPoint(float x, float y);
 	void SlowlyMoveViewport();
 	void StartSlowlyMoveViewport(float x_destination, float y_destination);
 

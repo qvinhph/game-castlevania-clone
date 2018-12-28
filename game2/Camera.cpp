@@ -53,7 +53,7 @@ void CCamera::ChangeLimitBound(float x, float y)
 	DebugOut(L"\n[ERROR] Cannot focus the camera to the given point");
 }
 
-void CCamera::Centerize(float x, float y)
+void CCamera::FocusOnPoint(float x, float y)
 {
 	if (slowlyMoveEffect == true)
 	{

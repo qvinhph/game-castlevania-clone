@@ -355,18 +355,21 @@ vector<LPOBJECTINFO> CTileMap::GetObjects(json root)
 
 Item CTileMap::GetHoldingItem(string string)
 {
-	if (string == "itemrope")				return Item::ITEMROPE;
-	else if (string == "bigheart")			return Item::BIGHEART;
+	if (string == "itemrope")				return Item::ITEM_ROPE;
+	else if (string == "bigheart")			return Item::BIG_HEART;
 	else if (string == "heart")				return Item::HEART;
-	else if (string == "itemdagger")		return Item::ITEMDAGGER;
-	else if (string == "itemmeat")			return Item::ITEMMEAT;
+	else if (string == "itemdagger")		return Item::ITEM_DAGGER;
+	else if (string == "itemmeat")			return Item::ITEM_MEAT;
 	else if (string == "moneybagblue")		return Item::MONEY_BAG_BLUE;
 	else if (string == "moneybagred")		return Item::MONEY_BAG_RED;
 	else if (string == "moneybagwhite")		return Item::MONEY_BAG_WHITE;
 	else if (string == "cross")				return Item::CROSS;
-	else if (string == "itemaxe")			return Item::ITEMAXE;
-	else if (string == "itemholywater")		return Item::ITEMHOLYWATER;
-	else if (string == "itemsuperpotion")	return Item::ITEMSUPERPOTION;
+	else if (string == "itemaxe")			return Item::ITEM_AXE;
+	else if (string == "itemholywater")		return Item::ITEM_HOLY_WATER;
+	else if (string == "itemsuperpotion")	return Item::ITEM_SUPER_POTION;
+	else if (string == "watch")				return Item::WATCH;
+	else if (string == "doubleshot")		return Item::DOUBLE_SHOT;
+	else if (string == "magicball")			return Item::MAGIC_BALL;
 
 	return Item::NONE;
 }

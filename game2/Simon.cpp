@@ -36,6 +36,10 @@
 #include "BossBat.h"
 #include "CameraEvent.h"
 #include "ItemSuperPotion.h"
+#include "Watch.h"
+#include "HolyWater.h"
+#include "DoubleShot.h"
+#include "MagicBall.h"
 
 #include "debug.h"
 
@@ -482,6 +486,145 @@ void CSimon::ProceedOverlapping()
 			else if (onStairs == 0)
 				this->StartAutoMove(this->nx * SIMON_AUTO_MOVE_SPEED_X, 0, SIMON_AUTO_MOVE_TIME);
 		}
+
+		else if (dynamic_cast<CZombie *>(obj) ||
+			dynamic_cast<CPanther *>(obj) ||
+			dynamic_cast<CPinkBat *>(obj) ||
+			dynamic_cast<CFish *>(obj) ||
+			dynamic_cast<CFireBall *>(obj) ||
+			dynamic_cast<CBossBat *>(obj))
+		{
+			if (untouchable_start == TIMER_IDLE)
+			{
+				this->OnGetDamaged(obj);
+				return;
+			}
+		}
+
+		else if (dynamic_cast<CItemRope *>(obj))
+		{
+			this->rope->LevelUp();
+			this->Flicker();
+			CTimer::GetInstance()->Freeze(SIMON_TOUCH_ITEM_FREEZING_TIME);
+			obj->SetState(STATE_INVISIBLE);
+		}
+
+		else if (dynamic_cast<CBigHeart *>(obj))
+		{
+			obj->SetState(STATE_INVISIBLE);
+
+			numberOfHearts += obj->GetPoint();
+			CBoard::GetInstance()->SetHeart(numberOfHearts);
+		}
+
+		else if (dynamic_cast<CHeart *>(obj))
+		{
+			obj->SetState(STATE_INVISIBLE);
+
+			numberOfHearts += obj->GetPoint();
+			CBoard::GetInstance()->SetHeart(numberOfHearts);
+		}
+
+		else if (dynamic_cast<CItemDagger *>(obj))
+		{
+			obj->SetState(STATE_INVISIBLE);
+			secondaryWeapon = Weapon::DAGGER;
+		}
+
+		else if (dynamic_cast<CItemAxe *>(obj))
+		{
+			obj->SetState(STATE_INVISIBLE);
+			secondaryWeapon = Weapon::AXE;
+		}
+
+		else if (dynamic_cast<CItemHolyWater *>(obj))
+		{
+			obj->SetState(STATE_INVISIBLE);
+			secondaryWeapon = Weapon::HOLYWATER;
+		}
+
+		else if (dynamic_cast<CItemMeat *>(obj))
+		{
+			obj->SetState(STATE_INVISIBLE);
+
+			this->health += obj->GetPoint();
+			CBoard::GetInstance()->AddPlayerLife(obj->GetPoint());
+		}
+
+		else if (dynamic_cast<CMagicBall *>(obj))
+		{
+			obj->SetState(STATE_INVISIBLE);
+
+			this->health += obj->GetPoint();
+			CBoard::GetInstance()->AddPlayerLife(obj->GetPoint());
+		}
+
+		else if (dynamic_cast<CItemSuperPotion *>(obj))
+		{
+			DebugOut(L"\n[INFO] Touch Item Super Potion");
+			obj->SetState(STATE_INVISIBLE);
+
+			this->BeUntouchableByItem();
+		}
+		else if (dynamic_cast<CWatch *>(obj))
+		{
+			obj->SetState(STATE_INVISIBLE);
+			secondaryWeapon = Weapon::WATCH;
+		}
+		else if (dynamic_cast<CDoubleShot *>(obj))
+		{
+			obj->SetState(STATE_INVISIBLE);
+			weaponsInstance->UpgradeToDoubleShot();
+		}
+		else if (dynamic_cast<CMoneyBag *>(obj))
+		{
+			obj->SetState(STATE_INVISIBLE);
+
+			CBoard::GetInstance()->AddScore(obj->GetPoint());
+		}
+
+		else if (dynamic_cast<CCross *>(obj))
+		{
+			obj->SetState(STATE_INVISIBLE);
+
+			// Start the flashing screen effect
+			flash_start = GetTickCount();
+
+			// Kill all the monsters
+			KillAllMonsters();
+		}
+
+		else if (dynamic_cast<CCameraEvent *>(obj))
+		{
+			DebugOut(L"\n[INFO] Touch Camera Event");
+			CCameraEvent * cameraEvent = dynamic_cast<CCameraEvent *>(obj);
+
+			float xEvent, yEvent;
+			obj->GetPosition(xEvent, yEvent);
+
+			if (cameraEvent->GetCameraEvent() == CameraEvent::SLOWLY_MOVE)
+				cameraInstance->StartSlowlyMoveViewport(xEvent, yEvent);
+
+			else if (cameraEvent->GetCameraEvent() == CameraEvent::LOCK)
+				cameraInstance->SetLockEffect(true);
+		}
+
+		else if (dynamic_cast<CPortal *>(obj))
+		{
+			CPortals::GetInstance()->Teleport((CPortal *)obj, this->x, this->y);
+		}
+
+		else if (dynamic_cast<CInvisibleWater *>(obj))
+		{
+			// Falling into water effect
+			float pX = this->x + SIMON_IDLE_BBOX_WIDTH / 2;
+			float pY = this->y + SIMON_IDLE_BBOX_HEIGHT;
+			CBubbles::GetInstance()->ShowSomeBubblesForFish(this->x, this->y);
+
+			// Simon's death
+			this->SetState(STATE_INVISIBLE);
+			this->dying = true;
+		}
 	}
 }
 
@@ -632,6 +775,15 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			CBoard::GetInstance()->AddPlayerLife(e->obj->GetPoint());
 		}
 
+		else if (dynamic_cast<CMagicBall *>(e->obj))
+		{
+			DebugOut(L"\n[INFO] Touch Magic Ball");
+			e->obj->SetState(STATE_INVISIBLE);
+
+			this->health += e->obj->GetPoint();
+			CBoard::GetInstance()->AddPlayerLife(e->obj->GetPoint());
+		}
+
 		else if (dynamic_cast<CItemSuperPotion *>(e->obj))
 		{
 			DebugOut(L"\n[INFO] Touch Item Super Potion");
@@ -639,7 +791,20 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 
 			this->BeUntouchableByItem();
 		}
+		else if (dynamic_cast<CWatch *>(e->obj))
+		{
+			DebugOut(L"\n[INFO] Touch Item Watch");
 
+			e->obj->SetState(STATE_INVISIBLE);
+			secondaryWeapon = Weapon::WATCH;
+		}
+		else if (dynamic_cast<CDoubleShot *>(e->obj))
+		{
+			DebugOut(L"\n[INFO] Touch DoubleShot Upgrade ");
+			e->obj->SetState(STATE_INVISIBLE);
+
+			weaponsInstance->UpgradeToDoubleShot();
+		}
 		else if (dynamic_cast<CMoneyBag *>(e->obj))
 		{
 			DebugOut(L"\n[INFO] Touch MoneyBag");
@@ -886,6 +1051,36 @@ void CSimon::OnGetDamaged(LPCOLLISIONEVENT e)
 	health -= objDamage;
 }
 
+void CSimon::OnGetDamaged(LPGAMEOBJECT monster)
+{
+	if (onStairs == 0)
+	{
+		vx = vy = dx = dy = 0;
+
+		this->vx = (-this->nx) * SIMON_DAMAGED_DEFLECT_X;
+		this->vy = SIMON_DAMAGED_DEFLECT_Y;
+
+		// Set jumping = true to re-use the SIMON_JUMP_GRAVITY
+		jumping = true;
+		controllable = false;
+
+		// Simon is being untouchable but 
+		// not going to stop being untouchable ( because of being on-air )
+		untouchable_start = TIMER_ETERNAL;
+	}
+	else
+	{
+		untouchable_start = GetTickCount();
+		flicker_start = GetTickCount();
+	}
+
+	// Update Simon's health
+	CBoard * board = CBoard::GetInstance();
+	int objDamage = monster->GetDamage();
+	board->AddPlayerLife(-objDamage);
+	health -= objDamage;
+}
+
 void CSimon::MoveRight()
 {
 	if (onStairs == 0)
@@ -978,13 +1173,14 @@ void CSimon::UseWeapon()
 		this->Attack(SIMON_ATTACK_BY_ROPE);
 	else
 	{
+		// Check if Simon can do an use-weapon-action
 		if (!IsAbleToUseWeapon())
 			return;
 
-		//if (This is a watch)
-		// ....
-
-		this->Attack(SIMON_ATTACK_BY_ITEM);
+		if (secondaryWeapon == Weapon::WATCH)
+			CTimer::GetInstance()->Freeze(SIMON_DO_FREEZE_EVERYTHING_TIME, this);
+		else
+			this->Attack(SIMON_ATTACK_BY_ITEM);		
 	}
 }
 
@@ -1127,17 +1323,32 @@ bool CSimon::IsAbleToUseWeapon()
 	case Weapon::AXE:
 		heartsCost = AXE_HEART_COST;
 		break;
+	case Weapon::HOLYWATER:
+		heartsCost = HOLYWATER_HEART_COST;
+		break;
+	case Weapon::WATCH:
+		heartsCost = WATCH_HEART_COST;
+		break;
 	default:
 		break;
 	}
 
-	if (numberOfHearts - heartsCost >= 0 &&
-		CWeapons::GetInstance()->CheckQuantity(secondaryWeapon) && 
-		attack_start == TIMER_IDLE)
+	if (numberOfHearts - heartsCost >= 0)
 	{
-		numberOfHearts -= heartsCost;
-		CBoard::GetInstance()->SetHeart(numberOfHearts);
-		return true;
+		if (secondaryWeapon == Weapon::WATCH)
+		{
+			numberOfHearts -= heartsCost;
+			CBoard::GetInstance()->SetHeart(numberOfHearts);
+			return true;
+		}
+
+		else if (CWeapons::GetInstance()->CheckQuantity(secondaryWeapon) &&
+			attack_start == TIMER_IDLE)
+		{
+			numberOfHearts -= heartsCost;
+			CBoard::GetInstance()->SetHeart(numberOfHearts);
+			return true;
+		}		
 	}
 	
 	return false;
@@ -1194,11 +1405,7 @@ void CSimon::CalibrateCameraPosition()
 	float yCentral = (t + b) / 2;
 
 
-	cameraInstance->Centerize(xCentral, yCentral);
-	//if (!autoMove)
-	//	cameraInstance->Centerize(xCentral, yCentral);
-	//else
-	//	cameraInstance->SlowlyMoveViewport();
+	cameraInstance->FocusOnPoint(xCentral, yCentral);
 }
 
 void CSimon::GetBoundingBox(float & left, float & top, float & right, float & bottom)

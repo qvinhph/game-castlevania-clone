@@ -57,6 +57,9 @@
 #include "HolyWater.h"
 #include "CameraEvent.h"
 #include "ItemSuperPotion.h"
+#include "Watch.h"
+#include "DoubleShot.h"
+#include "MagicBall.h"
 
 #define ID_TEX_SIMON		0
 #define ID_TEX_ROPE			1
@@ -65,15 +68,3 @@
 #define ID_TEX_MONSTERS		4
 #define ID_TEX_TILESET		5
 
-#define NUMBER_OF_FLAME		6
-#define NUMBER_OF_DAGGER	2
-#define NUMBER_OF_HEART		5
-#define NUMBER_OF_PANTHER	3
-#define NUMBER_OF_ZOMBIE	3
-#define NUMBER_OF_FIREBALL	4
-#define NUMBER_OF_PINKBAT	2
-#define NUMBER_OF_FISH		2
-#define NUMBER_OF_ROCK		8
-#define NUMBER_OF_BUBBLE	9		
-#define NUMBER_OF_HOLYWATER	2
-#define NUMBER_OF_AXE		2

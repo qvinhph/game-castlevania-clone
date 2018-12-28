@@ -36,6 +36,8 @@
 #define SIMON_ATTACK_BY_ROPE					0
 #define SIMON_ATTACK_BY_ITEM					1
 
+#define SIMON_DO_FREEZE_EVERYTHING_TIME			3000		// By the Watch item effect
+
 // For flickering while being untouchable.
 #define SIMON_UNTOUCHABLE_ALPHA_VALUE			100	
 #define SCREEN_FLASH_TIME						600
@@ -148,6 +150,7 @@ public:
 	void BeUntouchable();					// After getting damaged
 	void BeUntouchableByItem();				// By item's effect ( super potion item)
 	void OnGetDamaged(LPCOLLISIONEVENT e);
+	void OnGetDamaged(LPGAMEOBJECT monster);
 	void ProceedAutoMove();
 	void ProceedFlickering();
 	void ProceedAttacking();
