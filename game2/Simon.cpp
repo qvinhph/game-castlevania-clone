@@ -499,6 +499,9 @@ void CSimon::ProceedOverlapping()
 				this->OnGetDamaged(obj);
 				return;
 			}
+
+			if (dynamic_cast<CPinkBat *>(obj))
+				obj->Destroy();
 		}
 
 		else if (dynamic_cast<CItemRope *>(obj))
@@ -853,7 +856,6 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 			{
 				x += nx * DEFLECTION_AVOID_OVERLAPPING;
 				vx = 0;
-
 			}
 		}
 
@@ -878,6 +880,10 @@ void CSimon::ProceedCollisions(vector<LPCOLLISIONEVENT> &coEvents)
 				if (e->nx != 0) x += (1 - min_tx) * dx;
 				if (e->ny != 0) y += (1 - min_ty) * dy;
 			}
+
+
+			if (dynamic_cast<CPinkBat *>(e->obj))
+				e->obj->Destroy();
 		}
 
 		else if (dynamic_cast<CPortal *>(e->obj))
