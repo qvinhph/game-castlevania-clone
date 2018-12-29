@@ -9,6 +9,8 @@
 #include "Cells.h"
 #include "Timer.h"
 #include "Monsters.h"
+#include "Map.h"
+#include "Maps.h"
 
 
 #define WINDOW_CLASS_NAME L"Game"
@@ -19,18 +21,15 @@
 #define SCREEN_WIDTH		528.5f//512		// DELETE ME: NOTE: ACCEPTABLE
 #define SCREEN_HEIGHT		487.5f//448
 
-#define CELL_WIDTH			256
-#define CELL_HEIGHT			224
 
 #define VIEWPORT_WIDTH		512
 #define VIEWPORT_HEIGHT		448
 
 #define MAX_FRAME_RATE		120
 
-CTileMap *tileMap;
+CMaps * maps;
 CGame *game;
 LPGAMEOBJECT gameObject;
-CCells *cells;
 CBoard *board;
 
 vector<LPGAMEOBJECT> updateObjects;			// The objects need be updated
@@ -213,10 +212,20 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int Sc
 */
 void InitMap()
 {
-	tileMap = new CTileMap(L"json\\map_level_one.json");
-	tileMap->Init(ID_TEX_TILESET);
-	cells = new CCells();
-	cells->Init(tileMap, CELL_WIDTH, CELL_HEIGHT);
+	maps = CMaps::GetInstance();
+	CMap * map;
+
+	// Map level one
+	map = new CMap(L"json\\map_level_one.json");
+	maps->AddMap(map);
+
+	// Map level two
+	// ....
+	// ....
+
+	// Set the map for the first showing time.
+	// NOTE: By default the currentMap will be at first index of the collection
+	// maps->SetCurrentMap(0)
 }
 
 
@@ -496,6 +505,7 @@ void Update(DWORD dt)
 {
 	vector<LPGAMEOBJECT> coObjects;
 	coObjects.clear();
+	LPMAP currentMap = maps->GetCurrentMap();
 
 
 	// Get the bounding box of viewport
@@ -505,7 +515,7 @@ void Update(DWORD dt)
 
 	// Get objects in the cells
 	updateObjects.clear();
-	cells->GetObjectsInRectangle(left, top, right, bottom, updateObjects);
+	currentMap->GetCells()->GetObjectsInRectangle(left, top, right, bottom, updateObjects);
 
 
 	// Add the default objects
@@ -553,6 +563,7 @@ void Render()
 	LPDIRECT3DDEVICE9 d3ddv = game->GetDirect3DDevice();
 	LPDIRECT3DSURFACE9 bb = game->GetBackBuffer();
 	LPD3DXSPRITE spriteHandler = game->GetSpriteHandler();
+	LPMAP currentMap = maps->GetCurrentMap();
 
 	if (d3ddv->BeginScene())
 	{
@@ -564,7 +575,7 @@ void Render()
 		// Only draw the tile in the camera 
 		float left, top, right, bottom;
 		CCamera::GetInstance()->GetBoundingBox(left, top, right, bottom);
-		tileMap->Draw(left, top, right, bottom);
+		currentMap->GetTileMap()->Draw(left, top, right, bottom);
 
 		for (UINT i = 0; i < updateObjects.size(); i++)
 		{

@@ -42,6 +42,8 @@
     <ClInclude Include="ItemMeat.h" />
     <ClInclude Include="ItemSuperPotion.h" />
     <ClInclude Include="MagicBall.h" />
+    <ClInclude Include="Map.h" />
+    <ClInclude Include="Maps.h" />
     <ClInclude Include="MoneyBag.h" />
     <ClInclude Include="PinkBat.h" />
     <ClInclude Include="BigHeart.h" />
@@ -114,6 +116,8 @@
     <ClCompile Include="ItemMeat.cpp" />
     <ClCompile Include="ItemSuperPotion.cpp" />
     <ClCompile Include="MagicBall.cpp" />
+    <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Maps.cpp" />
     <ClCompile Include="MoneyBag.cpp" />
     <ClCompile Include="PinkBat.cpp" />
     <ClCompile Include="BigHeart.cpp" />

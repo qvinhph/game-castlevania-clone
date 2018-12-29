@@ -255,6 +255,12 @@
     <ClInclude Include="MagicBall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Maps.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Rope.cpp">
@@ -465,6 +471,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MagicBall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Maps.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

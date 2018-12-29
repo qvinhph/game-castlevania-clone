@@ -3,6 +3,9 @@
 #include "GameObject.h"
 #include "TileMap.h"
 
+#define CELL_WIDTH			256
+#define CELL_HEIGHT			224
+
 class CCells
 {
 	// cells[column][row]
