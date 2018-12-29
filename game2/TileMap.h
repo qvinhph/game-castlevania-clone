@@ -45,7 +45,7 @@ class CTileMap
 	int columns;							// map width by tiles
 	int rows;								// map height by tiles
 
-	CTileset* tileset;
+	CTileset* tileset;						// pointer to the matched tileset for manipulation
 	LPCWSTR jsonFilePath;					// dir to json file contains the tileset information
 
 	vector<LPLAYERINFO> layers;				// a vector of layers we should load to map

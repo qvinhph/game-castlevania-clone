@@ -542,7 +542,6 @@ void Update(DWORD dt)
 	// Help freezing time in game
 	CTimer::GetInstance()->Update(dt, &updateObjects);
 	CBoard::GetInstance()->Update();
-	//CCamera::GetInstance()->Update(dt);
 }
 
 
