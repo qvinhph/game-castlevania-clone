@@ -19,20 +19,24 @@ void CPortals::Teleport(CPortal * portal, float & arrivalX, float & arrivalY)
 {
 	PortalIndicator indicator = portal->GetIndicator();
 	int index = portal->GetIDPort();
-	CPortal * arrivalPortal = NULL;
 
 
 	// Choose arrival portal
+	CPortal * arrivalPortal = NULL;
 	switch (indicator)
 	{
 	case PortalIndicator::NEXT:
+		// Not the last in the list
 		if (index != portals.size() - 1)
 			arrivalPortal = portals[index + 1];
 		break;
+
 	case PortalIndicator::BACK:
+		// Not the first in the list
 		if (index != 0)
 			arrivalPortal = portals[index - 1];
 		break;
+
 	default:
 		arrivalPortal = NULL;
 		break;

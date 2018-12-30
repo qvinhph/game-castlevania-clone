@@ -13,7 +13,7 @@ struct CLayerInfo
 	std::string name;
 	int columns;
 	int rows;
-	vector<int> data;
+	vector<int> data;		// a list of tiles
 
 	CLayerInfo(string name, int columns, int rows, vector<int> data)
 		: name(name), columns(columns), rows(rows), data(data) {}
@@ -59,7 +59,6 @@ public:
 	void Draw();
 	void Draw(float &left, float &top, float &right, float &bottom);
 	void GetMapSize(int &width, int &height);
-	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void GetGameObjects(vector<LPGAMEOBJECT> * &objects) { objects = &this->gameObjects; }
 
 	void CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo);		// create game objects from the given info

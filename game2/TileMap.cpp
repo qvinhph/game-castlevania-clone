@@ -95,29 +95,38 @@ void CTileMap::Draw(float & left, float & top, float & right, float & bottom)
 	int firstColumn, firstRow;		// The top-right tile that has the viewport's area
 	int lastColumn, lastRow;		// The bottom-right tile that has the viewport's area
 
+
+	// NOTE: column/row will be counted from 0.
 	firstColumn = left / tileWidth;
 	lastColumn = (right / tileWidth == columns) ? columns - 1 : (right / tileWidth);
 
 	firstRow = top / tileHeight;
 	lastRow = (bottom / tileHeight == rows) ? rows - 1 : (bottom / tileHeight);
 
-	// Draw the tiles bounded by top-left and bottom-right tile
+
+	// Draw the tiles bounded by top-left tile and bottom-right tile
 	int index;
 	int gridID;	
 	int firstGrid = tileset->GetFirstGrid();		// Use for define which tile is empty
-	LPTILE tile;
 
 	for (UINT row = firstRow; row <= lastRow; ++row)
 		for (UINT column = firstColumn; column <= lastColumn; ++column)
 		{
 			index = row * columns + column;
 
-			// Get grid ID
-			gridID = layers[0]->data[index];
-			if (gridID < firstGrid) continue;		// empty tile
+			// Loop for drawing every tile from every layers.
+			for (UINT i = 0; i < layers.size(); i++)
+			{
+				// Get grid ID
+				gridID = layers[i]->data[index];
+				if (gridID < firstGrid) continue;		// check if the tile is empty
 
-			tileset->Get(gridID, tile);
-			tile->Draw(column * tileWidth, row * tileHeight);
+				LPTILE tile = NULL;
+				tileset->Get(gridID, tile);
+
+				if (tile != NULL)
+					tile->Draw(column * tileWidth, row * tileHeight);
+			}
 		}
 }
 
@@ -127,20 +136,8 @@ void CTileMap::GetMapSize(int & width, int & height)
 	height = this->rows * tileset->GetTileHeight();
 }
 
-void CTileMap::GetBoundingBox(float & left, float & top, float & right, float & bottom)
-{
-	int mapWidth, mapHeight;
-	this->GetMapSize(mapWidth, mapHeight);
-
-	left = 0;
-	top = 0;
-	right = left + mapWidth;
-	bottom = top + mapHeight;
-}
-
 void CTileMap::CreateGameObjects(vector<LPOBJECTINFO> * objectsInfo)
 {
-
 	LPOBJECTINFO info;
 	LPGAMEOBJECT obj;
 

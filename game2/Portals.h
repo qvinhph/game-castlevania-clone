@@ -8,6 +8,7 @@
 class CPortals
 {
 	static CPortals * __instance;
+
 	vector<CPortal *> portals;
 	CPortals() = default;
 

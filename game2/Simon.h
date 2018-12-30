@@ -78,13 +78,17 @@ enum class SimonAniID
 	DAMAGING_RIGHT
 };
 
+
+/*
+	Data struct for saving auto move event
+*/
 struct AutoInfo
 {
 	float vx;
 	float vy;
-	float xDes;
+	float xDes;				// For auto moving till reach a point
 	float yDes;
-	DWORD autoTimeLast;
+	DWORD autoTimeLast;		// For auto moving within a given time
 };
 
 class CSimon : public CActiveObject
@@ -94,13 +98,13 @@ class CSimon : public CActiveObject
 	bool autoMove;	   
 	bool jumping;	   
 	bool crouching;	   
-	bool dying = false;
+	bool dying;
 
 
 	// Assigned to -1 if going downstairs
 	// Assigned to 1 if going upstairs
 	// Assigned to 0 if not on stairs
-	int onStairs = 0;
+	int onStairs;
 
 
 	// Timers, also be used as FLAG for the action when assigned to TIMER_IDLE(false) or non-TIMER_IDLE(true)

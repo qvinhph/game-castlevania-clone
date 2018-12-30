@@ -51,6 +51,7 @@ CSimon::CSimon()
 	this->jumping = false;
 	this->crouching = false;
 	this->autoMove = false;
+	this->dying = false;
 	this->secondaryWeapon = Weapon::NONE;
 
 	this->auto_crouch_start = 0;
@@ -303,6 +304,11 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (dying == false)
 		CalcPotentialCollisions(coObjects, coEvents);
+	else
+	{
+		// Prevent the Simon reaction of being get damage ( by overlapping )
+		untouchable_start = GetTickCount();
+	}
 
 
 	// Auto Move: this will re-calculate the dx, dy

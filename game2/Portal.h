@@ -8,13 +8,25 @@ enum class PortalIndicator
 	NONE
 };
 
+
+/*
+	When Simon touches an instance of this class, he might perform a teleport to another Portal.
+	( depend on the PortalIndicator variable ).
+
+	NOTE: All of the instances of this class will be managed by CPortals
+*/
 class CPortal : public CGameObject
 {
 	float width;
 	float height;
-	int idPort;
 
 	PortalIndicator indicator = PortalIndicator::NONE;
+
+	/*
+		To mark the order of portals
+		TO-DO: Need more thought about this. Maybe this is unnecessary.
+	*/
+	int idPort;
 
 public:
 

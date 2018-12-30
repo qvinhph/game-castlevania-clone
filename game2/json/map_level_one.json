@@ -2268,23 +2268,6 @@
                  "y":447.958166666667
                 }, 
                 {
-                 "height":64,
-                 "id":277,
-                 "name":"spawnerzombie",
-                 "properties":[
-                        {
-                         "name":"Direction",
-                         "type":"int",
-                         "value":-1
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":5842.66666666667,
-                 "y":158
-                }, 
-                {
                  "height":62,
                  "id":283,
                  "name":"simon",
@@ -2305,7 +2288,7 @@
  "nextobjectid":284,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.2.0",
+ "tiledversion":"1.2.1",
  "tileheight":32,
  "tilesets":[
         {

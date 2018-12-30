@@ -149,6 +149,7 @@ public:
 	virtual void Render();
 	virtual void Destroy();		
 	virtual void BeHit(int damage);
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL) { /* Nothing here */};
 
 	CGameObject();
 };

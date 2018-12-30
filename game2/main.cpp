@@ -51,21 +51,23 @@ void CInputHandler::OnKeyDown(int keyCode)
 	DebugOut(L"\n[INFO] KeyDown: %d", keyCode);
 	switch (keyCode)
 	{
-	case DIK_N:
+	case DIK_S:
 		CSimon::GetInstance()->SetAction(Action::JUMP);
 		break;
 
-	case DIK_M:
+	case DIK_A:
 		if (game->IsKeyDown(DIK_UP))
 			CSimon::GetInstance()->SetAction(Action::USE_ITEM);
 		else
 			CSimon::GetInstance()->SetAction(Action::ATTACK);
 		break;
 
+	// For changing direction of simon while he is crouching
 	case DIK_RIGHT:
 		CSimon::GetInstance()->SetAction(Action::WALK_RIGHT);
 		break;
 
+	// For changing direction of simon while he is crouching
 	case DIK_LEFT:
 		CSimon::GetInstance()->SetAction(Action::WALK_LEFT);
 		break;
@@ -493,7 +495,6 @@ void LoadResources()
 	//
 	InitDefaultObjects();
 	InitMap();
-
 }
 
 
@@ -540,11 +541,10 @@ void Update(DWORD dt)
 	// Call Update function of each object
 	for (UINT i = 0; i < updateObjects.size(); i++)
 	{
-		if (dynamic_cast<CActiveObject *>(updateObjects[i])
-			&& updateObjects[i]->GetState() == STATE_VISIBLE
+		if (updateObjects[i]->GetState() == STATE_VISIBLE
 			&& updateObjects[i]->GetFreezing() == false)
 		{
-			dynamic_cast<CActiveObject *>(updateObjects[i])->Update(dt, &coObjects);
+			updateObjects[i]->Update(dt, &coObjects);
 		}
 	}	
 
